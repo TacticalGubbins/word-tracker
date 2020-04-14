@@ -1,0 +1,8 @@
+**ncheck** or **ncount** + *@user* : `Check the # of n-words sent by that user`
+**ntotal**: `The total # of n-words recorded` *(also in the status)*
+**ntop**: `Gives info about the user with the most sent n-words`
+**narchive**: `Gives the complete archive of every n-word message sent`
+**invitenow**: `Creates a permanent invite` *fuck you seb!*
+
+*personal server only*
+**getverify**: `Retrieves the current verify code`
