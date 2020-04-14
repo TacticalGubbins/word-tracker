@@ -225,9 +225,6 @@ client.on("message", (message) => {
       dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
       totalN++;
 
-      console.log(dataArray);
-      console.log(totalN);
-
     }
 
     //log the new array in the data file once the message has been fully scanned
@@ -259,10 +256,13 @@ client.on("message", (message) => {
       fs.writeFile('archive.txt' , archive , (err) => {
         if (err) throw err;
       });
+      console.log(dataArray);
+      console.log(totalN);
       console.log(`Updated Archive`);
 
       //write in the new data
       data = write(dataArray, totalN);
+
 
       nigga = false;
     }
