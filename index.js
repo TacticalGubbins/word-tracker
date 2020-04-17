@@ -30,6 +30,7 @@ var archive = fs.readFileSync('archive.txt');
 //variables relating to users
 var nigga = false;
 var authorPos;
+var j = 0;
 
 
 
@@ -39,6 +40,10 @@ client.on('ready', () => {
 
   client.user.setActivity(`with ${totalN} sent n-words | nhelp`)
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
+
+  setInterval(() => {
+    client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
+  }, 3000000);
 });
 
 
@@ -204,32 +209,36 @@ client.on("message", (message) => {
     //check to see if the message contains any n-words
     if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
       nigga = true;
-      authorPos = -1;
 
-      //find the position of the user in the data file
-      for (var i = 0; i < dataArray.length; i++) {
-        if(message.author.id == dataArray[i]) {
-            authorPos = i+1;
-            break;
+      if(nigga == true) {
+
+        authorPos = -1;
+
+        //find the position of the user in the data file
+        for (var i = 0; i < dataArray.length; i++) {
+          if(message.author.id == dataArray[i]) {
+              authorPos = i+1;
+              break;
+          }
         }
-      }
 
-      //if the user has not sent a message before, create a line for the user
-      if(authorPos == -1) {
-        dataArray[dataArray.length] = message.author.id;
-        dataArray[dataArray.length] = 0;
-        authorPos = dataArray.length-1;
-      }
+        //if the user has not sent a message before, create a line for the user
+        if(authorPos == -1) {
+          dataArray[dataArray.length] = message.author.id;
+          dataArray[dataArray.length] = 0;
+          authorPos = dataArray.length-1;
+        }
 
-      //add +1 to the user in the data array
-      dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
-      totalN++;
+        //add +1 to the user in the data array
+        dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
+        totalN++;
+
 
     }
+  }
 
     //log the new array in the data file once the message has been fully scanned
-    if(curr == args[args.length-1] && nigga == true) {
-      console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
+    if(j == args.length-1 && nigga == true) {
 
       //special message for savi --- simp!
       if(message.author.id == 395980133565071360) {
@@ -256,18 +265,21 @@ client.on("message", (message) => {
       fs.writeFile('archive.txt' , archive , (err) => {
         if (err) throw err;
       });
-      console.log(dataArray);
-      console.log(totalN);
       console.log(`Updated Archive`);
 
       //write in the new data
       data = write(dataArray, totalN);
 
-
       nigga = false;
+      j = 0;
+
+      console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
+      console.log(totalN);
+      client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
+      return;
     }
 
-    client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
+    j++;
 
   });
 
