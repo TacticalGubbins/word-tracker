@@ -41,7 +41,7 @@ client.on('ready', () => {
   setInterval(() => {
     client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
   }, 3000000);
-});
+}
 
 
 client.on("message", (message) => {
