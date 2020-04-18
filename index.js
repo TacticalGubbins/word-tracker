@@ -33,8 +33,6 @@ var authorPos;
 var j = 0;
 
 
-
-
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
@@ -194,7 +192,67 @@ client.on("message", (message) => {
   }
 
 
+
+
   args.forEach(curr => {
+    if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
+      authorPos = -1;
+
+      //find the position of the user in the data file
+      for (var i = 0; i < dataArray.length; i++) {
+        if(message.author.id == dataArray[i]) {
+            authorPos = i+1;
+            break;
+        }
+      }
+
+      //if the user has not sent a message before, create a line for the user
+      if(authorPos == -1) {
+        dataArray[dataArray.length] = message.author.id;
+        dataArray[dataArray.length] = 0;
+        authorPos = dataArray.length-1;
+      }
+
+      //add +1 to the user in the data array
+      dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
+      totalN++;
+
+      if(j == args.length-1) {
+
+        //special message for savi --- simp!
+        if(message.author.id == 395980133565071360) {
+          const attachmentSavi = new MessageAttachment('./savi.jpg');
+          message.channel.send(attachmentSavi);
+          console.log(`SAVI SENT THE N-WORD`);
+        }
+
+        //check to see if there is a new top user
+        if(dataArray[authorPos] > parseInt(top[1])) {
+          //re-define the top user
+          top[0] = message.author.username;
+          top[1] = dataArray[authorPos];
+
+          //save the top user
+          fs.writeFile('top.txt', message.author.username + "\t" + dataArray[authorPos], (err) => {
+            if (err) throw err;
+          });
+          console.log(`new top user:` + top);
+        }
+
+        //write in the new data
+        data = write(dataArray, totalN);
+
+        j = 0;
+
+        console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
+        console.log(totalN);
+        client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
+        return;
+
+      }
+    }
+    j++;
+  });
 
     //message critic code (soon to be out of use)
   /*
@@ -206,82 +264,6 @@ client.on("message", (message) => {
     }
     */
 
-    //check to see if the message contains any n-words
-    if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
-      nigga = true;
-
-      if(nigga == true) {
-
-        authorPos = -1;
-
-        //find the position of the user in the data file
-        for (var i = 0; i < dataArray.length; i++) {
-          if(message.author.id == dataArray[i]) {
-              authorPos = i+1;
-              break;
-          }
-        }
-
-        //if the user has not sent a message before, create a line for the user
-        if(authorPos == -1) {
-          dataArray[dataArray.length] = message.author.id;
-          dataArray[dataArray.length] = 0;
-          authorPos = dataArray.length-1;
-        }
-
-        //add +1 to the user in the data array
-        dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
-        totalN++;
-
-
-    }
-  }
-
-    //log the new array in the data file once the message has been fully scanned
-    if(j == args.length-1 && nigga == true) {
-
-      //special message for savi --- simp!
-      if(message.author.id == 395980133565071360) {
-        const attachmentSavi = new MessageAttachment('./savi.jpg');
-        message.channel.send(attachmentSavi);
-        console.log(`SAVI SENT THE N-WORD`);
-      }
-
-      //check to see if there is a new top user
-      if(dataArray[authorPos] > parseInt(top[1])) {
-        //re-define the top user
-        top[0] = message.author.username;
-        top[1] = dataArray[authorPos];
-
-        //save the top user
-        fs.writeFile('top.txt', message.author.username + "\t" + dataArray[authorPos], (err) => {
-          if (err) throw err;
-        });
-        console.log(`new top user:` + top);
-      }
-
-      //add to the archive
-      archive = archive + message.channel.guild.name + ":\t" + message.author.username + ":\t" + message.content + "\n\n";
-      fs.writeFile('archive.txt' , archive , (err) => {
-        if (err) throw err;
-      });
-      console.log(`Updated Archive`);
-
-      //write in the new data
-      data = write(dataArray, totalN);
-
-      nigga = false;
-      j = 0;
-
-      console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
-      console.log(totalN);
-      client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
-      return;
-    }
-
-    j++;
-
-  });
 
   //BAN CRITIC PLEASE PLEASE PLEASE
 /*
