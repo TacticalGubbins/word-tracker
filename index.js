@@ -242,14 +242,15 @@ client.on("message", (message) => {
         //write in the new data
         data = write(dataArray, totalN);
 
-        j = 0;
-
         console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
         console.log(totalN);
         client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
         return;
 
       }
+    }
+    if(j == args.length-1) {
+      j = 0;
     }
     j++;
   });
