@@ -251,6 +251,7 @@ client.on("message", (message) => {
     }
     if(j == args.length-1) {
       j = 0;
+      return;
     }
     j++;
   });
