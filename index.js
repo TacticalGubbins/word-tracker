@@ -30,7 +30,6 @@ var archive = fs.readFileSync('archive.txt');
 //variables relating to users
 var nigga = false;
 var authorPos;
-var j = 0;
 
 
 client.on('ready', () => {
@@ -194,7 +193,9 @@ client.on("message", (message) => {
 
 
 
-  args.forEach(curr => {
+  for(var j = 0; j < args.length; j++) {
+    curr = args[j];
+
     if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
       authorPos = -1;
 
@@ -245,15 +246,12 @@ client.on("message", (message) => {
         console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
         console.log(totalN);
         client.user.setActivity(`with ${totalN} sent n-words | nhelp`);
-        return;
 
       }
     }
     if(j == args.length-1) {
-      j = 0;
       return;
     }
-    j++;
   });
 
     //message critic code (soon to be out of use)
