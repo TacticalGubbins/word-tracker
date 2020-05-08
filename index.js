@@ -55,6 +55,10 @@ var nigga = false;
 var authorPos;
 var stat = 0;
 
+var nword = 0;
+let cooldown = new Set();
+let cdseconds = 5;
+
 
 client.on('ready', () => {
   console.log("BOT ONLINE");
@@ -230,11 +234,15 @@ client.on("message", (message) => {
 
   //fetch and return the top sending user info
   if(message.content.toLowerCase().startsWith("ntop")) {
+    let arr = getTop(dataArray);
+
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("The user with the largest amount of n-words sent is: **" + top[0] + "** with **__" + top[1] + "__** n-words sent!")
-    .setFooter('Requested by ' + message.author.tag);
+    .setDescription("Top User")
+    .setFooter('Requested by ' + message.author.tag)
+    .addField(arr[0], '__**' + arr[1] + '**__ sent')
+    ;
       //message.channel.send("The user with the largest amount of n-words sent is: **" + top[0] + "** with **__" + top[1] + "__** n-words sent!");
       message.channel.send(embed);
 
@@ -356,8 +364,10 @@ client.on("message", (message) => {
 
 
 
-
   for(var j = 0; j < args.length; j++) {
+    if(cooldown.has(message.author.id)) {
+      break;
+    }
     curr = args[j];
 
     if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
@@ -381,6 +391,7 @@ client.on("message", (message) => {
 
       //add +1 to the user in the data array
       dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
+      nword++;
       totalN++;
     }
 
@@ -413,6 +424,15 @@ client.on("message", (message) => {
       console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
       console.log(totalN);
       nigga = false;
+
+      if(nword >= 5) {
+        cooldown.add(message.author.id);
+        setTimeout(() => {
+          cooldown.delete(message.author.id);
+        }, (cdseconds * nword) * 1000);
+      }
+
+      nword = 0;
 
     }
     if(j == args.length-1) {
@@ -504,7 +524,7 @@ function getTop(arr) {
     if(parseInt(arr[i]) === parseInt(nums[curr])) {
       if(client.users.cache.get(arr[i-1].toString()) !== undefined) {
         data[assign] == arr[i-1].toString();
-        data[assign] = client.users.cache.get(arr[i-1].toString()).tag;
+        data[assign] = client.users.cache.get(arr[i-1].toString()).username;
         assign++;
         data[assign] = parseInt(nums[curr]);
         assign++;
