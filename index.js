@@ -1,24 +1,4 @@
 //fuck fuck fuck fuck
-/*
-const ftpClient = require('ssh2').Client;
-const conn = new ftpClient();
-
-const connSettings = {
-  host: 'ftp.tikomc.tk',
-  port: 42069,
-  username: 'louie',
-  password: 'lasdfjk'
-};
-
-conn.on('ready', function() {
-  conn.sftp(function(err,sftp) {
-    if (err) throw err;
-  });
-}).connect(connSettings);
-
-*/
-
-
 
 
 const {Client, MessageAttachment, MessageEmbed} = require('discord.js');
@@ -53,8 +33,11 @@ var archive = fs.readFileSync('archive.txt');
 //variables relating to users
 var nigga = false;
 var authorPos;
+
+//changing status
 var stat = 0;
 
+//cooldown vars
 var nword = 0;
 let cooldown = new Set();
 let cdseconds = 5;
@@ -109,8 +92,6 @@ client.on("message", (message) => {
 
     console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
 
-    //message.react('✅')
-    //.catch(console.error);
   }
 
   //see how many n-words somebody has sent
@@ -125,8 +106,6 @@ client.on("message", (message) => {
       //message.channel.send("You must include an @!")
       message.channel.send(embed);
 
-      //message.react('❌')
-      //.catch(console.error);
       return;
     }
 
@@ -139,8 +118,6 @@ client.on("message", (message) => {
       //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
       message.channel.send(embed);
 
-      //message.react('☑️')
-      //.catch(console.error);
       return;
     }
 
@@ -177,9 +154,6 @@ client.on("message", (message) => {
         message.channel.send(embed);
       }
 
-      //react once the command is completed
-      //message.react('✅')
-      //.catch(console.error);
 
       //say that the argument is not a user
     } else {
@@ -190,8 +164,6 @@ client.on("message", (message) => {
       //message.channel.send("That's not a person!")
       message.channel.send(embed);
 
-      //message.react('❌')
-      //.catch(console.error);
     }
   }
 
@@ -205,19 +177,24 @@ client.on("message", (message) => {
     //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
     message.channel.send(embed);
 
-    //message.react('✅')
-    //.catch(console.error);
 
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${totalN} in ` + message.channel.guild.name);
   }
 
+  if(message.content.toLowerCase().startsWith("ninvite")) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("[[Click here to invite me]](https://discordapp.com/oauth2/authorize?client_id=687077283965567006&scope=bot&permissions=67492929)")
+    .setFooter('Requested by ' + message.author.tag)
+    ;
+
+    message.channel.send(embed);
+  }
+
   //fetch and return the archive of n-words sent
   if(message.content.toLowerCase().startsWith("narchive")) {
-    /*const attachment = new MessageAttachment('./archive.txt');
-    message.channel.send("The full archive of every n-word sent: ", attachment);
 
-    message.react('✅')
-    .catch(console.error);*/
 
     let embed = new MessageEmbed()
     .setTitle('')
@@ -246,8 +223,6 @@ client.on("message", (message) => {
       //message.channel.send("The user with the largest amount of n-words sent is: **" + top[0] + "** with **__" + top[1] + "__** n-words sent!");
       message.channel.send(embed);
 
-    //message.react('✅')
-    //.catch(console.error);
 
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
   }
@@ -257,12 +232,19 @@ client.on("message", (message) => {
 
     let arr = getTop(dataArray);
     let pos = 0;
+    let place = 0;
 
     for(var i = 0; i < arr.length; i++) {
       pos++;
-      if(arr[i] == message.author.tag) {
+      if(arr[i] == message.author.username) {
         break;
       }
+    }
+    if(Number.isInteger(pos/2) === false) {
+      place = parseInt(pos/2) + 1;
+      console.log(place);
+    } else {
+      place = (pos/2);
     }
     let embed = new MessageEmbed()
     .setTitle('Top 10 Most Racist Users')
@@ -281,7 +263,7 @@ client.on("message", (message) => {
     .addField('#9 ' +arr[16], arr[17])
     .addField('#10 ' +arr[18], arr[19])
     .addField('----------', '----------', true)
-    .addField('#' + pos + ' ' + message.author.tag, arr[pos], true)
+    .addField('#' + place + ' ' + message.author.tag, arr[pos], true)
     .addField('Name', 'Num of n-words');
 
       message.channel.send(embed);
@@ -322,6 +304,13 @@ client.on("message", (message) => {
 
   //fetch and return the help file
   if(message.content.toLowerCase().startsWith("nhelp")) {
+    let helpEmbed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("Check your dms!")
+    ;
+    message.channel.send(helpEmbed);
+
     //let help = fs.readFileSync('help.txt')
     let embed = new MessageEmbed()
     .setTitle('All Commands')
@@ -336,6 +325,7 @@ client.on("message", (message) => {
     .addField('nleaderboard', 'Retrieves the top 10 users world-wide', true)
     .addField('narchive', 'Gives complete archive of every n-word sent', true)
     .addField('nuserinfo', 'Gives some basic information on the user', true)
+    .addField('ninvite', 'Gives you [this link](https://discordapp.com/oauth2/authorize?client_id=687077283965567006&scope=bot&permissions=67492929)', true)
     .addField('invitenow', 'Creates a perma-link *fuck you seb!*', true)
     ;
     //message.author.send(`${help}`);
@@ -440,25 +430,6 @@ client.on("message", (message) => {
     }
   }
 
-    //message critic code (soon to be out of use)
-  /*
-  if(message.author.id == 521594161862934549 && curr == "the") {
-      const attachmentCritic = new MessageAttachment('./estrogen.png');
-      message.channel.send(attachmentCritic);
-      console.log(`critic message sent`);
-      return;
-    }
-    */
-
-
-  //BAN CRITIC PLEASE PLEASE PLEASE
-/*
-  if(message.author.id == 521594161862934549) {
-    message.guild.member(message.author).ban(message.author, {reason: 'chimp'}).catch(err => console.log(err));
-    console.log(`\n\nCRITIC HAS BEEN KICKED\n\n`);
-  }
-*/
-
 
 });
 
@@ -509,13 +480,13 @@ function newPASSWORD() {
    return result;
 }
 
+
+//organize users by num of nwords
 function getTop(arr) {
   var data = new Array(arr.length-1);
-  var users = arr.filter((x, i) => !(i % 2));
   var nums = arr.filter((x, i) => i % 2);
   var curr = 0;
   var assign = 0;
-  var n = nums.length;
 
 
   nums = nums.sort((a, b) => b - a);
@@ -539,7 +510,6 @@ function getTop(arr) {
       data[i] = '---';
     }
   }
-
   return data;
 }
 
