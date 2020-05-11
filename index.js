@@ -242,7 +242,6 @@ client.on("message", (message) => {
     }
     if(Number.isInteger(pos/2) === false) {
       place = parseInt(pos/2) + 1;
-      console.log(place);
     } else {
       place = (pos/2);
     }
