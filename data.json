@@ -1,0 +1,10 @@
+{
+  "totalSent": 0,
+  "topUser": {
+    "username": "UserName",
+    "id": "0000",
+    "nwords": 0,
+    "avatar": "URL"
+  },
+  "users": []
+}
