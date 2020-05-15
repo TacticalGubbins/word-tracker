@@ -28,6 +28,8 @@ var nword = 0;
 let cooldown = new Set();
 let cdseconds = 5;
 
+var d = new Date();
+
 
 client.on('ready', () => {
   console.log("BOT ONLINE");
@@ -37,7 +39,7 @@ client.on('ready', () => {
 
   setInterval(() => {
     if(stat == 0) {
-      client.user.setActivity(`${totalN} sent n-words`, {type : 'LISTENING'});
+      client.user.setActivity(`${data.totalSent} sent n-words`, {type : 'LISTENING'});
       stat = 1;
     } else if(stat == 1) {
       client.user.setActivity(client.guilds.cache.size + ` servers`, {type : 'WATCHING'});
@@ -99,7 +101,7 @@ client.on("message", (message) => {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
-      .setDescription("Bruhg I've sent the n-word **__" + totalN + "__** times")
+      .setDescription("Bruhg I've sent the n-word **__" + data.totalSent + "__** times")
       .setFooter('Requested by ' + message.author.tag);
       //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
       message.channel.send(embed);
@@ -118,11 +120,17 @@ client.on("message", (message) => {
       for (var i = 0; i < data.users.length; i++) {
         if(user == data.users[i].id) {
             author = i;
+            let userCooldown = ((data.users[i].cooldown) - Date.now()) / 1000 + " seconds";
+            if(((data.users[i].cooldown) - Date.now()) <= 0) {
+              userCooldown = "none";
+            }
             let embed = new MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription(client.users.cache.get(args[1]).tag + ' has sent the n-word a total of **__' + data.users[i].nwords + '__** times!')
-            .setFooter('Requested by ' + message.author.tag);
+            .setFooter('Requested by ' + message.author.tag)
+            .addField("Cooldown:", userCooldown)
+            ;
 
             message.channel.send(embed);
             break;
@@ -158,13 +166,13 @@ client.on("message", (message) => {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("There have been a total of **__" + totalN + "__** n-words sent!")
+    .setDescription("There have been a total of **__" + data.totalSent + "__** n-words sent!")
     .setFooter('Requested by ' + message.author.tag);
     //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
     message.channel.send(embed);
 
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${totalN} in ` + message.channel.guild.name);
+    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${data.totalSent} in ` + message.channel.guild.name);
   }
 
   if(message.content.toLowerCase().startsWith("ninvite")) {
@@ -274,7 +282,6 @@ client.on("message", (message) => {
       //delete user info
       if (message.content === message.author.username) {
         deleteUserInfo(data, message);
-        totalN = data.totalSent;
         collector.stop();
 
         //cancel the collector, do not delete
@@ -371,7 +378,7 @@ client.on("message", (message) => {
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
   }
 
-  if(message.content === "update") {
+  if(message.content === "656598f1-5e5c-4aa7-b0de-9c854cefe0e6" && message.author.id === '250408653830619137') {
     var oldData = fs.readFileSync('data.txt');
     oldData = oldData.toString();
     var dataArray = oldData.split(/[\n \t]/);0
@@ -391,8 +398,8 @@ client.on("message", (message) => {
         data.users.push({
           "username" : client.users.cache.get(dataArray[i].toString()).username,
           "id" : dataArray[i],
-          "nwords" : parseInt(dataArray[i+1])
-          "cooldown" : "0"
+          "nwords" : parseInt(dataArray[i+1]),
+          "cooldown" : 0
         });
         i++;
       }
@@ -460,8 +467,8 @@ client.on("message", (message) => {
         data.users.push({
           "username" : message.author.username,
           "id" : message.author.id,
-          "nwords" : 0
-          "cooldown" : "0"
+          "nwords" : 0,
+          "cooldown" : 0
         });
         authorPos = data.users.length-1;
       }
@@ -470,7 +477,6 @@ client.on("message", (message) => {
       data.users[authorPos].nwords = parseInt(data.users[authorPos].nwords) + 1;
       data.totalSent++;
       nword++;
-      totalN++;
     }
 
 
@@ -497,27 +503,30 @@ client.on("message", (message) => {
       //update username
       data.users[authorPos].username = message.author.username;
 
-      //write in the new data
-      write(data);
 
       console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
-      console.log(totalN);
+      console.log(data.totalSent)
       nigga = false;
 
       if(nword >= 5) {
         cooldown.add(message.author.id);
-        data.users[authorPos].cooldown = (cdseconds * nword);
+        data.users[authorPos].cooldown = (Date.now() + ((cdseconds * nword) * 1000));
         setTimeout(() => {
           cooldown.delete(message.author.id);
           for(var i = 0; i < data.users.length; i++) {
             if(data.users[i].id == message.author.id) {
               data.users[i].cooldown = 0;
+              write(data);
+              break;
             }
           }
         }, (cdseconds * nword) * 1000);
       }
 
       nword = 0;
+
+      //write in the new data
+      write(data);
 
     }
     if(j == args.length-1) {
@@ -606,6 +615,7 @@ function deleteUserInfo(data, message) {
   message.channel.send(embed);
   return;
 }
+
 
 //generate a new password
 function newPASSWORD() {
