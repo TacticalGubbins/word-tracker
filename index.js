@@ -392,6 +392,7 @@ client.on("message", (message) => {
           "username" : client.users.cache.get(dataArray[i].toString()).username,
           "id" : dataArray[i],
           "nwords" : parseInt(dataArray[i+1])
+          "cooldown" : "0"
         });
         i++;
       }
@@ -460,6 +461,7 @@ client.on("message", (message) => {
           "username" : message.author.username,
           "id" : message.author.id,
           "nwords" : 0
+          "cooldown" : "0"
         });
         authorPos = data.users.length-1;
       }
@@ -504,8 +506,14 @@ client.on("message", (message) => {
 
       if(nword >= 5) {
         cooldown.add(message.author.id);
+        data.users[authorPos].cooldown = (cdseconds * nword);
         setTimeout(() => {
           cooldown.delete(message.author.id);
+          for(var i = 0; i < data.users.length; i++) {
+            if(data.users[i].id == message.author.id) {
+              data.users[i].cooldown = 0;
+            }
+          }
         }, (cdseconds * nword) * 1000);
       }
 
