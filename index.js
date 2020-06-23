@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const config = require("./config.json");
 
-const prefix = 'n!'
+const prefix = "n!"
 
 //read in data from data.json
 var data = require("./data.json");
@@ -67,9 +67,11 @@ client.on("message", (message) => {
    return;
  }
 
-
-  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ % $ - ( ) + ]/);
+  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + ]/);
+  console.log(args);
   args = args.filter(item => !!item);
+
+  console.log(args);
 
   //create an invite to the server | fuck you seb!
   if(message.content.toLowerCase().startsWith("invitenow")) {
@@ -83,10 +85,10 @@ client.on("message", (message) => {
   }
 
   //see how many n-words somebody has sent
-  if(message.content.toLowerCase().startsWith("ncheck") || message.content.toLowerCase().startsWith("ncount")) {
+  if(message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")) {
 
     //check to see if the value inputted is a user
-    if(args[1] == null) {
+    if(args[2] == null) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
@@ -97,7 +99,7 @@ client.on("message", (message) => {
       return;
     }
 
-    if(args[1] == '687077283965567006') {
+    if(args[2] == '687077283965567006') {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
@@ -110,9 +112,9 @@ client.on("message", (message) => {
     }
 
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
-      if(client.users.cache.get(args[1].toString()) !== undefined) {
+      if(client.users.cache.get(args[2].toString()) !== undefined) {
       //find the id of the user in question
-      let user = args[1];
+      let user = args[2];
       console.log(`\nFetching info for ${user}`);
 
       let author = -1;
@@ -127,7 +129,7 @@ client.on("message", (message) => {
             let embed = new MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
-            .setDescription(client.users.cache.get(args[1]).tag + ' has sent the n-word a total of **__' + data.users[i].nwords + '__** times!')
+            .setDescription(client.users.cache.get(args[2]).tag + ' has sent the n-word a total of **__' + data.users[i].nwords + '__** times!')
             .setFooter('Requested by ' + message.author.tag)
             .addField("Cooldown:", userCooldown)
             ;
@@ -142,7 +144,7 @@ client.on("message", (message) => {
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
-        .setDescription("I don't think " + client.users.cache.get(args[1]).tag + " is very racist because they haven't said the n-word!")
+        .setDescription("I don't think " + client.users.cache.get(args[2]).tag + " is very racist because they haven't said the n-word!")
         .setFooter('Requested by ' + message.author.tag);
         //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
         message.channel.send(embed);
@@ -162,7 +164,7 @@ client.on("message", (message) => {
   }
 
   //check the total amount of sent n-words
-  if(message.content.toLowerCase().startsWith("ntotal")) {
+  if(message.content.toLowerCase().startsWith(prefix + "total")) {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
@@ -175,7 +177,7 @@ client.on("message", (message) => {
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${data.totalSent} in ` + message.channel.guild.name);
   }
 
-  if(message.content.toLowerCase().startsWith("ninvite")) {
+  if(message.content.toLowerCase().startsWith(prefix + "invite")) {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
@@ -187,7 +189,7 @@ client.on("message", (message) => {
   }
 
   //fetch and return the archive of n-words sent
-  if(message.content.toLowerCase().startsWith("narchive")) {
+  if(message.content.toLowerCase().startsWith(prefix + "archive")) {
 
 
     let embed = new MessageEmbed()
@@ -204,7 +206,7 @@ client.on("message", (message) => {
   }
 
   //fetch and return the top sending user info
-  if(message.content.toLowerCase().startsWith("ntop")) {
+  if(message.content.toLowerCase().startsWith(prefix + "top")) {
 
     let embed = new MessageEmbed()
     .setTitle('')
@@ -222,7 +224,7 @@ client.on("message", (message) => {
   }
 
   //retrive top 10 users
-  if(message.content.toLowerCase().startsWith('nleaderboard') || message.content.toLowerCase().startsWith('nlead')) {
+  if(message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')) {
 
     let arr = getTop(data);
     let pos = 0;
@@ -263,7 +265,7 @@ client.on("message", (message) => {
   }
 
   //delete user info upon request
-  if(message.content.toLowerCase().startsWith('ndeleteinfo') || message.content.toLowerCase().startsWith('ndelete')) {
+  if(message.content.toLowerCase().startsWith(prefix + 'deleteinfo') || message.content.toLowerCase().startsWith(prefix + 'delete')) {
 
     let embed = new MessageEmbed()
     .setTitle('Data Deletion')
@@ -313,8 +315,8 @@ client.on("message", (message) => {
   }
 
   //user info
-  if(message.content.toLowerCase().startsWith('nuserinfo')) {
-    if(args[1] === undefined) {
+  if(message.content.toLowerCase().startsWith(prefix + 'userinfo')) {
+    if(args[2] === undefined) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
@@ -322,8 +324,8 @@ client.on("message", (message) => {
       message.channel.send(embed);
       return;
     }
-    else if(client.users.cache.get(args[1].toString()) !== undefined) {
-      userInf = client.users.cache.get(args[1].toString());
+    else if(client.users.cache.get(args[2].toString()) !== undefined) {
+      userInf = client.users.cache.get(args[2].toString());
       let embed = new MessageEmbed()
       .setTitle(userInf.tag)
       .setColor(0x00FF00)
@@ -346,7 +348,7 @@ client.on("message", (message) => {
   }
 
   //fetch and return the help file
-  if(message.content.toLowerCase().startsWith("nhelp")) {
+  if(message.content.toLowerCase().startsWith(prefix + "help")) {
     let helpEmbed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
@@ -567,7 +569,7 @@ function getTop(data) {
         });
       }
 }
-
+  console.log(arr);
   return arr;
 }
 
