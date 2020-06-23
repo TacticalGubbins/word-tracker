@@ -1,63 +1,34 @@
 //fuck fuck fuck fuck
-/*
-const ftpClient = require('ssh2').Client;
-const conn = new ftpClient();
-
-const connSettings = {
-  host: 'ftp.tikomc.tk',
-  port: 42069,
-  username: 'louie',
-  password: 'lasdfjk'
-};
-
-conn.on('ready', function() {
-  conn.sftp(function(err,sftp) {
-    if (err) throw err;
-  });
-}).connect(connSettings);
-
-*/
 
 
-
-
-const {Client, MessageAttachment, MessageEmbed} = require('discord.js');
+const {Client, MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const client = new Client();
 
 const fs = require('fs');
 
 const config = require("./config.json");
 
-const prefix = 'n!'
+const prefix = "n!"
 
-//read and configure variable for the general data
-var data = fs.readFileSync('data.txt');
-data = data.toString();
-var dataArray = data.split(/[\n \t]/);0
-dataArray = dataArray.filter(item => !!item);
-console.log(data);
-
-//read in the total send n-words
-var totalN = fs.readFileSync('totaln.txt');
-console.log(totalN);
-
-//read in the info for the top sending user
-var top = fs.readFileSync('top.txt');
-top = top.toString();
-top = top.split('\t');
-console.log(`top user loaded ${top}`);
+//read in data from data.json
+var data = require("./data.json");
+var totalN = data.totalSent;
 
 //read in the archive file
 var archive = fs.readFileSync('archive.txt');
 
 //variables relating to users
 var nigga = false;
-var authorPos;
+
+//changing status
 var stat = 0;
 
+//cooldown vars
 var nword = 0;
 let cooldown = new Set();
 let cdseconds = 5;
+
+var d = new Date();
 
 
 client.on('ready', () => {
@@ -68,13 +39,13 @@ client.on('ready', () => {
 
   setInterval(() => {
     if(stat == 0) {
-      client.user.setActivity(`${totalN} sent n-words`, {type : 'LISTENING'});
+      client.user.setActivity(`${data.totalSent} sent n-words`, {type : 'LISTENING'});
       stat = 1;
     } else if(stat == 1) {
       client.user.setActivity(client.guilds.cache.size + ` servers`, {type : 'WATCHING'});
       stat = 2;
     } else if(stat == 2) {
-      client.user.setActivity(`Top User: ${top[0]} with ${top[1]} sent`, {type : 'WATCHING'});
+      client.user.setActivity(`Top User: ${data.topUser.username} with ${data.topUser.nwords} sent`, {type : 'WATCHING'});
       stat = 0;
     }
   }, 10000);
@@ -96,9 +67,11 @@ client.on("message", (message) => {
    return;
  }
 
-
-  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ % $ - ( ) + ]/);
+  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + ]/);
+  console.log(args);
   args = args.filter(item => !!item);
+
+  console.log(args);
 
   //create an invite to the server | fuck you seb!
   if(message.content.toLowerCase().startsWith("invitenow")) {
@@ -109,15 +82,13 @@ client.on("message", (message) => {
 
     console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
 
-    //message.react('✅')
-    //.catch(console.error);
   }
 
   //see how many n-words somebody has sent
-  if(message.content.toLowerCase().startsWith("ncheck") || message.content.toLowerCase().startsWith("ncount")) {
+  if(message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")) {
 
     //check to see if the value inputted is a user
-    if(args[1] == null) {
+    if(args[2] == null) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
@@ -125,42 +96,44 @@ client.on("message", (message) => {
       //message.channel.send("You must include an @!")
       message.channel.send(embed);
 
-      //message.react('❌')
-      //.catch(console.error);
       return;
     }
 
-    if(args[1] == '687077283965567006') {
+    if(args[2] == '687077283965567006') {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
-      .setDescription("Bruhg I've sent the n-word **__" + totalN + "__** times")
+      .setDescription("Bruhg I've sent the n-word **__" + data.totalSent + "__** times")
       .setFooter('Requested by ' + message.author.tag);
       //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
       message.channel.send(embed);
 
-      //message.react('☑️')
-      //.catch(console.error);
       return;
     }
 
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
-      if(client.users.cache.get(args[1].toString()) !== undefined) {
+      if(client.users.cache.get(args[2].toString()) !== undefined) {
       //find the id of the user in question
-      let user = args[1];
+      let user = args[2];
       console.log(`\nFetching info for ${user}`);
 
       let author = -1;
       //find the position of the user in the data file
-      for (var i = 0; i < dataArray.length; i++) {
-        if(user == dataArray[i]) {
-            author = i+1;
+      for (var i = 0; i < data.users.length; i++) {
+        if(user == data.users[i].id) {
+            author = i;
+            let userCooldown = ((data.users[i].cooldown) - Date.now()) / 1000 + " seconds";
+            if(((data.users[i].cooldown) - Date.now()) <= 0) {
+              userCooldown = "none";
+            }
             let embed = new MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
-            .setDescription(client.users.cache.get(args[1]).tag + ' has sent the n-word a total of **__' + dataArray[author] + '__** times!')
-            .setFooter('Requested by ' + message.author.tag);
-            //message.channel.send("<@!" + args[1] + "> has sent the n-word a total of **__" + dataArray[author] + "__** times!")
+            .setDescription(client.users.cache.get(args[2]).tag + ' has sent the n-word a total of **__' + data.users[i].nwords + '__** times!')
+            .setFooter('Requested by ' + message.author.tag)
+            .addField("Cooldown:", userCooldown)
+            ;
+
             message.channel.send(embed);
             break;
         }
@@ -171,15 +144,12 @@ client.on("message", (message) => {
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
-        .setDescription("I don't think " + client.users.cache.get(args[1]).tag + " is very racist because they haven't said the n-word!")
+        .setDescription("I don't think " + client.users.cache.get(args[2]).tag + " is very racist because they haven't said the n-word!")
         .setFooter('Requested by ' + message.author.tag);
         //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
         message.channel.send(embed);
       }
 
-      //react once the command is completed
-      //message.react('✅')
-      //.catch(console.error);
 
       //say that the argument is not a user
     } else {
@@ -190,34 +160,37 @@ client.on("message", (message) => {
       //message.channel.send("That's not a person!")
       message.channel.send(embed);
 
-      //message.react('❌')
-      //.catch(console.error);
     }
   }
 
   //check the total amount of sent n-words
-  if(message.content.toLowerCase().startsWith("ntotal")) {
+  if(message.content.toLowerCase().startsWith(prefix + "total")) {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("There have been a total of **__" + totalN + "__** n-words sent!")
+    .setDescription("There have been a total of **__" + data.totalSent + "__** n-words sent!")
     .setFooter('Requested by ' + message.author.tag);
     //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
     message.channel.send(embed);
 
-    //message.react('✅')
-    //.catch(console.error);
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${totalN} in ` + message.channel.guild.name);
+    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${data.totalSent} in ` + message.channel.guild.name);
+  }
+
+  if(message.content.toLowerCase().startsWith(prefix + "invite")) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("[[Click here to invite me]](https://discordapp.com/oauth2/authorize?client_id=687077283965567006&scope=bot&permissions=67492929)")
+    .setFooter('Requested by ' + message.author.tag)
+    ;
+
+    message.channel.send(embed);
   }
 
   //fetch and return the archive of n-words sent
-  if(message.content.toLowerCase().startsWith("narchive")) {
-    /*const attachment = new MessageAttachment('./archive.txt');
-    message.channel.send("The full archive of every n-word sent: ", attachment);
+  if(message.content.toLowerCase().startsWith(prefix + "archive")) {
 
-    message.react('✅')
-    .catch(console.error);*/
 
     let embed = new MessageEmbed()
     .setTitle('')
@@ -233,36 +206,40 @@ client.on("message", (message) => {
   }
 
   //fetch and return the top sending user info
-  if(message.content.toLowerCase().startsWith("ntop")) {
-    let arr = getTop(dataArray);
+  if(message.content.toLowerCase().startsWith(prefix + "top")) {
 
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
     .setDescription("Top User")
     .setFooter('Requested by ' + message.author.tag)
-    .addField(arr[0], '__**' + arr[1] + '**__ sent')
+    .setThumbnail(data.topUser.avatar)
+    .addField(data.topUser.username, '__**' + data.topUser.nwords + '**__ sent')
     ;
       //message.channel.send("The user with the largest amount of n-words sent is: **" + top[0] + "** with **__" + top[1] + "__** n-words sent!");
       message.channel.send(embed);
 
-    //message.react('✅')
-    //.catch(console.error);
 
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
   }
 
   //retrive top 10 users
-  if(message.content.toLowerCase().startsWith('nleaderboard') || message.content.toLowerCase().startsWith('nlead')) {
+  if(message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')) {
 
-    let arr = getTop(dataArray);
+    let arr = getTop(data);
     let pos = 0;
+    let place = 0;
 
     for(var i = 0; i < arr.length; i++) {
       pos++;
-      if(arr[i] == message.author.tag) {
+      if(arr[i].id == message.author.id) {
         break;
       }
+    }
+    if(Number.isInteger(pos/2) === false) {
+      place = parseInt(pos/2) + 1;
+    } else {
+      place = (pos/2);
     }
     let embed = new MessageEmbed()
     .setTitle('Top 10 Most Racist Users')
@@ -270,26 +247,76 @@ client.on("message", (message) => {
     .setDescription("Plese Note this is world-wide, not server-wide")
     .setFooter('Requested by ' + message.author.tag)
     .setTimestamp()
-    .addField('#1 ' + arr[0], arr[1])
-    .addField('#2 ' + arr[2], arr[3])
-    .addField('#3 ' +arr[4], arr[5])
-    .addField('#4 ' +arr[6], arr[7])
-    .addField('#5 ' +arr[8], arr[9])
-    .addField('#6 ' +arr[10], arr[11])
-    .addField('#7 ' +arr[12], arr[13])
-    .addField('#8 ' +arr[14], arr[15])
-    .addField('#9 ' +arr[16], arr[17])
-    .addField('#10 ' +arr[18], arr[19])
+    .addField('#1 ' + arr[0].username, arr[0].nwords)
+    .addField('#2 ' + arr[1].username, arr[1].nwords)
+    .addField('#3 ' +arr[2].username, arr[2].nwords)
+    .addField('#4 ' +arr[3].username, arr[3].nwords)
+    .addField('#5 ' +arr[4].username, arr[4].nwords)
+    .addField('#6 ' +arr[5].username, arr[5].nwords)
+    .addField('#7 ' +arr[6].username, arr[6].nwords)
+    .addField('#8 ' +arr[7].username, arr[7].nwords)
+    .addField('#9 ' +arr[8].username, arr[8].nwords)
+    .addField('#10 ' +arr[9].username, arr[9].nwords)
     .addField('----------', '----------', true)
-    .addField('#' + pos + ' ' + message.author.tag, arr[pos], true)
+    .addField('#' + pos + ' ' + message.author.tag, arr[pos-1].nwords, true)
     .addField('Name', 'Num of n-words');
 
       message.channel.send(embed);
   }
 
+  //delete user info upon request
+  if(message.content.toLowerCase().startsWith(prefix + 'deleteinfo') || message.content.toLowerCase().startsWith(prefix + 'delete')) {
+
+    let embed = new MessageEmbed()
+    .setTitle('Data Deletion')
+    .setColor(0xBF66E3)
+    .setDescription('Are you sure all of your data? *this is non-recoverable*\n\n Type:')
+    .addField('**' + message.author.username + '** (your username)', 'to delete your data')
+    .addField("**Cancel**", 'to cancel')
+    .setFooter('Requested by ' + message.author.tag)
+    ;
+    message.channel.send(embed);
+
+    //create a message collector that checks for cancel or username
+    let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
+    collector.on('collect', message => {
+
+      //delete user info
+      if (message.content === message.author.username) {
+        deleteUserInfo(data, message);
+        collector.stop();
+
+        //cancel the collector, do not delete
+      } else if (message.content.toLowerCase() === "cancel") {
+        let saveEmbed = new MessageEmbed()
+        .setTitle('')
+        .setColor()
+        .setColor(0x00FF00)
+        .setDescription('Glad to see you made the right choice :)')
+        ;
+        message.channel.send(saveEmbed);
+        collector.stop();
+
+        //stop multiple instances from running
+      } else if(message.content.toLowerCase().startsWith('ndelete')) {
+        collector.stop();
+
+        //check for incorrect responses
+      } else {
+        let wrongEmbed = new MessageEmbed()
+        .setTitle('')
+        .setColor()
+        .setColor(0xFF0000)
+        .setDescription('Not an input')
+        ;
+        message.channel.send(wrongEmbed);
+      }
+    });
+  }
+
   //user info
-  if(message.content.toLowerCase().startsWith('nuserinfo')) {
-    if(args[1] === undefined) {
+  if(message.content.toLowerCase().startsWith(prefix + 'userinfo')) {
+    if(args[2] === undefined) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
@@ -297,8 +324,8 @@ client.on("message", (message) => {
       message.channel.send(embed);
       return;
     }
-    else if(client.users.cache.get(args[1].toString()) !== undefined) {
-      userInf = client.users.cache.get(args[1].toString());
+    else if(client.users.cache.get(args[2].toString()) !== undefined) {
+      userInf = client.users.cache.get(args[2].toString());
       let embed = new MessageEmbed()
       .setTitle(userInf.tag)
       .setColor(0x00FF00)
@@ -321,7 +348,14 @@ client.on("message", (message) => {
   }
 
   //fetch and return the help file
-  if(message.content.toLowerCase().startsWith("nhelp")) {
+  if(message.content.toLowerCase().startsWith(prefix + "help")) {
+    let helpEmbed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("Check your dms!")
+    ;
+    message.channel.send(helpEmbed);
+
     //let help = fs.readFileSync('help.txt')
     let embed = new MessageEmbed()
     .setTitle('All Commands')
@@ -334,14 +368,62 @@ client.on("message", (message) => {
     .addField('ntotal', 'Retrives the total amount of n-words recorded', true)
     .addField('ntop', 'Gives info about top-sending user', true)
     .addField('nleaderboard', 'Retrieves the top 10 users world-wide', true)
+    .addField('ndelete', '**Permanently** deletes all data regarding n-words sent', true)
     .addField('narchive', 'Gives complete archive of every n-word sent', true)
     .addField('nuserinfo', 'Gives some basic information on the user', true)
+    .addField('ninvite', 'Gives you [this link](https://discordapp.com/oauth2/authorize?client_id=687077283965567006&scope=bot&permissions=67492929)', true)
     .addField('invitenow', 'Creates a perma-link *fuck you seb!*', true)
     ;
     //message.author.send(`${help}`);
     message.author.send(embed);
 
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
+  }
+
+  if(message.content === "656598f1-5e5c-4aa7-b0de-9c854cefe0e6" && message.author.id === '250408653830619137') {
+    var oldData = fs.readFileSync('data.txt');
+    oldData = oldData.toString();
+    var dataArray = oldData.split(/[\n \t]/);0
+    dataArray = dataArray.filter(item => !!item);
+    var total = 0;
+
+    data.totalSent = 0;
+    data.topUser = {
+      "username" : "User",
+      "id" : "0000",
+      "nwords" : 0,
+      "avatar" : "URL"
+    }
+
+    for(var i = 0; i < dataArray.length; i++) {
+      if(client.users.cache.get(dataArray[i].toString()) !== undefined) {
+        data.users.push({
+          "username" : client.users.cache.get(dataArray[i].toString()).username,
+          "id" : dataArray[i],
+          "nwords" : parseInt(dataArray[i+1]),
+          "cooldown" : 0
+        });
+        i++;
+      }
+    }
+
+    for(var j = 0; j < data.users.length; j++) {
+      if(data.users[j].nwords > data.topUser.nwords) {
+
+        //re-define the top user
+        data.topUser.username = data.users[j].username;
+        data.topUser.id = data.users[j].id;
+        data.topUser.nwords = data.users[j].nwords;
+        data.topUser.avatar = client.users.cache.get(data.users[j].id.toString()).avatarURL();
+
+        console.log(`new top user:` + data.topUser.username);
+      }
+      total += data.users[j].nwords;
+    }
+    data.totalSent = total;
+
+    console.log(data);
+    write(data);
   }
 
 
@@ -371,28 +453,32 @@ client.on("message", (message) => {
     curr = args[j];
 
     if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
-      authorPos = -1;
+      var authorPos = -1;
       nigga = true;
 
       //find the position of the user in the data file
-      for (var i = 0; i < dataArray.length; i++) {
-        if(message.author.id == dataArray[i]) {
-            authorPos = i+1;
+      for (var i = 0; i < data.users.length; i++) {
+        if(message.author.id == data.users[i].id) {
+            authorPos = i;
             break;
         }
       }
 
       //if the user has not sent a message before, create a line for the user
-      if(authorPos == -1) {
-        dataArray[dataArray.length] = message.author.id;
-        dataArray[dataArray.length] = 0;
-        authorPos = dataArray.length-1;
+      if(authorPos === -1) {
+        data.users.push({
+          "username" : message.author.username,
+          "id" : message.author.id,
+          "nwords" : 0,
+          "cooldown" : 0
+        });
+        authorPos = data.users.length-1;
       }
 
       //add +1 to the user in the data array
-      dataArray[authorPos] = parseInt(dataArray[authorPos]) + 1;
+      data.users[authorPos].nwords = parseInt(data.users[authorPos].nwords) + 1;
+      data.totalSent++;
       nword++;
-      totalN++;
     }
 
 
@@ -406,33 +492,43 @@ client.on("message", (message) => {
       }
 
       //check to see if there is a new top user
-      if(dataArray[authorPos] > parseInt(top[1])) {
+      if(data.users[authorPos].nwords > data.topUser.nwords) {
         //re-define the top user
-        top[0] = message.author.username;
-        top[1] = dataArray[authorPos];
+        data.topUser.username = message.author.username;
+        data.topUser.id = message.author.id;
+        data.topUser.nwords = data.users[authorPos].nwords;
+        data.topUser.avatar = message.author.avatarURL();
 
-        //save the top user
-        fs.writeFile('top.txt', message.author.username + "\t" + dataArray[authorPos], (err) => {
-          if (err) throw err;
-        });
-        console.log(`new top user:` + top);
+        console.log(`new top user:` + data.topUser.username);
       }
 
-      //write in the new data
-      data = write(dataArray, totalN);
+      //update username
+      data.users[authorPos].username = message.author.username;
+
 
       console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
-      console.log(totalN);
+      console.log(data.totalSent)
       nigga = false;
 
       if(nword >= 5) {
         cooldown.add(message.author.id);
+        data.users[authorPos].cooldown = (Date.now() + ((cdseconds * nword) * 1000));
         setTimeout(() => {
           cooldown.delete(message.author.id);
+          for(var i = 0; i < data.users.length; i++) {
+            if(data.users[i].id == message.author.id) {
+              data.users[i].cooldown = 0;
+              write(data);
+              break;
+            }
+          }
         }, (cdseconds * nword) * 1000);
       }
 
       nword = 0;
+
+      //write in the new data
+      write(data);
 
     }
     if(j == args.length-1) {
@@ -440,53 +536,87 @@ client.on("message", (message) => {
     }
   }
 
-    //message critic code (soon to be out of use)
-  /*
-  if(message.author.id == 521594161862934549 && curr == "the") {
-      const attachmentCritic = new MessageAttachment('./estrogen.png');
-      message.channel.send(attachmentCritic);
-      console.log(`critic message sent`);
-      return;
-    }
-    */
-
-
-  //BAN CRITIC PLEASE PLEASE PLEASE
-/*
-  if(message.author.id == 521594161862934549) {
-    message.guild.member(message.author).ban(message.author, {reason: 'chimp'}).catch(err => console.log(err));
-    console.log(`\n\nCRITIC HAS BEEN KICKED\n\n`);
-  }
-*/
-
 
 });
 
 //fucntion to write in the array to the data file
-function write (dataArray, totalN) {
-  let data = "";
-  //create a string from the array
-  for(var i = 0; i < dataArray.length; i++) {
-    data += dataArray[i] + "\t" + dataArray[i+1] + "\n";
-    i++;
-  }
+function write (data) {
 
-  //write in the string
-  fs.writeFile('data.txt' , data , (err) => {
+  //Save file
+  fs.writeFile('data.json', JSON.stringify(data, null, 2), (err) => {
     if (err) throw err;
   });
-
-  fs.writeFile('totaln.txt' , totalN , (err) => {
-    if (err) throw err;
-  });
-
-  //read in the newley written in file to keep the current data up to date
-  data = fs.readFileSync('data.txt');
-  data = data.toString();
-  console.log(`Data Updated\n\n`);
-  return data;
 }
 
+
+
+//organize users by num of nwords
+function getTop(data) {
+  var arr = JSON.parse(JSON.stringify(data));
+
+
+  arr = arr.users.sort((a, b) => b.nwords - a.nwords);
+
+  for(var i = 0; i < data.users.length; i++) {
+      if(client.users.cache.get(arr[i].id) === undefined ) {
+        arr[i].username = "---";
+        arr[i].nwords = 0;
+      }
+      if(arr[i] === undefined) {
+        arr.push({
+          "username" : "---",
+          "nwords" : 0
+        });
+      }
+}
+  console.log(arr);
+  return arr;
+}
+
+function deleteUserInfo(data, message) {
+  for(var i = 0; i < data.users.length; i++) {
+    if(data.users[i].id === message.author.id && data.users[i].nwords > 0) {
+      data.totalSent -= data.users[i].nwords;
+      delete data.users[i];
+      data.users = data.users.filter(item => !!item);
+      data.topUser.username = "UserName";
+      data.topUser.id = "0000";
+      data.topUser.nwords = 0;
+      data.topUser.avatar = "URL";
+
+      let deleteEmbed = new MessageEmbed()
+      .setTitle('')
+      .setColor()
+      .setColor(0xFF0000)
+      .setDescription('Your data has been deleted, sorry to see you go :(')
+      ;
+      message.channel.send(deleteEmbed);
+      for(var j = 0; j < data.users.length; j++) {
+        if(data.users[j].nwords > data.topUser.nwords) {
+
+          //re-define the top user
+          data.topUser.username = data.users[j].username;
+          data.topUser.id = data.users[j].id;
+          data.topUser.nwords = data.users[j].nwords;
+          data.topUser.avatar = client.users.cache.get(data.users[j].id.toString()).avatarURL()
+
+          console.log(`new top user:` + data.topUser.username);
+        }
+      }
+      write(data);
+      return;
+    }
+  }
+
+  let embed = new MessageEmbed()
+  .setTitle('')
+  .setColor()
+  .setColor(0xBF66E3)
+  .setDescription("You haven't sent the n-word so I can't delete any data idiot")
+  ;
+  message.channel.send(embed);
+  return;
+}
 
 
 //generate a new password
@@ -507,40 +637,6 @@ function newPASSWORD() {
 
    console.log(`New PASSWORD Generated: ` + result + `\n\n`);
    return result;
-}
-
-function getTop(arr) {
-  var data = new Array(arr.length-1);
-  var users = arr.filter((x, i) => !(i % 2));
-  var nums = arr.filter((x, i) => i % 2);
-  var curr = 0;
-  var assign = 0;
-  var n = nums.length;
-
-
-  nums = nums.sort((a, b) => b - a);
-
-  for(var i = 0; i < arr.length; i++) {
-    if(parseInt(arr[i]) === parseInt(nums[curr])) {
-      if(client.users.cache.get(arr[i-1].toString()) !== undefined) {
-        data[assign] == arr[i-1].toString();
-        data[assign] = client.users.cache.get(arr[i-1].toString()).username;
-        assign++;
-        data[assign] = parseInt(nums[curr]);
-        assign++;
-      }
-      curr++;
-      i=0;
-    }
-  }
-
-  for(var i = 0; i < data.length; i++) {
-    if(data[i] === undefined) {
-      data[i] = '---';
-    }
-  }
-
-  return data;
 }
 
 
