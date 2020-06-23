@@ -18,7 +18,7 @@ var totalN = data.totalSent;
 var archive = fs.readFileSync('archive.txt');
 
 //variables relating to users
-var nigga = false;
+var checkIfShouldWrite = false;
 
 //changing status
 var stat = 0;
@@ -454,7 +454,7 @@ client.on("message", (message) => {
 
     if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
       var authorPos = -1;
-      nigga = true;
+      checkIfShouldWrite = true;
 
       //find the position of the user in the data file
       for (var i = 0; i < data.users.length; i++) {
@@ -482,7 +482,7 @@ client.on("message", (message) => {
     }
 
 
-    if(j == args.length - 1 && nigga == true) {
+    if(j == args.length - 1 && checkIfShouldWrite == true) {
 
       //special message for savi --- simp!
       if(message.author.id == 395980133565071360) {
@@ -508,7 +508,7 @@ client.on("message", (message) => {
 
       console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
       console.log(data.totalSent)
-      nigga = false;
+      checkIfShouldWrite = false;
 
       if(nword >= 5) {
         cooldown.add(message.author.id);
