@@ -39,7 +39,8 @@ client.on('ready', () => {
   client.user.setActivity(`Starting Up...`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
-  setInterval(() => {
+//rotating status doesn't fit with the new bot
+/*setInterval(() => {
     if(stat == 0) {
       client.user.setActivity(`${data.totalSent} sent n-words`, {type : 'LISTENING'});
       stat = 1;
@@ -51,7 +52,7 @@ client.on('ready', () => {
       stat = 0;
     }
   }, 10000);
-});
+});*/
 
 
 
