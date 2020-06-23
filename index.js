@@ -30,6 +30,8 @@ let cdseconds = 5;
 
 var d = new Date();
 
+//vars for new storage
+var trackedWords = [];
 
 client.on('ready', () => {
   console.log("BOT ONLINE");
@@ -66,6 +68,9 @@ client.on("message", (message) => {
    client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
    return;
  }
+
+  let server = getServer(message, data);
+
 
   let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + ]/);
   console.log(args);
@@ -119,17 +124,17 @@ client.on("message", (message) => {
 
       let author = -1;
       //find the position of the user in the data file
-      for (var i = 0; i < data.users.length; i++) {
-        if(user == data.users[i].id) {
+      for (var i = 0; i < data.servers[server].users.length; i++) {
+        if(user == data.servers[server].users[i].id) {
             author = i;
-            let userCooldown = ((data.users[i].cooldown) - Date.now()) / 1000 + " seconds";
-            if(((data.users[i].cooldown) - Date.now()) <= 0) {
+            let userCooldown = ((data.servers[server].users[i].cooldown) - Date.now()) / 1000 + " seconds";
+            if(((data.servers[server].users[i].cooldown) - Date.now()) <= 0) {
               userCooldown = "none";
             }
             let embed = new MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
-            .setDescription(client.users.cache.get(args[2]).tag + ' has sent the n-word a total of **__' + data.users[i].nwords + '__** times!')
+            .setDescription(client.users.cache.get(args[2]).tag + ' has sent the n-word a total of **__' + data.servers[server].users[i].nwords + '__** times!')
             .setFooter('Requested by ' + message.author.tag)
             .addField("Cooldown:", userCooldown)
             ;
@@ -397,7 +402,7 @@ client.on("message", (message) => {
 
     for(var i = 0; i < dataArray.length; i++) {
       if(client.users.cache.get(dataArray[i].toString()) !== undefined) {
-        data.users.push({
+        data.servers[server].users.push({
           "username" : client.users.cache.get(dataArray[i].toString()).username,
           "id" : dataArray[i],
           "nwords" : parseInt(dataArray[i+1]),
@@ -407,18 +412,18 @@ client.on("message", (message) => {
       }
     }
 
-    for(var j = 0; j < data.users.length; j++) {
-      if(data.users[j].nwords > data.topUser.nwords) {
+    for(var j = 0; j < data.servers[server].users.length; j++) {
+      if(data.servers[server].users[j].nwords > data.topUser.nwords) {
 
         //re-define the top user
-        data.topUser.username = data.users[j].username;
-        data.topUser.id = data.users[j].id;
-        data.topUser.nwords = data.users[j].nwords;
-        data.topUser.avatar = client.users.cache.get(data.users[j].id.toString()).avatarURL();
+        data.topUser.username = data.servers[server].users[j].username;
+        data.topUser.id = data.servers[server].users[j].id;
+        data.topUser.nwords = data.servers[server].users[j].nwords;
+        data.topUser.avatar = client.users.cache.get(data.servers[server].users[j].id.toString()).avatarURL();
 
         console.log(`new top user:` + data.topUser.username);
       }
-      total += data.users[j].nwords;
+      total += data.servers[server].users[j].nwords;
     }
     data.totalSent = total;
 
@@ -452,13 +457,14 @@ client.on("message", (message) => {
     }
     curr = args[j];
 
-    if(curr.toLowerCase() == "nigger" || curr.toLowerCase() == "nigga" || curr.toLowerCase() == "niggers" || curr.toLowerCase() == "niggas") {
+    trackedWords = getTrackWords(message, data);
+    if(curr.toLowerCase() == trackedWords[0]) {
       var authorPos = -1;
       checkIfShouldWrite = true;
 
       //find the position of the user in the data file
-      for (var i = 0; i < data.users.length; i++) {
-        if(message.author.id == data.users[i].id) {
+      for (var i = 0; i < data.servers[server].users.length; i++) {
+        if(message.author.id == data.servers[server].users[i].id) {
             authorPos = i;
             break;
         }
@@ -466,17 +472,17 @@ client.on("message", (message) => {
 
       //if the user has not sent a message before, create a line for the user
       if(authorPos === -1) {
-        data.users.push({
+        data.servers[server].users.push({
           "username" : message.author.username,
           "id" : message.author.id,
           "nwords" : 0,
           "cooldown" : 0
         });
-        authorPos = data.users.length-1;
+        authorPos = data.servers[server].users.length-1;
       }
 
       //add +1 to the user in the data array
-      data.users[authorPos].nwords = parseInt(data.users[authorPos].nwords) + 1;
+      data.servers[server].users[authorPos].nwords = parseInt(data.servers[server].users[authorPos].nwords) + 1;
       data.totalSent++;
       nword++;
     }
@@ -492,18 +498,18 @@ client.on("message", (message) => {
       }
 
       //check to see if there is a new top user
-      if(data.users[authorPos].nwords > data.topUser.nwords) {
+      if(data.servers[server].users[authorPos].nwords > data.topUser.nwords) {
         //re-define the top user
         data.topUser.username = message.author.username;
         data.topUser.id = message.author.id;
-        data.topUser.nwords = data.users[authorPos].nwords;
+        data.topUser.nwords = data.servers[server].users[authorPos].nwords;
         data.topUser.avatar = message.author.avatarURL();
 
         console.log(`new top user:` + data.topUser.username);
       }
 
       //update username
-      data.users[authorPos].username = message.author.username;
+      data.servers[server].users[authorPos].username = message.author.username;
 
 
       console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
@@ -512,12 +518,12 @@ client.on("message", (message) => {
 
       if(nword >= 5) {
         cooldown.add(message.author.id);
-        data.users[authorPos].cooldown = (Date.now() + ((cdseconds * nword) * 1000));
+        data.servers[server].users[authorPos].cooldown = (Date.now() + ((cdseconds * nword) * 1000));
         setTimeout(() => {
           cooldown.delete(message.author.id);
-          for(var i = 0; i < data.users.length; i++) {
-            if(data.users[i].id == message.author.id) {
-              data.users[i].cooldown = 0;
+          for(var i = 0; i < data.servers[server].users.length; i++) {
+            if(data.servers[server].users[i].id == message.author.id) {
+              data.servers[server].users[i].cooldown = 0;
               write(data);
               break;
             }
@@ -639,5 +645,30 @@ function newPASSWORD() {
    return result;
 }
 
+
+function getTrackWords(message, data) {
+  let server = getServer(message, data);
+  return data.servers[server].strings;
+}
+
+function getServer(message, data) {
+  let server = -1;
+  for(var i = 0; i < data.servers.length; i++) {
+    if(data.servers[i].id === message.guild.id) {
+     server = i;
+    }
+  }
+
+  if(server === -1) {
+    data.servers.push({
+      "id": message.guild.id,
+      "strings": ["nigga"],
+      "users": [],
+    });
+    write(data);
+    server = data.servers.length-1;
+  }
+  return server;
+}
 
 client.login(config.token);
