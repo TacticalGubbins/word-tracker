@@ -1,5 +1,4 @@
-//fuck fuck fuck fuck
-
+//hmmmmm
 
 const {Client, MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const client = new Client();
@@ -8,14 +7,20 @@ const fs = require('fs');
 
 const config = require("./config.json");
 
-const prefix = "n!"
+const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
+const version = '3.4.4';
+const botID = '687077283965567006';
+const prefix = "n!";
+const defaultStrings = ["nigga", "niggas", "nigger", "niggers"];
+const uptime = Date.now();
 
 //read in data from data.json
 var data = require("./data.json");
+var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
 //read in the archive file
-var archive = fs.readFileSync('archive.txt');
+//var archive = fs.readFileSync('archive.txt');
 
 //variables relating to users
 var checkIfShouldWrite = false;
@@ -26,33 +31,29 @@ var stat = 0;
 //cooldown vars
 var nword = 0;
 let cooldown = new Set();
-let cdseconds = 5;
+let cdseconds = 0;
 
 var d = new Date();
-
-//vars for new storage
-var trackedWords = [];
 
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
-  client.user.setActivity(`Starting Up...`, {type : 'STREAMING'})
+  client.user.setActivity(`v${version}`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
 //rotating status doesn't fit with the new bot
-/*setInterval(() => {
-    if(stat == 0) {
-      client.user.setActivity(`${data.totalSent} sent n-words`, {type : 'LISTENING'});
+setInterval(() => {
+    if(stat === 0) {
+      client.user.setActivity(`${prefix}help for help`, {type : 'PLAYING'});
       stat = 1;
-    } else if(stat == 1) {
-      client.user.setActivity(client.guilds.cache.size + ` servers`, {type : 'WATCHING'});
-      stat = 2;
-    } else if(stat == 2) {
-      client.user.setActivity(`Top User: ${data.topUser.username} with ${data.topUser.nwords} sent`, {type : 'WATCHING'});
+    } else {
+      client.user.setActivity(`${data.totalSent} words`, {type : 'WATCHING'});
       stat = 0;
     }
+      write(data);
+
   }, 10000);
-});*/
+});
 
 
 
@@ -65,19 +66,152 @@ client.on("message", (message) => {
 
   //ignore messages sent in dms
   if(message.channel.type === 'dm') {
-   message.channel.send("Shut up nigger go talk in a server");
+   message.channel.send("Shut up retard go talk in a server");
    client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
    return;
  }
 
   let server = getServer(message, data);
+  let authorPos = getUser(message, data);
 
 
-  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + ]/);
-  console.log(args);
+  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
   args = args.filter(item => !!item);
 
-  console.log(args);
+  if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
+    getGlobalTop(message, data);
+    return;
+  }
+
+  if(message.content.toLowerCase().startsWith(prefix + "transferdata") || message.content.toLowerCase().startsWith(prefix + "transfer")) {
+    assignOG(data, message);
+    return;
+  }
+
+  if(message.content.toLowerCase().startsWith(prefix + "settings")) {
+    let embed = new MessageEmbed()
+    .setTitle(message.guild.name + " Settings")
+    .setColor(0xBF66E3)
+    .setDescription("Use:\n**" + prefix + "cooldown** to change the cooldown\n**" + prefix + "triggers** to change the trigger words")
+    .setThumbnail(message.guild.iconURL())
+    .addField('Cooldown Time', + data.servers[server].cooldown + " seconds")
+    .addField('Trigger Words', data.servers[server].strings)
+    .setFooter('Requested by ' + message.author.tag);
+    message.channel.send(embed);
+    return;
+  }
+
+  if(message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")) {
+    let embed = new MessageEmbed()
+    .setTitle(client.user.tag)
+    .setColor(0xBF66E3)
+    .setDescription('Counting Words... *please help me*')
+    .setThumbnail(client.user.avatarURL())
+    .addField('Authors', '`TacticalGubbins#0900`\n`Cyakat#5061`', true)
+    .addField('Version', version, true)
+    .addField('Uptime', getUptime(), true)
+    .addField('Total Words Tracked', data.totalSent, true)
+    .addField('Server Count', client.guilds.cache.size, true)
+    .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
+    .setFooter('Requested by ' + message.author.tag);
+    message.channel.send(embed);
+    return;
+  }
+
+  if(message.content.toLowerCase().startsWith(prefix + "cooldown")) {
+    if(message.member.hasPermission('ADMINISTRATOR')) {
+      if(args[2] === undefined) {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xFF0000)
+        .setDescription('Please include a time (in seconds) after the command!');
+        message.channel.send(embed);
+        return;
+      }
+      if(args[2].toLowerCase() === 'none' || args[2].toLowerCase() === 'off' || parseInt(args[2]) === 0) {
+        data.servers[server].cooldown = 0;
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
+        .setFooter('Requested by ' + message.author.tag);
+        message.channel.send(embed);
+        return;
+      }
+      if(isNaN(args[2])) {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xFF0000)
+        .setDescription('Please include a time (in seconds) after the command!');
+        message.channel.send(embed);
+        return;
+      }
+      if(!isNaN(args[2])) {
+        data.servers[server].cooldown = parseInt(args[2]);
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription('Changed cooldown time to **__' + args[2] + '__** seconds\n\n*active cooldowns will not be cleared*')
+        .setFooter('Requested by ' + message.author.tag);
+        message.channel.send(embed);
+        return;
+      }
+    } else {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xFF0000)
+      .setDescription('You must be an Administrator to use this command!');
+      message.channel.send(embed);
+      return;
+    }
+  }
+
+  //change strings for server counting
+  if(message.content.toLowerCase().startsWith(prefix + "triggers")) {
+    if(message.member.hasPermission('ADMINISTRATOR')) {
+      let embed = new MessageEmbed()
+      .setTitle('Trigger Setup')
+      .setColor(0xBF66E3)
+      .setDescription('Please type out any words you would like to be counted. Seperate each word by a space. All punctuation will be ignored')
+      .addField('Example', 'cows bots nice!', true)
+      .addField('Cancel', 'Type "CANCEL" to cancel', true)
+      .setFooter('Requested by ' + message.author.tag);
+      message.channel.send(embed);
+
+      let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 20000 });
+      collector.on('collect', message => {
+        if(message.content === "CANCEL") {
+          let embed = new MessageEmbed()
+          .setTitle('')
+          .setColor(0xBF66E3)
+          .setDescription('Trigger Setup Canceled');
+          message.channel.send(embed);
+          collector.stop();
+
+        } else {
+          let strings = message.content.toLowerCase().split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+          strings = strings.filter(item => !!item);
+          strings = strings.filter((item, index) => strings.indexOf(item) === index);
+          data.servers[server].strings = strings;
+
+          let embed = new MessageEmbed()
+          .setTitle('')
+          .setColor(0xBF66E3)
+          .setDescription('**Trigger Setup Complete**\n\n Triggers added:\n' + strings);
+          message.channel.send(embed);
+
+          collector.stop();
+        }
+      });
+    } else {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xFF0000)
+      .setDescription('You must be an Administrator to use this command!');
+      message.channel.send(embed);
+      return;
+    }
+  }
 
   //create an invite to the server | fuck you seb!
   if(message.content.toLowerCase().startsWith("invitenow")) {
@@ -105,11 +239,11 @@ client.on("message", (message) => {
       return;
     }
 
-    if(args[2] == '687077283965567006') {
+    if(args[2] == client.user.id) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
-      .setDescription("Bruhg I've sent the n-word **__" + data.totalSent + "__** times")
+      .setDescription("Bruhg I've counted **__" + data.totalSent + "__** words")
       .setFooter('Requested by ' + message.author.tag);
       //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
       message.channel.send(embed);
@@ -123,38 +257,63 @@ client.on("message", (message) => {
       let user = args[2];
       console.log(`\nFetching info for ${user}`);
 
-      let author = -1;
-      //find the position of the user in the data file
-      for (var i = 0; i < data.servers[server].users.length; i++) {
-        if(user == data.servers[server].users[i].id) {
-            author = i;
-            let userCooldown = ((data.servers[server].users[i].cooldown) - Date.now()) / 1000 + " seconds";
-            if(((data.servers[server].users[i].cooldown) - Date.now()) <= 0) {
-              userCooldown = "none";
+
+            //let author = getUser(message, data);
+            let author = -1;
+            //find the position of the user in the data file
+            for (var i = 0; i < data.servers[server].users.length; i++) {
+              if(user == data.servers[server].users[i].id) {
+                  author = i;
+                  break;
+              }
             }
-            let embed = new MessageEmbed()
-            .setTitle('')
-            .setColor(0xBF66E3)
-            .setDescription(client.users.cache.get(args[2]).tag + ' has sent the n-word a total of **__' + data.servers[server].users[i].nwords + '__** times!')
-            .setFooter('Requested by ' + message.author.tag)
-            .addField("Cooldown:", userCooldown)
-            ;
 
-            message.channel.send(embed);
-            break;
-        }
-      }
+            if(author === -1) {
+              let embed = new MessageEmbed()
+              .setTitle('')
+              .setColor(0xBF66E3)
+              .setDescription("That user hasn't sent any countable words!")
+              .setFooter('Requested by ' + message.author.tag);
+              //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
+              message.channel.send(embed);
+              return;
+            }
+            //detect if the user has not sent the n-word
+            if(data.servers[server].users[author].words === 0) {
+              let embed = new MessageEmbed()
+              .setTitle('')
+              .setColor(0xBF66E3)
+              .setDescription(client.users.cache.get(args[2]).tag + " hasn't sent any countable words!")
+              .setFooter('Requested by ' + message.author.tag);
+              //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
+              message.channel.send(embed);
+              return;
+            }
 
-      //detect if the user has not sent the n-word
-      if(author == -1) {
-        let embed = new MessageEmbed()
-        .setTitle('')
-        .setColor(0xBF66E3)
-        .setDescription("I don't think " + client.users.cache.get(args[2]).tag + " is very racist because they haven't said the n-word!")
-        .setFooter('Requested by ' + message.author.tag);
-        //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
-        message.channel.send(embed);
-      }
+              //send the number of words counted
+              let embed = new MessageEmbed()
+              .setTitle('')
+              .setColor(0xBF66E3)
+              .setDescription(client.users.cache.get(args[2]).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
+              .setFooter('Requested by ' + message.author.tag)
+              ;
+              let userCooldown = ((data.servers[server].users[author].cooldown) - Date.now()) / 1000 + " seconds";
+              if(((data.servers[server].users[author].cooldown) - Date.now()) > 0) {
+                embed.addField("Cooldown:", userCooldown)
+              }
+
+              let ogs = getOGS(data);
+              if(ogs.has(client.users.cache.get(args[2]).id)) {
+                embed.setColor(0xFFA417);
+              }
+              //custom colors for pog people
+              if(client.users.cache.get(args[2]).id === '448269007800238080') {
+                embed.setColor(0x17FF1B);
+              }
+
+
+              message.channel.send(embed);
+
 
 
       //say that the argument is not a user
@@ -174,20 +333,20 @@ client.on("message", (message) => {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("There have been a total of **__" + data.totalSent + "__** n-words sent!")
+    .setDescription("There have been a total of **__" + data.totalSent + "__** countable words sent!")
     .setFooter('Requested by ' + message.author.tag);
     //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
     message.channel.send(embed);
 
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total N words: ${data.totalSent} in ` + message.channel.guild.name);
+    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "invite")) {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("[[Click here to invite me]](https://discordapp.com/oauth2/authorize?client_id=687077283965567006&scope=bot&permissions=67492929)")
+    .setDescription("[[Click here to invite me]](" + invLink + ")")
     .setFooter('Requested by ' + message.author.tag)
     ;
 
@@ -220,7 +379,7 @@ client.on("message", (message) => {
     .setDescription("Top User")
     .setFooter('Requested by ' + message.author.tag)
     .setThumbnail(data.topUser.avatar)
-    .addField(data.topUser.username, '__**' + data.topUser.nwords + '**__ sent')
+    .addField(data.topUser.username, '__**' + data.topUser.words + '**__ sent')
     ;
       //message.channel.send("The user with the largest amount of n-words sent is: **" + top[0] + "** with **__" + top[1] + "__** n-words sent!");
       message.channel.send(embed);
@@ -232,42 +391,8 @@ client.on("message", (message) => {
   //retrive top 10 users
   if(message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')) {
 
-    let arr = getTop(data);
-    let pos = 0;
-    let place = 0;
+    getTop(message, data);
 
-    for(var i = 0; i < arr.length; i++) {
-      pos++;
-      if(arr[i].id == message.author.id) {
-        break;
-      }
-    }
-    if(Number.isInteger(pos/2) === false) {
-      place = parseInt(pos/2) + 1;
-    } else {
-      place = (pos/2);
-    }
-    let embed = new MessageEmbed()
-    .setTitle('Top 10 Most Racist Users')
-    .setColor(0xBF66E3)
-    .setDescription("Plese Note this is world-wide, not server-wide")
-    .setFooter('Requested by ' + message.author.tag)
-    .setTimestamp()
-    .addField('#1 ' + arr[0].username, arr[0].nwords)
-    .addField('#2 ' + arr[1].username, arr[1].nwords)
-    .addField('#3 ' +arr[2].username, arr[2].nwords)
-    .addField('#4 ' +arr[3].username, arr[3].nwords)
-    .addField('#5 ' +arr[4].username, arr[4].nwords)
-    .addField('#6 ' +arr[5].username, arr[5].nwords)
-    .addField('#7 ' +arr[6].username, arr[6].nwords)
-    .addField('#8 ' +arr[7].username, arr[7].nwords)
-    .addField('#9 ' +arr[8].username, arr[8].nwords)
-    .addField('#10 ' +arr[9].username, arr[9].nwords)
-    .addField('----------', '----------', true)
-    .addField('#' + pos + ' ' + message.author.tag, arr[pos-1].nwords, true)
-    .addField('Name', 'Num of n-words');
-
-      message.channel.send(embed);
   }
 
   //delete user info upon request
@@ -276,7 +401,7 @@ client.on("message", (message) => {
     let embed = new MessageEmbed()
     .setTitle('Data Deletion')
     .setColor(0xBF66E3)
-    .setDescription('Are you sure all of your data? *this is non-recoverable*\n\n Type:')
+    .setDescription('Are you sure all of your data on this server? *this is non-recoverable*\n\n Type:')
     .addField('**' + message.author.username + '** (your username)', 'to delete your data')
     .addField("**Cancel**", 'to cancel')
     .setFooter('Requested by ' + message.author.tag)
@@ -358,7 +483,7 @@ client.on("message", (message) => {
     let helpEmbed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("Check your dms!")
+    .setDescription("Check your dms :>")
     ;
     message.channel.send(helpEmbed);
 
@@ -368,70 +493,27 @@ client.on("message", (message) => {
     .setColor(0xBF66E3)
     .setDescription('')
     .setFooter('For private server:\n\ngetverify: retrieves current verify code')
-    .addField('nhelp', 'Gives you this message')
-    .addField('ncheck', 'Checks the # of n-words sent by a user', true)
-    .addField('ncount', 'Same as **ncheck**', true)
-    .addField('ntotal', 'Retrives the total amount of n-words recorded', true)
-    .addField('ntop', 'Gives info about top-sending user', true)
-    .addField('nleaderboard', 'Retrieves the top 10 users world-wide', true)
-    .addField('ndelete', '**Permanently** deletes all data regarding n-words sent', true)
-    .addField('narchive', 'Gives complete archive of every n-word sent', true)
-    .addField('nuserinfo', 'Gives some basic information on the user', true)
-    .addField('ninvite', 'Gives you [this link](https://discordapp.com/oauth2/authorize?client_id=687077283965567006&scope=bot&permissions=67492929)', true)
-    .addField('invitenow', 'Creates a perma-link *fuck you seb!*', true)
+    .addField(prefix + 'help', 'Gives you this message')
+    .addField(prefix + 'check', 'Checks the # of words sent by a user', true)
+    .addField(prefix + 'count', 'Same as **ncheck**', true)
+    .addField(prefix + 'total', 'Retrieves the total amount of words recorded', true)
+    .addField(prefix + 'top', 'Gives info about top-sending user', true)
+    .addField(prefix + 'lead', '(leaderboard) Retrieves the top 10 users in a server', true)
+    .addField(prefix + 'globalLead', 'Retrieves the top 10 sending users world-wide', true)
+    .addField(prefix + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+    .addField(prefix + 'info', 'Gives info about the bot', true)
+    .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
+    .addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+    .addField("Server Setup", "----")
+    .addField(prefix + "settings", "View all current server settings", true)
+    .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
+    .addField(prefix + 'cooldown', 'Change the server cooldown for counted words', true)
     ;
     //message.author.send(`${help}`);
     message.author.send(embed);
 
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
   }
-
-  if(message.content === "656598f1-5e5c-4aa7-b0de-9c854cefe0e6" && message.author.id === '250408653830619137') {
-    var oldData = fs.readFileSync('data.txt');
-    oldData = oldData.toString();
-    var dataArray = oldData.split(/[\n \t]/);0
-    dataArray = dataArray.filter(item => !!item);
-    var total = 0;
-
-    data.totalSent = 0;
-    data.topUser = {
-      "username" : "User",
-      "id" : "0000",
-      "nwords" : 0,
-      "avatar" : "URL"
-    }
-
-    for(var i = 0; i < dataArray.length; i++) {
-      if(client.users.cache.get(dataArray[i].toString()) !== undefined) {
-        data.servers[server].users.push({
-          "username" : client.users.cache.get(dataArray[i].toString()).username,
-          "id" : dataArray[i],
-          "nwords" : parseInt(dataArray[i+1]),
-          "cooldown" : 0
-        });
-        i++;
-      }
-    }
-
-    for(var j = 0; j < data.servers[server].users.length; j++) {
-      if(data.servers[server].users[j].nwords > data.topUser.nwords) {
-
-        //re-define the top user
-        data.topUser.username = data.servers[server].users[j].username;
-        data.topUser.id = data.servers[server].users[j].id;
-        data.topUser.nwords = data.servers[server].users[j].nwords;
-        data.topUser.avatar = client.users.cache.get(data.servers[server].users[j].id.toString()).avatarURL();
-
-        console.log(`new top user:` + data.topUser.username);
-      }
-      total += data.servers[server].users[j].nwords;
-    }
-    data.totalSent = total;
-
-    console.log(data);
-    write(data);
-  }
-
 
 
   //VERIFICATION FOR *MY* SERVER
@@ -453,37 +535,27 @@ client.on("message", (message) => {
 
 
   for(var j = 0; j < args.length; j++) {
-    if(cooldown.has(message.author.id)) {
-      break;
-    }
     curr = args[j];
 
-    trackedWords = getTrackWords(message, data);
-    if(curr.toLowerCase() == trackedWords[0]) {
-      var authorPos = -1;
+    let trackedWords = getTrackWords(message, data);
+    if(trackedWords.has(curr.toLowerCase())) {
+      //var authorPos = -1;
       checkIfShouldWrite = true;
 
-      //find the position of the user in the data file
-      for (var i = 0; i < data.servers[server].users.length; i++) {
-        if(message.author.id == data.servers[server].users[i].id) {
-            authorPos = i;
-            break;
-        }
+      ////
+
+      if(data.servers[server].users[authorPos].cooldown < Date.now()) {
+        data.servers[server].users[authorPos].cooldown = 0;
+        //write(data);
+      }
+      if(data.servers[server].users[authorPos].cooldown > 0) {
+        authorPos = authorPos;
+        break;
       }
 
-      //if the user has not sent a message before, create a line for the user
-      if(authorPos === -1) {
-        data.servers[server].users.push({
-          "username" : message.author.username,
-          "id" : message.author.id,
-          "nwords" : 0,
-          "cooldown" : 0
-        });
-        authorPos = data.servers[server].users.length-1;
-      }
 
       //add +1 to the user in the data array
-      data.servers[server].users[authorPos].nwords = parseInt(data.servers[server].users[authorPos].nwords) + 1;
+      data.servers[server].users[authorPos].words = parseInt(data.servers[server].users[authorPos].words) + 1;
       data.totalSent++;
       nword++;
     }
@@ -497,17 +569,17 @@ client.on("message", (message) => {
         message.channel.send(attachmentSavi);
         console.log(`SAVI SENT THE N-WORD`);
       }
-
       //check to see if there is a new top user
-      if(data.servers[server].users[authorPos].nwords > data.topUser.nwords) {
+      findTopUser(data);
+      /*if(data.servers[server].users[authorPos].words > data.topUser.words) {
         //re-define the top user
         data.topUser.username = message.author.username;
         data.topUser.id = message.author.id;
-        data.topUser.nwords = data.servers[server].users[authorPos].nwords;
+        data.topUser.words = data.servers[server].users[authorPos].words;
         data.topUser.avatar = message.author.avatarURL();
 
         console.log(`new top user:` + data.topUser.username);
-      }
+      }*/
 
       //update username
       data.servers[server].users[authorPos].username = message.author.username;
@@ -518,24 +590,24 @@ client.on("message", (message) => {
       checkIfShouldWrite = false;
 
       if(nword >= 5) {
-        cooldown.add(message.author.id);
-        data.servers[server].users[authorPos].cooldown = (Date.now() + ((cdseconds * nword) * 1000));
+        //cooldown.add(message.author.id);
+        data.servers[server].users[authorPos].cooldown = (Date.now() + ((data.servers[server].cooldown * nword) * 1000));
         setTimeout(() => {
-          cooldown.delete(message.author.id);
+          //cooldown.delete(message.author.id);
           for(var i = 0; i < data.servers[server].users.length; i++) {
             if(data.servers[server].users[i].id == message.author.id) {
               data.servers[server].users[i].cooldown = 0;
-              write(data);
+              //write(data);
               break;
             }
           }
-        }, (cdseconds * nword) * 1000);
+        }, (data.servers[server].cooldown * nword) * 1000);
       }
 
       nword = 0;
 
       //write in the new data
-      write(data);
+      //write(data);
 
     }
     if(j == args.length-1) {
@@ -558,59 +630,95 @@ function write (data) {
 
 
 //organize users by num of nwords
-function getTop(data) {
+function getTop(message, data) {
+  let server = getServer(message, data);
+
+  //create new json object to sort
   var arr = JSON.parse(JSON.stringify(data));
+  let pos = 0;
+  let place = 0;
+  let inTop = false;
 
 
-  arr = arr.users.sort((a, b) => b.nwords - a.nwords);
+  arr = arr.servers[server].users.sort((a, b) => b.words - a.words);
 
-  for(var i = 0; i < data.users.length; i++) {
-      if(client.users.cache.get(arr[i].id) === undefined ) {
-        arr[i].username = "---";
-        arr[i].nwords = 0;
-      }
-      if(arr[i] === undefined) {
-        arr.push({
-          "username" : "---",
-          "nwords" : 0
-        });
-      }
-}
-  console.log(arr);
-  return arr;
+  //check to see if there are any users on this server
+  if(data.servers[server].users.length < 3) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor()
+    .setColor(0xFF0000)
+    .setDescription('There are not enough users to display a leaderboard')
+    ;
+    message.channel.send(embed);
+    return;
+  }
+
+  //find user who is running command's position
+  for(var i = 0; i < arr.length; i++) {
+    pos++;
+    if(arr[i].id == message.author.id) {
+      break;
+    }
+  }
+  if(Number.isInteger(pos/2) === false) {
+    place = parseInt(pos/2) + 1;
+  } else {
+    place = (pos/2);
+  }
+
+  let embed = new MessageEmbed()
+  .setColor(0xBF66E3)
+  .setDescription("**Using the triggers: **" + data.servers[server].strings + "\n**Cooldown Time: **" + data.servers[server].cooldown + " seconds")
+  .setFooter('Requested by ' + message.author.tag)
+  .setTimestamp();
+
+  //add user positions, max of 10, from json object
+  for(var i = 0; i < data.servers[server].users.length && i < 10; i++) {
+    embed.setTitle('Top ' + (i+1) + ' Users');
+    if(arr[i].id === message.author.id) {
+      embed.addField('#' + (i+1) + ' `' + arr[i].username + '`', arr[i].words);
+      inTop = true;
+    } else {
+      embed.addField('#' + (i+1) + ' ' + arr[i].username, arr[i].words);
+    }
+  }
+
+  //add final info
+  if(inTop === false) {
+    embed.addField('#' + pos + ' `' + message.author.username + '`', arr[pos-1].words, true);
+  }
+
+  //console.log(arr);
+  message.channel.send(embed);
+  return;
+
 }
 
 function deleteUserInfo(data, message) {
-  for(var i = 0; i < data.users.length; i++) {
-    if(data.users[i].id === message.author.id && data.users[i].nwords > 0) {
-      data.totalSent -= data.users[i].nwords;
-      delete data.users[i];
-      data.users = data.users.filter(item => !!item);
-      data.topUser.username = "UserName";
+  let server = getServer(message, data);
+
+  for(var i = 0; i < data.servers[server].users.length; i++) {
+    if(data.servers[server].users[i].id === message.author.id && data.servers[server].users[i].words > 0) {
+      data.totalSent -= data.servers[server].users[i].words;
+      delete data.servers[server].users[i];
+      data.servers[server].users = data.servers[server].users.filter(item => !!item);
+      data.topUser.username = "NO TOP USERS";
       data.topUser.id = "0000";
-      data.topUser.nwords = 0;
-      data.topUser.avatar = "URL";
+      data.topUser.words = 0;
+      data.topUser.avatar = "";
 
       let deleteEmbed = new MessageEmbed()
       .setTitle('')
       .setColor()
       .setColor(0xFF0000)
-      .setDescription('Your data has been deleted, sorry to see you go :(')
+      .setDescription('Your data has been deleted, sorry to see you go :<')
       ;
       message.channel.send(deleteEmbed);
-      for(var j = 0; j < data.users.length; j++) {
-        if(data.users[j].nwords > data.topUser.nwords) {
 
-          //re-define the top user
-          data.topUser.username = data.users[j].username;
-          data.topUser.id = data.users[j].id;
-          data.topUser.nwords = data.users[j].nwords;
-          data.topUser.avatar = client.users.cache.get(data.users[j].id.toString()).avatarURL()
+      findTopUser(data);
 
-          console.log(`new top user:` + data.topUser.username);
-        }
-      }
-      write(data);
+      //write(data);
       return;
     }
   }
@@ -619,7 +727,7 @@ function deleteUserInfo(data, message) {
   .setTitle('')
   .setColor()
   .setColor(0xBF66E3)
-  .setDescription("You haven't sent the n-word so I can't delete any data idiot")
+  .setDescription("You haven't sent any key-words so I can't delete any data idiot")
   ;
   message.channel.send(embed);
   return;
@@ -649,7 +757,11 @@ function newPASSWORD() {
 
 function getTrackWords(message, data) {
   let server = getServer(message, data);
-  return data.servers[server].strings;
+  let words = new Set();
+  for(var i = 0; i < data.servers[server].strings.length; i++) {
+    words.add(data.servers[server].strings[i]);
+  }
+  return words;
 }
 
 function getServer(message, data) {
@@ -663,13 +775,317 @@ function getServer(message, data) {
   if(server === -1) {
     data.servers.push({
       "id": message.guild.id,
-      "strings": ["nigga"],
+      "cooldown": 5,
+      "strings": defaultStrings,
       "users": [],
     });
-    write(data);
+    //write(data);
     server = data.servers.length-1;
   }
   return server;
 }
 
+function getUser(message, data) {
+  let server = getServer(message, data);
+  let authorPos = -1;
+  //find the position of the user in the data file
+  for (var i = 0; i < data.servers[server].users.length; i++) {
+    if(message.author.id == data.servers[server].users[i].id) {
+        authorPos = i;
+        break;
+    }
+  }
+
+  //if the user has not sent a message before, create a line for the user
+  if(authorPos === -1) {
+    data.servers[server].users.push({
+      "username" : message.author.username,
+      "id" : message.author.id,
+      "words" : 0,
+      "cooldown" : 0
+    });
+    authorPos = data.servers[server].users.length-1;
+  }
+
+  //write(data);
+  return authorPos;
+}
+
+function getUptime() {
+  let seconds = parseInt(client.uptime/1000);
+  let minutes = 0;
+  let hours = 0;
+  let days = 0;
+
+  while(seconds >= 60) {
+    minutes++;
+    seconds -= 60;
+  }
+
+  while(minutes >= 60) {
+    hours++;
+    minutes -= 60;
+  }
+
+  while(hours >= 24) {
+    days++;
+    hours -= 24;
+  }
+
+  return days + 'd ' + hours + 'hr ' + minutes + 'm ' + seconds + 's';
+
+}
+
+function findTopUser(data) {
+
+  let arr = {"users":[]};
+
+  for(var server = 0; server < data.servers.length; server++) {
+    for(var user = 0; user < data.servers[server].users.length; user++) {
+      arr.users = arr.users.concat(data.servers[server].users[user]);
+    }
+  }
+
+  arr = JSON.stringify(arr, null, 2);
+  arr = JSON.parse(arr);
+
+
+  for(var i = 0; i < arr.users.length; i++) {
+    for(var o = i+1; o < arr.users.length; o++) {
+      if(arr.users[i].id === arr.users[o].id) {
+        arr.users[i].words += arr.users[o].words;
+        delete arr.users[o];
+        arr.users = arr.users.filter(item => !!item);
+        o = i+1;
+      }
+    }
+  }
+
+
+  arr = arr.users.sort((a, b) => b.words - a.words);
+
+  if(arr.length > 0 && arr[0].words > data.topUser.words) {
+    data.topUser.username = arr[0].username;
+    data.topUser.id = arr[0].id;
+    data.topUser.words = arr[0].words;
+    data.topUser.avatar = (client.users.cache.get(arr[0].id.toString())).avatarURL();
+  }
+
+  return;
+  /*for(var server = 0; server < data.servers.length; server++) {
+    for (var user = 0; user < data.servers[server].users.length; user++) {
+      if(data.servers[server].users[user].words > data.topUser.words) {
+        data.topUser.username = data.servers[server].users[user].username;
+        data.topUser.id = data.servers[server].users[user].id;
+        data.topUser.words = data.servers[server].users[user].words;
+        data.topUser.avatar = (client.users.cache.get(data.servers[server].users[user].id.toString())).avatarURL();
+      }
+    }
+  }
+  return;*/
+}
+
+function assignOG(data, message) {
+  let server = getServer(message, data);
+  let user = getUser(message, data);
+  let ogs = getOGS(data);
+
+  if(ogs.has(message.author.id)) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor()
+    .setColor(0xFF0000)
+    .setDescription("You've already transfered data to a server!")
+    ;
+    message.channel.send(embed);
+    return;
+  }
+
+  for(var i = 0; i < oldData.users.length; i++) {
+    if(oldData.users[i].id === message.author.id && oldData.users[i].nwords > 0) {
+      data.servers[server].users[user].words += oldData.users[i].nwords;
+      data.ogs.push(message.author.id);
+      data.totalSent += oldData.users[i].nwords;
+      findTopUser(data);
+
+      let deleteEmbed = new MessageEmbed()
+      .setTitle('')
+      .setColor()
+      .setColor(0xBF66E3)
+      .setDescription('Your data has been transfered to this server! (' + oldData.users[i].nwords + " words)")
+      ;
+      message.channel.send(deleteEmbed);
+      return;
+    }
+  }
+
+  let embed = new MessageEmbed()
+  .setTitle('')
+  .setColor()
+  .setColor(0xFF0000)
+  .setDescription("Unfortunately you have no data to transfer")
+  ;
+  message.channel.send(embed);
+  return;
+}
+
+function getOGS(data) {
+  let ogs = new Set();
+  for(var i = 0; i < data.ogs.length; i++) {
+    ogs.add(data.ogs[i]);
+  }
+  return ogs;
+}
+
+function getGlobalTop(message, data) {
+  let arr = {"users":[]};
+  let pos = 0;
+  let place = 0;
+  let inTop = false;
+
+  for(var server = 0; server < data.servers.length; server++) {
+    for(var user = 0; user < data.servers[server].users.length; user++) {
+      arr.users = arr.users.concat(data.servers[server].users[user]);
+    }
+  }
+
+  arr = JSON.stringify(arr, null, 2);
+  arr = JSON.parse(arr);
+
+
+  for(var i = 0; i < arr.users.length; i++) {
+    for(var o = i+1; o < arr.users.length; o++) {
+      if(arr.users[i].id === arr.users[o].id) {
+        arr.users[i].words += arr.users[o].words;
+        delete arr.users[o];
+        arr.users = arr.users.filter(item => !!item);
+        o = i+1;
+      }
+    }
+  }
+
+
+  arr = arr.users.sort((a, b) => b.words - a.words);
+
+  //check to see if there are any users on this server
+  if(arr.length < 3) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor()
+    .setColor(0xFF0000)
+    .setDescription("There isn't enough users to display this leaderboard")
+    ;
+    message.channel.send(embed);
+    return;
+  }
+
+  //find user who is running command's position
+  for(var i = 0; i < arr.length; i++) {
+    pos++;
+    if(arr[i].id == message.author.id) {
+      break;
+    }
+  }
+  if(Number.isInteger(pos/2) === false) {
+    place = parseInt(pos/2) + 1;
+  } else {
+    place = (pos/2);
+  }
+
+  let embed = new MessageEmbed()
+  .setTitle('Global Leaderboard')
+  .setColor(0xBF66E3)
+  .setDescription("The top-sending users world-wide\nThis uses a collection of all messages these users have sent")
+  .setFooter('Requested by ' + message.author.tag)
+  .setTimestamp();
+
+  var currentPos = 0;
+  var o = 0;
+  var trackedWords = [];
+  var trackedWordsScore = [];
+  var trackedWordsScoreSorted = [];
+  var topWordPos = 0  ;
+
+  console.log('getting tracked words');
+  for(var i = 0; i < data.servers.length; i++) {
+    currentPos = i+o;
+    for(var o = 0; o < data.servers[i].strings.length; o++) {
+      trackedWords[currentPos+o] = data.servers[i].strings[o];
+    }
+  }
+  trackedWords = trackedWords.filter(item => !!item);
+  console.log(trackedWords);
+  console.log('filling trackedWordsScore with zeros')
+  console.log(trackedWords.length);
+  for(var i = 0; i < trackedWords.length; i++) {
+    trackedWordsScore[i] = 1;
+    console.log(i);
+  }
+  console.log('ive made it this far');
+  console.log(trackedWordsScore)
+  for(var i = 0; i < trackedWords.length; i++) {
+    console.log(i)
+    for(var o = i+1; o < trackedWords.length; o++) {
+      if(trackedWords[i] === trackedWords[o]) {
+        trackedWordsScore[i] = trackedWordsScore[i] + 1;
+      }
+    }
+  }
+  console.log('perhaps here');
+  trackedWordsScoreSorted = trackedWordsScore.sort((a,b) => b-a);
+  console.log(trackedWordsScore);
+  for(var i = 0; i < trackedWords.length; i++) {
+    if(trackedWordsScoreSorted[0] === trackedWordsScore[i])
+    {
+      topWordPos = i;
+    }
+  }
+  console.log(trackedWordsScoreSorted)
+  if(trackedWordsScore[topWordPos] > 1) {
+    embed.addField('**The most popular tracked word is:** ', trackedWords[topWordPos]);
+  }
+
+  //add user positions, max of 10, from json object
+  for(var i = 0; i < arr.length && i < 10; i++) {
+    if(arr[i].id === message.author.id) {
+      embed.addField('#' + (i+1) + ' `' + arr[i].username + '`', arr[i].words);
+      inTop = true;
+    } else {
+      embed.addField('#' + (i+1) + ' ' + arr[i].username, arr[i].words);
+    }
+  }
+
+  //add final info
+  if(inTop === false) {
+    embed.addField('#' + pos + ' `' + message.author.username + '`', arr[pos-1].words, true)
+  }
+
+  //console.log(arr);
+  message.channel.send(embed);
+  return;
+}
+
+function newBot(message) {
+  let embed = new MessageEmbed()
+  .setTitle('This Bot is Being Replaced')
+  .setColor(0xBF66E3)
+  .setDescription('Unfortunately, due to this bot going against discord TOS, it will no longer be hosted.\n\nBut luckily for you, we have come up with a replacement! A fully customizable version of N-Word is being released, with this, you still have the ability to use the core functions of the original bot as well as many customization features that were previously not possibile with this version of the bot. You can use [this link](' + invLink + ') to invite the new bot\nUsually we would just update this bot, but as the verification process for this user id has been disabled, we have to create a clean slate in order to reach above 100 servers')
+  .addField('Will I still have my tracked words?', 'Yes! once you invite the new bot to the server, use the `n!transferData` command to move old data to the new bot. **THIS CAN ONLY BE DONE ONCE** so choose your server wisely\nAfter running this command you will be given a special color whenever someone checks you :>', true)
+  .addField('What are the new features?', 'With this re-code you can now control *which* words are counted, as well as the cooldown that is applied by default in this version.\nThe leaderboard command is now per-server as well as the old global leaderboard\nThere are also a few QOL features that arent worth mentioning', true)
+  .addField('Please message', '`TacticalGubbins#0900` or `Cyakat#5061` if you have any questions')
+  ;
+
+  message.channel.send(embed);
+
+}
+
+function sortNums(a, b) {
+  if (a > b) {
+    return 1;
+  } else if (b > a) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
 client.login(config.token);
