@@ -79,6 +79,16 @@ client.on("message", (message) => {
   let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
   args = args.filter(item => !!item);
 
+  if(message.content.toLowerCase().startsWith(prefix + "bottom")) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("Bottom User")
+    .setFooter('Requested by ' + message.author.tag)
+    .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/5c309586832c752c0826dfb5903cdb6d.webp?size=128')
+    .addField('Darwen', '__**-69420**__ sent')
+  }
+
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
     getGlobalTop(message, data);
     return;
@@ -308,7 +318,7 @@ client.on("message", (message) => {
                 embed.setColor(0xFFA417);
               }
               //custom colors for pog people
-              if(client.users.cache.get(args[2].id) === '445668261338677248') {
+              if(client.users.cache.get(args[2]).id === '445668261338677248') {
                 embed.setColor(0xFF1CC5);
               }
               if(client.users.cache.get(args[2]).id === '448269007800238080') {
@@ -345,20 +355,11 @@ client.on("message", (message) => {
 
     console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
   }
-  if(message.content.toLowerCase().startsWith(prefix + "bottom")) {
-    let embed = new MessageEmbed()
-    .setTitle('')
-    .setColor(0xBF66E3)
-    .setDescription("Bottom User")
-    .setFooter('Requested by ' + message.author.tag)
-    .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/5c309586832c752c0826dfb5903cdb6d.webp?size=128')
-    .addField('Darwen', '__**-69420**__ sent')
-  }
   if(message.content.toLowerCase().startsWith(prefix + "invite")) {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("[[Click here to invite me]](" + invLink + ")" + "\n[[Click here to join the bot's server]](" + discordLink + ")"
+    .setDescription("[[Click here to invite me]](" + invLink + ")" + "\n[[Click here to join the bot's server]](" + discordLink + ")")
     .setFooter('Requested by ' + message.author.tag)
     ;
 
