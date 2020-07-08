@@ -8,6 +8,7 @@ const fs = require('fs');
 const config = require("./config.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
+const discordLink = 'https://discord.gg/Z6rYnpy'
 const version = '3.4.4';
 const botID = '687077283965567006';
 const prefix = "n!";
@@ -357,7 +358,7 @@ client.on("message", (message) => {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
-    .setDescription("[[Click here to invite me]](" + invLink + ")")
+    .setDescription("[[Click here to invite me]](" + invLink + ")" + "\n[[Click here to join the bot's server]](" + discordLink + ")"
     .setFooter('Requested by ' + message.author.tag)
     ;
 
