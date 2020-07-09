@@ -12,7 +12,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy'
 const version = '3.4.4';
 const botID = '687077283965567006';
 const prefix = "n!";
-const defaultStrings = ["nigga", "niggas", "nigger", "niggers"];
+const defaultStrings = ["bruh", "nice", "bots", "cow"];
 const uptime = Date.now();
 
 //read in data from data.json
@@ -87,6 +87,7 @@ client.on("message", (message) => {
     .setFooter('Requested by ' + message.author.tag)
     .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/5c309586832c752c0826dfb5903cdb6d.webp?size=128')
     .addField('Darwen', '__**-69420**__ sent')
+    message.channel.send(embed)
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
