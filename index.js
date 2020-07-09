@@ -2,6 +2,8 @@
 
 const {Client, MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const client = new Client();
+const DBL = require("dblapi.js");
+const dbl = new DBL('Your top.gg token', client);
 
 const fs = require('fs');
 
@@ -9,7 +11,8 @@ const config = require("./config.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.4.4';
+const version = '3.5.0';
+//version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes;
 const botID = '687077283965567006';
 const prefix = "n!";
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
@@ -42,20 +45,32 @@ client.on('ready', () => {
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
-//rotating status doesn't fit with the new bot
-setInterval(() => {
-    if(stat === 0) {
-      client.user.setActivity(`${prefix}help for help`, {type : 'PLAYING'});
-      stat = 1;
-    } else {
-      client.user.setActivity(`${data.totalSent} words`, {type : 'WATCHING'});
-      stat = 0;
-    }
-      write(data);
+  setInterval(() => {
+        dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
+    }, 1800000);
 
-  }, 10000);
+  setInterval(() => {
+      if(stat === 0) {
+        client.user.setActivity(`${prefix}help for help`, {type : 'PLAYING'});
+        stat = 1;
+      } else {
+        client.user.setActivity(`${data.totalSent} words`, {type : 'WATCHING'});
+        stat = 0;
+      }
+        write(data);
+
+    }, 10000);
 });
 
+
+
+dbl.on('posted', () => {
+  console.log('Server count posted!');
+});
+
+dbl.on('error', e => {
+  console.log(`Oops! ${e}`);
+});
 
 
 
@@ -325,6 +340,9 @@ client.on("message", (message) => {
               if(client.users.cache.get(args[2]).id === '448269007800238080') {
                 embed.setColor(0x17FF1B);
               }
+              if(client.users.cache.get(args[2]).id === '656755471847260170') {
+                embed.setColor(0x17D1FF);
+              }
 
 
               message.channel.send(embed);
@@ -578,11 +596,11 @@ client.on("message", (message) => {
     if(j == args.length - 1 && checkIfShouldWrite == true) {
 
       //special message for savi --- simp!
-      if(message.author.id == 395980133565071360) {
+      /*if(message.author.id == 395980133565071360) {
         const attachmentSavi = new MessageAttachment('./savi.jpg');
         message.channel.send(attachmentSavi);
         console.log(`SAVI SENT THE N-WORD`);
-      }
+      }*/
       //check to see if there is a new top user
       findTopUser(data);
       /*if(data.servers[server].users[authorPos].words > data.topUser.words) {
@@ -1020,7 +1038,6 @@ function getGlobalTop(message, data) {
   var trackedWordsScoreSorted = [];
   var topWordPos = 0  ;
 
-  console.log('getting tracked words');
   for(var i = 0; i < data.servers.length; i++) {
     currentPos = i+o;
     for(var o = 0; o < data.servers[i].strings.length; o++) {
@@ -1028,26 +1045,17 @@ function getGlobalTop(message, data) {
     }
   }
   trackedWords = trackedWords.filter(item => !!item);
-  console.log(trackedWords);
-  console.log('filling trackedWordsScore with zeros')
-  console.log(trackedWords.length);
   for(var i = 0; i < trackedWords.length; i++) {
     trackedWordsScore[i] = 1;
-    console.log(i);
   }
-  console.log('ive made it this far');
-  console.log(trackedWordsScore)
   for(var i = 0; i < trackedWords.length; i++) {
-    console.log(i)
     for(var o = i+1; o < trackedWords.length; o++) {
       if(trackedWords[i] === trackedWords[o]) {
         trackedWordsScore[i] = trackedWordsScore[i] + 1;
       }
     }
   }
-  console.log('perhaps here');
   trackedWordsScoreSorted = trackedWordsScore.sort((a,b) => b-a);
-  console.log(trackedWordsScore);
   for(var i = 0; i < trackedWords.length; i++) {
     if(trackedWordsScoreSorted[0] === trackedWordsScore[i])
     {
@@ -1079,7 +1087,7 @@ function getGlobalTop(message, data) {
   return;
 }
 
-function newBot(message) {
+/*function newBot(message) {
   let embed = new MessageEmbed()
   .setTitle('This Bot is Being Replaced')
   .setColor(0xBF66E3)
@@ -1091,15 +1099,5 @@ function newBot(message) {
 
   message.channel.send(embed);
 
-}
-
-function sortNums(a, b) {
-  if (a > b) {
-    return 1;
-  } else if (b > a) {
-    return -1;
-  } else {
-    return 0;
-  }
-}
+}*/
 client.login(config.token);
