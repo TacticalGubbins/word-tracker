@@ -7,7 +7,7 @@ const dbl = new DBL('Your top.gg token', client);
 
 const fs = require('fs');
 
-const config = require("./config.json");
+const config = require("../test.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
@@ -103,6 +103,10 @@ client.on("message", (message) => {
     .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/5c309586832c752c0826dfb5903cdb6d.webp?size=128')
     .addField('Darwen', '__**-69420**__ sent')
     message.channel.send(embed)
+  }
+
+  if(message.content === "hi" && message.author.id === "249382933054357504") {
+    addServerNames(message, data);
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
@@ -1085,6 +1089,18 @@ function getGlobalTop(message, data) {
   //console.log(arr);
   message.channel.send(embed);
   return;
+}
+
+//adds the name of the server to the data file
+function addServerNames(message, data) {
+  for(var i = 0; i < data.servers.length; i++) {
+    try {
+      data.servers[i].name = client.guilds.get(data.servers[i].id).name;
+    }
+    catch(err) {
+      console.log("Bot is no longer in the server with id " + data.servers[i].id);
+    }
+  }
 }
 
 /*function newBot(message) {
