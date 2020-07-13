@@ -11,7 +11,7 @@ const config = require("../test.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.5.0';
+const version = '3.6.0';
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes;
 const botID = '687077283965567006';
 const prefix = "n!";
@@ -20,7 +20,7 @@ const uptime = Date.now();
 
 //read in data from data.json
 var data = require("./data.json");
-var oldData = require("./oldData.json");
+//var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
 //read in the archive file
@@ -1000,6 +1000,18 @@ function getGlobalTop(message, data) {
     }
   }
 
+  for(var i = 0; i < data.servers.length; i++) {
+    for(var o = 0; o < data.servers[i].users.length; o++) {
+      for(var p = 0; p < arr.users.length; p++) {
+        if(data.servers[i].users[o].id === arr.users[p].id) {
+          arr.users[p].serverName = data.servers[i].name;
+          if(arr.users[p].serverName != undefined) {
+            break;
+          }
+        }
+      }
+    }
+  }
 
   arr = arr.users.sort((a, b) => b.words - a.words);
 
@@ -1071,13 +1083,14 @@ function getGlobalTop(message, data) {
     embed.addField('**The most popular tracked word is:** ', trackedWords[topWordPos]);
   }
 
+  console.log(arr)
   //add user positions, max of 10, from json object
   for(var i = 0; i < arr.length && i < 10; i++) {
     if(arr[i].id === message.author.id) {
-      embed.addField('#' + (i+1) + ' `' + arr[i].username + '`', arr[i].words);
+      embed.addField('#' + (i+1) + ' `' + arr[i].username + '`', arr[i].words + " in " + arr[i].serverName);
       inTop = true;
     } else {
-      embed.addField('#' + (i+1) + ' ' + arr[i].username, arr[i].words);
+      embed.addField('#' + (i+1) + ' ' + arr[i].username, arr[i].words + " in " + arr[i].serverName);
     }
   }
 
@@ -1095,7 +1108,7 @@ function getGlobalTop(message, data) {
 function addServerNames(message, data) {
   for(var i = 0; i < data.servers.length; i++) {
     try {
-      data.servers[i].name = client.guilds.get(data.servers[i].id).name;
+      data.servers[i].name = client.guilds.cache.get(data.servers[i].id).name;
     }
     catch(err) {
       console.log("Bot is no longer in the server with id " + data.servers[i].id);
