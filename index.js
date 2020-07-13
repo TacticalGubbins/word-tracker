@@ -11,7 +11,7 @@ const config = require("../test.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.6.3';
+const version = '3.6.4';
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes;
 const botID = '687077283965567006';
 const prefix = "n!";
@@ -46,7 +46,12 @@ client.on('ready', () => {
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
   setInterval(() => {
-        dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
+    try {
+    dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
+    }
+    catch(err) {
+        console.log("dbl broke again");
+    }
     }, 1800000);
 
   setInterval(() => {
@@ -98,9 +103,7 @@ client.on("message", (message) => {
     .setColor(0xBF66E3)
     .setDescription('')
     .setFooter('Requested by ' + message.author.tag)
-    .addField('3.6.3', '-fixed some code that will allow for custom prefixes in the future', true)
-    .addField('3.6.2', '-added server name to data.json', true)
-    .addField('3.6.1', '-uncommented line that broke the bot', true)
+    .addField('3.6.4', '-fixed error that tiko fixed b4 but I didnt have the latest version :pog:', true)
     ;
     message.channel.send(embed);
   }
