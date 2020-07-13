@@ -11,7 +11,7 @@ const config = require("../test.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.6.1';
+const version = '3.6.2';
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes;
 const botID = '687077283965567006';
 const prefix = "n!";
@@ -811,9 +811,10 @@ function getServer(message, data) {
   if(server === -1) {
     data.servers.push({
       "id": message.guild.id,
+      "name": message.guild.name,
       "cooldown": 5,
       "strings": defaultStrings,
-      "users": [],
+      "users": []
     });
     //write(data);
     server = data.servers.length-1;
