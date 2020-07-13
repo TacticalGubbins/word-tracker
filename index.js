@@ -11,7 +11,7 @@ const config = require("../test.json");
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.6.0';
+const version = '3.6.1';
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes;
 const botID = '687077283965567006';
 const prefix = "n!";
@@ -20,7 +20,7 @@ const uptime = Date.now();
 
 //read in data from data.json
 var data = require("./data.json");
-//var oldData = require("./oldData.json");
+var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
 //read in the archive file
