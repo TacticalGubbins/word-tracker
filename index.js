@@ -2,17 +2,19 @@
 
 const {Client, MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const client = new Client();
-const DBL = require("dblapi.js");
-const dbl = new DBL('Your top.gg token', client);
 
 const fs = require('fs');
 
 const config = require("../test.json");
+const changelog = require("./changelog.json");
+
+const DBL = require("dblapi.js");
+const dbl = new DBL(config.topToken, client);
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.6.4';
-//version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes;
+const version = '3.6.2';
+//version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
 const prefix = "n!";
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
@@ -23,8 +25,6 @@ var data = require("./data.json");
 var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
-//read in the archive file
-//var archive = fs.readFileSync('archive.txt');
 
 //variables relating to users
 var checkIfShouldWrite = false;
@@ -46,12 +46,7 @@ client.on('ready', () => {
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
   setInterval(() => {
-    try {
-    dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
-    }
-    catch(err) {
-        console.log("dbl broke again");
-    }
+        dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
     }, 1800000);
 
   setInterval(() => {
@@ -95,20 +90,9 @@ client.on("message", (message) => {
   let server = getServer(message, data);
   let authorPos = getUser(message, data);
 
-  let args = message.content.split(' ');
 
-  if(message.content.toLowerCase().startsWith(prefix + "changelog")) {
-    let embed = new MessageEmbed()
-    .setTitle('v' + version + ' Changelog')
-    .setColor(0xBF66E3)
-    .setDescription('')
-    .setFooter('Requested by ' + message.author.tag)
-    .addField('3.6.4', '-fixed error that tiko fixed b4 but I didnt have the latest version :pog:', true)
-    ;
-    message.channel.send(embed);
-  }
-
-
+  let args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+  args = args.filter(item => !!item);
 
   if(message.content.toLowerCase().startsWith(prefix + "bottom")) {
     let embed = new MessageEmbed()
@@ -118,7 +102,7 @@ client.on("message", (message) => {
     .setFooter('Requested by ' + message.author.tag)
     .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/5c309586832c752c0826dfb5903cdb6d.webp?size=128')
     .addField('Darwen', '__**-69420**__ sent')
-    message.channel.send(embed);
+    message.channel.send(embed)
   }
 
   if(message.content === "hi" && message.author.id === "249382933054357504") {
@@ -167,7 +151,7 @@ client.on("message", (message) => {
 
   if(message.content.toLowerCase().startsWith(prefix + "cooldown")) {
     if(message.member.hasPermission('ADMINISTRATOR')) {
-      if(args[1] === undefined) {
+      if(args[2] === undefined) {
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
@@ -175,7 +159,7 @@ client.on("message", (message) => {
         message.channel.send(embed);
         return;
       }
-      if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
+      if(args[2].toLowerCase() === 'none' || args[2].toLowerCase() === 'off' || parseInt(args[2]) === 0) {
         data.servers[server].cooldown = 0;
         let embed = new MessageEmbed()
         .setTitle('')
@@ -185,7 +169,7 @@ client.on("message", (message) => {
         message.channel.send(embed);
         return;
       }
-      if(isNaN(args[1])) {
+      if(isNaN(args[2])) {
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
@@ -193,12 +177,12 @@ client.on("message", (message) => {
         message.channel.send(embed);
         return;
       }
-      if(!isNaN(args[1])) {
-        data.servers[server].cooldown = parseInt(args[1]);
+      if(!isNaN(args[2])) {
+        data.servers[server].cooldown = parseInt(args[2]);
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
-        .setDescription('Changed cooldown time to **__' + args[1] + '__** seconds\n\n*active cooldowns will not be cleared*')
+        .setDescription('Changed cooldown time to **__' + args[2] + '__** seconds\n\n*active cooldowns will not be cleared*')
         .setFooter('Requested by ' + message.author.tag);
         message.channel.send(embed);
         return;
@@ -274,9 +258,8 @@ client.on("message", (message) => {
   //see how many n-words somebody has sent
   if(message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")) {
 
-
     //check to see if the value inputted is a user
-    if(message.mentions.users.first() === undefined) {
+    if(args[2] == null) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
@@ -287,9 +270,7 @@ client.on("message", (message) => {
       return;
     }
 
-    let user = message.mentions.users.first();
-
-    if(user.id === client.user.id) {
+    if(args[2] == client.user.id) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
@@ -302,10 +283,10 @@ client.on("message", (message) => {
     }
 
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
-      if(user !== undefined) {
+      if(client.users.cache.get(args[2].toString()) !== undefined) {
       //find the id of the user in question
-
-      console.log(`\nFetching info for ${user.username}`);
+      let user = args[2];
+      console.log(`\nFetching info for ${user}`);
 
 
             //let author = getUser(message, data);
@@ -333,7 +314,7 @@ client.on("message", (message) => {
               let embed = new MessageEmbed()
               .setTitle('')
               .setColor(0xBF66E3)
-              .setDescription(user.tag + " hasn't sent any countable words!")
+              .setDescription(client.users.cache.get(args[2]).tag + " hasn't sent any countable words!")
               .setFooter('Requested by ' + message.author.tag);
               //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
               message.channel.send(embed);
@@ -344,7 +325,7 @@ client.on("message", (message) => {
               let embed = new MessageEmbed()
               .setTitle('')
               .setColor(0xBF66E3)
-              .setDescription(user.tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
+              .setDescription(client.users.cache.get(args[2]).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
               .setFooter('Requested by ' + message.author.tag)
               ;
               let userCooldown = ((data.servers[server].users[author].cooldown) - Date.now()) / 1000 + " seconds";
@@ -353,17 +334,17 @@ client.on("message", (message) => {
               }
 
               let ogs = getOGS(data);
-              if(ogs.has(user.id)) {
+              if(ogs.has(client.users.cache.get(args[2]).id)) {
                 embed.setColor(0xFFA417);
               }
               //custom colors for pog people
-              if(user.id === '445668261338677248') {
+              if(client.users.cache.get(args[2]).id === '445668261338677248') {
                 embed.setColor(0xFF1CC5);
               }
-              if(user.id === '448269007800238080') {
+              if(client.users.cache.get(args[2]).id === '448269007800238080') {
                 embed.setColor(0x17FF1B);
               }
-              if(user.id === '656755471847260170') {
+              if(client.users.cache.get(args[2]).id === '656755471847260170') {
                 embed.setColor(0x17D1FF);
               }
 
@@ -502,7 +483,7 @@ client.on("message", (message) => {
 
   //user info
   if(message.content.toLowerCase().startsWith(prefix + 'userinfo')) {
-    if(message.mentions.users.first() === undefined) {
+    if(args[2] === undefined) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
@@ -510,8 +491,8 @@ client.on("message", (message) => {
       message.channel.send(embed);
       return;
     }
-    else if(message.mentions.users.first() !== undefined) {
-      userInf = message.mentions.users.first();
+    else if(client.users.cache.get(args[2].toString()) !== undefined) {
+      userInf = client.users.cache.get(args[2].toString());
       let embed = new MessageEmbed()
       .setTitle(userInf.tag)
       .setColor(0x00FF00)
@@ -559,7 +540,6 @@ client.on("message", (message) => {
     .addField(prefix + 'info', 'Gives info about the bot', true)
     .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
     .addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
-    .addField(prefix + 'changelog', "Shows changelog for the bot so ya'll can see what we've changed", true)
     .addField("Server Setup", "----")
     .addField(prefix + "settings", "View all current server settings", true)
     .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
@@ -589,8 +569,6 @@ client.on("message", (message) => {
   }
 
 
-  args = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
-  args = args.filter(item => !!item);
 
   for(var j = 0; j < args.length; j++) {
     curr = args[j];
@@ -833,10 +811,9 @@ function getServer(message, data) {
   if(server === -1) {
     data.servers.push({
       "id": message.guild.id,
-      "name": message.guild.name,
       "cooldown": 5,
       "strings": defaultStrings,
-      "users": []
+      "users": [],
     });
     //write(data);
     server = data.servers.length-1;

@@ -1,0 +1,12 @@
+{
+  "versions": {
+    "3": {
+      "6": {
+        "2": {
+          "1":"Added the top.gg token so that the bot stats can be on the website",
+          "2":"Added this changelog file for future use so people can read the changelogs, past and preset."
+        }
+      }
+    }
+  }
+}
