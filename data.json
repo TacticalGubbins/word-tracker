@@ -1,0 +1,37 @@
+{
+  "totalSent": 0,
+  "topUser": {
+    "username": "USER",
+    "id": "0000",
+    "words": 0,
+    "avatar": ""
+  },
+  "ogs": [],
+  "servers": [
+    {
+      "id": "637740070648021000",
+      "cooldown": 5,
+      "strings": [
+        "bruh",
+        "nice",
+        "bots",
+        "cow"
+      ],
+      "users": [
+        {
+          "username": "Cyakat",
+          "id": "249382933054357504",
+          "words": 0,
+          "cooldown": 0
+        },
+        {
+          "username": "TacticalGubbins",
+          "id": "250408653830619137",
+          "words": 0,
+          "cooldown": 0
+        }
+      ]
+    }
+  ],
+  "ppLength": "n!setpplength"
+}
