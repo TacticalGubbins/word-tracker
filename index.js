@@ -6,7 +6,7 @@ const client = new Client();
 const fs = require('fs');
 
 const config = require("../test.json");
-const changelog = require("changelog.json");
+const changelog = require("./changelog.json");
 
 const DBL = require("dblapi.js");
 const dbl = new DBL(config.topToken, client);
