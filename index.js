@@ -648,11 +648,10 @@ client.on("message", (message) => {
     message.channel.send("Current verify message: **" + fs.readFileSync('PASSWORD.txt').toString() + "**");
   }
 
+  let wordArgs = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+  wordArgs = wordArgs.filter(item => !!item);
+  for(var j = 0; j < wordArgs.length; j++) {
 
-
-  for(var j = 0; j < args.length; j++) {
-    let wordArgs = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
-    wordArgs = wordArgs.filter(item => !!item);
     curr = wordArgs[j];
 
     let trackedWords = getTrackWords(message, data);
