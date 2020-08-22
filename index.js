@@ -5,7 +5,7 @@ const client = new Client();
 
 const fs = require('fs');
 
-const config = require("../test.json");
+const config = require("./config.json");
 const changelog = require("./changelog.json");
 
 const DBL = require("dblapi.js");
@@ -21,8 +21,8 @@ const defaultStrings = ["bruh", "nice", "bots", "cow"];
 const uptime = Date.now();
 
 //read in data from data.json
-var data = require("../data.json");
-var oldData = require("../oldData.json");
+var data = require("./data.json");
+var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
 
@@ -585,7 +585,7 @@ client.on("message", (message) => {
       let embed = new MessageEmbed()
       .setTitle("jesus christ your dumn")
       .setColor(0xFF7777)
-      .setDescription("Actually, being a moron in every sense of the world is a mathematical impossibility. As it is impossible for anyone or anything to be perfect, I can only at most be 90% of a moron, given a 10% window of error taking the number of actual human beings and morons changes from moment to moment. Amazing what a little bit of statistics can do in order to prove how stupid users like you really are.")
+      .setDescription("stupid idiot")
       .setFooter("try " + prefix + "changelog 3.6.4");
 
       message.channel.send(embed);
@@ -611,9 +611,11 @@ client.on("message", (message) => {
     }
   }
   if(message.content.toLowerCase().startsWith(prefix + "setpplength")) {
-    
+
     if(args[1] != undefined ) {
-      data.ppLength = args.shift();
+      args.shift();
+      args = args.toString();
+      data.ppLength = args.replace(/,/g, " ");
       let embed = new MessageEmbed()
       .setTitle('UwU')
       .setColor(0xBF66E3)
