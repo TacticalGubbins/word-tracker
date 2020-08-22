@@ -9,8 +9,8 @@
       },
       "7": {
         "0": [
-          "Added changelog command",
-          "Added custom prefix ability",
+          "Added changelog command use with n!changelog",
+          "Added custom prefix ability use with n!setPrefix",
           "Added an easter egg!",
           "If you find issues with the bot or have suggestions you can always send them in the server's respective channels!"
         ]

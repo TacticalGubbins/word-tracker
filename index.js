@@ -5,7 +5,7 @@ const client = new Client();
 
 const fs = require('fs');
 
-const config = require("./config.json");
+const config = require("../test.json");
 const changelog = require("./changelog.json");
 
 const DBL = require("dblapi.js");
@@ -13,7 +13,7 @@ const dbl = new DBL(config.topToken, client);
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.7.0';
+const version = '3.7.1';
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
 //const prefix = "n!";
@@ -656,20 +656,25 @@ client.on("message", (message) => {
     curr = wordArgs[j];
 
     let trackedWords = getTrackWords(message, data);
-    if(trackedWords.has(curr.toLowerCase())) {
-      //var authorPos = -1;
-      checkIfShouldWrite = true;
+    try {
+      if(trackedWords.has(curr.toLowerCase())) {
+        //var authorPos = -1;
+        checkIfShouldWrite = true;
 
-      ////
+        ////
 
-      if(data.servers[server].users[authorPos].cooldown < Date.now()) {
-        data.servers[server].users[authorPos].cooldown = 0;
-        //write(data);
-      }
-      if(data.servers[server].users[authorPos].cooldown > 0) {
-        authorPos = authorPos;
-        break;
-      }
+        if(data.servers[server].users[authorPos].cooldown < Date.now()) {
+          data.servers[server].users[authorPos].cooldown = 0;
+          //write(data);
+        }
+        if(data.servers[server].users[authorPos].cooldown > 0) {
+          authorPos = authorPos;
+          break;
+        }
+    }
+    catch(err) {
+      console.log("Oops something when wrong with curr being undefined probably");
+    }
 
 
       //add +1 to the user in the data array
