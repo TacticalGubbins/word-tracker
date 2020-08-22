@@ -2,10 +2,18 @@
   "versions": {
     "3": {
       "6": {
-        "2": {
-          "1":"Added the top.gg token so that the bot stats can be on the website",
-          "2":"Added this changelog file for future use so people can read the changelogs, past and preset."
-        }
+        "4": [
+          "Added the top.gg token so that the bot stats can be on the website",
+          "Added this changelog file for future use so people can read the changelogs, past and preset."
+        ]
+      },
+      "7": {
+        "0": [
+          "Added changelog command",
+          "Added custom prefix ability",
+          "Added an easter egg!",
+          "If you find issues with the bot or have suggestions you can always send them in the server's respective channels!"
+        ]
       }
     }
   }
