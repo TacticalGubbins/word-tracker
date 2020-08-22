@@ -16,6 +16,9 @@
         ],
         "1": [
           "Fixed a bug that would cause the bot to crash"
+        ],
+        "2": [
+          "Actually fixed the bug that caused the bot crash"
         ]
       }
     }
