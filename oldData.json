@@ -1,0 +1,2723 @@
+{
+  "totalSent": 1549271,
+  "topUser": {
+    "username": "Fredre",
+    "id": "139348648176779265",
+    "nwords": 333333,
+    "avatar": "https://cdn.discordapp.com/avatars/139348648176779265/681ee150a51ca6fde4f6745d2f48fd16.webp"
+  },
+  "users": [
+    {
+      "username": "TacticalGubbins",
+      "id": "250408653830619137",
+      "nwords": 13064,
+      "cooldown": 0
+    },
+    {
+      "username": "bear",
+      "id": "660645035674566714",
+      "nwords": 54158,
+      "cooldown": 0
+    },
+    {
+      "username": "CG",
+      "id": "452268312500371477",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "eoqc",
+      "id": "354221132146278420",
+      "nwords": 4537,
+      "cooldown": 0
+    },
+    {
+      "username": "Jaden",
+      "id": "453651128568250368",
+      "nwords": 582,
+      "cooldown": 0
+    },
+    {
+      "username": "Owen7",
+      "id": "200082201990135808",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "TheStellarJay",
+      "id": "355508616142258177",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "astolfo",
+      "id": "632310320303702017",
+      "nwords": 139,
+      "cooldown": 0
+    },
+    {
+      "username": "sauce",
+      "id": "534704671500271627",
+      "nwords": 32,
+      "cooldown": 0
+    },
+    {
+      "username": "jahy",
+      "id": "618531336256487425",
+      "nwords": 24,
+      "cooldown": 0
+    },
+    {
+      "username": "letoh",
+      "id": "568241124674895882",
+      "nwords": 45,
+      "cooldown": 0
+    },
+    {
+      "username": "GeoffGames",
+      "id": "273963619925098496",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "greeko",
+      "id": "477951703358898196",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "carlbarkerjr",
+      "id": "517738750814453771",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Runex",
+      "id": "395980133565071360",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "Turmoil",
+      "id": "209499665618436096",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "amie",
+      "id": "532954857145892864",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Kugelblitz",
+      "id": "259087759795290114",
+      "nwords": 17,
+      "cooldown": 0
+    },
+    {
+      "username": "alyssap2",
+      "id": "428376845612875782",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Shota",
+      "id": "690324628358299658",
+      "nwords": 9,
+      "cooldown": 0
+    },
+    {
+      "username": "salty sugar",
+      "id": "502468936533803028",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "⚪wHiTe,tRaSh&nOiSe♪",
+      "id": "632413979435728906",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "kyo",
+      "id": "625763187643514892",
+      "nwords": 81,
+      "cooldown": 0
+    },
+    {
+      "username": "pizpeng",
+      "id": "302895580433088513",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Critic",
+      "id": "521594161862934549",
+      "nwords": 11,
+      "cooldown": 0
+    },
+    {
+      "username": "SCQDevelopers",
+      "id": "586223568212328450",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "rhi",
+      "id": "422447062370615307",
+      "nwords": 27,
+      "cooldown": 0
+    },
+    {
+      "username": "Grey",
+      "id": "696749328781411380",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "SUR",
+      "id": "535578193344593920",
+      "nwords": 36,
+      "cooldown": 0
+    },
+    {
+      "username": "kpw",
+      "id": "333328924513927168",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "𝓐𝓷𝓸𝓷𝔂𝓶𝓸𝓾𝓼 𝓑𝓾𝓷𝓼𝓽𝓪𝓻",
+      "id": "526234022284623872",
+      "nwords": 168,
+      "cooldown": 0
+    },
+    {
+      "username": "RogueXw",
+      "id": "610901586322915458",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Andrex40000",
+      "id": "556876237864304670",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "oinky",
+      "id": "590342671978070072",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "xXKingLegendXx",
+      "id": "534502107265368077",
+      "nwords": 12151,
+      "cooldown": 0
+    },
+    {
+      "username": "jellybelly...",
+      "id": "572178018047361065",
+      "nwords": 683,
+      "cooldown": 0
+    },
+    {
+      "username": "Peyton",
+      "id": "630228328342880258",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "˞˞",
+      "id": "498219960602984471",
+      "nwords": 553,
+      "cooldown": 0
+    },
+    {
+      "username": "CocoMoes",
+      "id": "552294269675765760",
+      "nwords": 51,
+      "cooldown": 0
+    },
+    {
+      "username": "Biskit",
+      "id": "427869117115269120",
+      "nwords": 1976,
+      "cooldown": 0
+    },
+    {
+      "username": "Houxrs Cartoon💙",
+      "id": "673544366312128522",
+      "nwords": 25,
+      "cooldown": 0
+    },
+    {
+      "username": "jajajajaja",
+      "id": "652713766810681357",
+      "nwords": 19,
+      "cooldown": 0
+    },
+    {
+      "username": "GSF_Bright",
+      "id": "637014521508003864",
+      "nwords": 25,
+      "cooldown": 0
+    },
+    {
+      "username": "Graygray",
+      "id": "539621080340365312",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "tacotrucklxix420",
+      "id": "327600518601900044",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "H a H a",
+      "id": "557697639488028682",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Tododaddy",
+      "id": "475447434978525185",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "we are clown bread",
+      "id": "612754310358368256",
+      "nwords": 49,
+      "cooldown": 0
+    },
+    {
+      "username": "Musketeer",
+      "id": "707782422456041472",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "shiinotic",
+      "id": "452908847242149888",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Bea",
+      "id": "337327384112136192",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "kkeh is a dumb hoe",
+      "id": "460651650252800010",
+      "nwords": 79,
+      "cooldown": 0
+    },
+    {
+      "username": "icagoblok",
+      "id": "480266428986163210",
+      "nwords": 37,
+      "cooldown": 0
+    },
+    {
+      "username": "ericmete",
+      "id": "700487184561733643",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "BoranCanOzel",
+      "id": "250945217644068864",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "Ayça_22",
+      "id": "402951997281533981",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "Akrillon",
+      "id": "216964696614371328",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "xX_BabyAbi",
+      "id": "684780499968851990",
+      "nwords": 830,
+      "cooldown": 0
+    },
+    {
+      "username": "-Lylah_joe mama-0207",
+      "id": "704688215386488913",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Hiro",
+      "id": "589127764213235750",
+      "nwords": 3848,
+      "cooldown": 0
+    },
+    {
+      "username": "leyo",
+      "id": "531299227624669184",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "...SnxkeAU...",
+      "id": "299471488430505984",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "eeedizzle626",
+      "id": "542416765628448779",
+      "nwords": 787,
+      "cooldown": 0
+    },
+    {
+      "username": "king green",
+      "id": "468971910617890836",
+      "nwords": 1389,
+      "cooldown": 0
+    },
+    {
+      "username": "E-girl sieena",
+      "id": "498284810138157057",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "oneil2",
+      "id": "700689072733290509",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "PKmon",
+      "id": "668859321827852309",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "scaynle",
+      "id": "659594763137318922",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Just A Rock",
+      "id": "663436681898360872",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "lbdBG",
+      "id": "386551930304069632",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "BROTHERHOOD",
+      "id": "415900513411006484",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Trize",
+      "id": "395317262019723266",
+      "nwords": 276117,
+      "cooldown": 0
+    },
+    {
+      "username": "Jeffie",
+      "id": "574555976670248972",
+      "nwords": 33637,
+      "cooldown": 0
+    },
+    {
+      "username": "Philles08",
+      "id": "707551295279464580",
+      "nwords": 7290,
+      "cooldown": 0
+    },
+    {
+      "username": "YOUR UNCLE, MOE",
+      "id": "611573958948683776",
+      "nwords": 41731,
+      "cooldown": 0
+    },
+    {
+      "username": "BraedonTy64",
+      "id": "700722615274438726",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Moldy_Fresh_Avo",
+      "id": "645020529148821504",
+      "nwords": 14,
+      "cooldown": 0
+    },
+    {
+      "username": "Kai Chisaki",
+      "id": "658541837362921472",
+      "nwords": 4280,
+      "cooldown": 0
+    },
+    {
+      "username": "ドワーフ",
+      "id": "508125981693706278",
+      "nwords": 18,
+      "cooldown": 0
+    },
+    {
+      "username": "ZeroTwo",
+      "id": "695988081555144745",
+      "nwords": 2910,
+      "cooldown": 0
+    },
+    {
+      "username": "Im_Verum",
+      "id": "284323826165350400",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "𝔅𝔩𝔬𝔬𝔡𝔶",
+      "id": "612963824374382592",
+      "nwords": 22815,
+      "cooldown": 0
+    },
+    {
+      "username": "Dad",
+      "id": "404521321184231424",
+      "nwords": 20,
+      "cooldown": 0
+    },
+    {
+      "username": "apple",
+      "id": "139350001523359744",
+      "nwords": 41435,
+      "cooldown": 0
+    },
+    {
+      "username": "Henrik",
+      "id": "130294612114931713",
+      "nwords": 302324,
+      "cooldown": 0
+    },
+    {
+      "username": "Fredre",
+      "id": "139348648176779265",
+      "nwords": 333333,
+      "cooldown": 0
+    },
+    {
+      "username": "Goku Is My Dad",
+      "id": "705553867122671687",
+      "nwords": 2728,
+      "cooldown": 0
+    },
+    {
+      "username": "Sander",
+      "id": "380826720204488715",
+      "nwords": 29047,
+      "cooldown": 0
+    },
+    {
+      "username": "𝒩𝑅𝒞_𝟣𝟥𝟣_𝒢™",
+      "id": "689310882064498808",
+      "nwords": 9,
+      "cooldown": 0
+    },
+    {
+      "username": "DaggyS",
+      "id": "191541483550015488",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "orang tolol",
+      "id": "698174742175154176",
+      "nwords": 11,
+      "cooldown": 0
+    },
+    {
+      "username": "50",
+      "id": "385438473680846848",
+      "nwords": 423,
+      "cooldown": 0
+    },
+    {
+      "username": "....l0sing",
+      "id": "561433299466321931",
+      "nwords": 3486,
+      "cooldown": 0
+    },
+    {
+      "username": "Some guy",
+      "id": "632472638563811338",
+      "nwords": 282,
+      "cooldown": 0
+    },
+    {
+      "username": "guatafak",
+      "id": "670445951436980266",
+      "nwords": 6004,
+      "cooldown": 0
+    },
+    {
+      "username": "okiesir😐",
+      "id": "668358560282836993",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Oversighted_emo",
+      "id": "414628060441214978",
+      "nwords": 8687,
+      "cooldown": 0
+    },
+    {
+      "username": "spooky_-_ghostz",
+      "id": "692705112396660756",
+      "nwords": 6389,
+      "cooldown": 0
+    },
+    {
+      "username": "❥Day",
+      "id": "691630732434604082",
+      "nwords": 14089,
+      "cooldown": 0
+    },
+    {
+      "username": "prettyboy156",
+      "id": "637849068571328548",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Grisly Maggot",
+      "id": "409071644682878976",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "Hellbearnl",
+      "id": "442701666282635265",
+      "nwords": 154974,
+      "cooldown": 0
+    },
+    {
+      "username": "sparkling water",
+      "id": "694175915680202753",
+      "nwords": 35019,
+      "cooldown": 0
+    },
+    {
+      "username": "en baget",
+      "id": "707984283939373066",
+      "nwords": 13,
+      "cooldown": 0
+    },
+    {
+      "username": "how unfortunate",
+      "id": "232159519390564353",
+      "nwords": 3819,
+      "cooldown": 0
+    },
+    {
+      "username": "Freakyboy90",
+      "id": "454611029603778570",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "skittlii",
+      "id": "311721642030006273",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "johan5679",
+      "id": "251545845499953153",
+      "nwords": 107,
+      "cooldown": 0
+    },
+    {
+      "username": "McRats",
+      "id": "531327191875715094",
+      "nwords": 9249,
+      "cooldown": 0
+    },
+    {
+      "username": "Akuma",
+      "id": "300646033820483584",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Gottem",
+      "id": "595759983363227659",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "DanglyParts",
+      "id": "658118945794162720",
+      "nwords": 11,
+      "cooldown": 0
+    },
+    {
+      "username": "c̴̈́́t̴̃͠h̷̒́u̸͛̌l̸͙͆h̶͚͝ǘ̴̑",
+      "id": "474391823066857473",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Sam",
+      "id": "177410524236087298",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Rafael",
+      "id": "258326633151201280",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "насильник",
+      "id": "415646627018178562",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Toasty Cylinder Sauce",
+      "id": "435105160050769931",
+      "nwords": 9,
+      "cooldown": 0
+    },
+    {
+      "username": "Derrière de Paon",
+      "id": "59879362853343232",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "esleeowyang",
+      "id": "474403085410762753",
+      "nwords": 34467,
+      "cooldown": 0
+    },
+    {
+      "username": "Woods",
+      "id": "599660511101190176",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "MASSIVE DOG",
+      "id": "625097827479060480",
+      "nwords": 445,
+      "cooldown": 0
+    },
+    {
+      "username": "Tuper",
+      "id": "684941737021407236",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "RySaysHello",
+      "id": "171077469628006400",
+      "nwords": 5159,
+      "cooldown": 0
+    },
+    {
+      "username": "James Issac Whopper",
+      "id": "170252705959247872",
+      "nwords": 6897,
+      "cooldown": 0
+    },
+    {
+      "username": "mafiack bird",
+      "id": "451336132660035585",
+      "nwords": 383,
+      "cooldown": 0
+    },
+    {
+      "username": "Jangles The Moon Monkey",
+      "id": "442652441956057099",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "tomtemor",
+      "id": "708234399292063785",
+      "nwords": 93,
+      "cooldown": 0
+    },
+    {
+      "username": "𝔓𝔲𝔭𝔭𝔶",
+      "id": "507302929318019073",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "comradeafro",
+      "id": "571543397891047436",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "HardKoree_420",
+      "id": "637054414779187219",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "cimoy tepos",
+      "id": "689313524732002368",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Hermit",
+      "id": "160853500610215936",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "iGGyyy",
+      "id": "100419881970728960",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Izzy",
+      "id": "564545617255202816",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "STONCC",
+      "id": "284357293212958720",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "OpedyDopedy 1929",
+      "id": "287622583224893442",
+      "nwords": 4047,
+      "cooldown": 0
+    },
+    {
+      "username": "Lasercow",
+      "id": "442093978804813825",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Masplayer",
+      "id": "651951541065875496",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Prizm",
+      "id": "310124239049195523",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "kid krow",
+      "id": "657252973205782568",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ii_kinqm1ke",
+      "id": "504114201531383808",
+      "nwords": 142,
+      "cooldown": 0
+    },
+    {
+      "username": "Lambo Gang",
+      "id": "577134060699254794",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "𝖈𝖔𝖗𝖔𝖓𝖆 𝖑𝖎𝖌𝖍𝖙",
+      "id": "592427419709734933",
+      "nwords": 2572,
+      "cooldown": 0
+    },
+    {
+      "username": "Michelob Ultra",
+      "id": "481916585523544066",
+      "nwords": 1665,
+      "cooldown": 0
+    },
+    {
+      "username": "𝔎𝔦𝔱𝔱𝔶",
+      "id": "689354589337944065",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Wah uh boh uhl",
+      "id": "489058815069913091",
+      "nwords": 11,
+      "cooldown": 0
+    },
+    {
+      "username": "Tino",
+      "id": "251823709772447754",
+      "nwords": 117,
+      "cooldown": 0
+    },
+    {
+      "username": "TuuMeillePanee",
+      "id": "218407559378370560",
+      "nwords": 332,
+      "cooldown": 0
+    },
+    {
+      "username": "Peltiheikki",
+      "id": "254641594479804416",
+      "nwords": 19,
+      "cooldown": 0
+    },
+    {
+      "username": "Ju57amuffin",
+      "id": "598639217870110740",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Kirbo.",
+      "id": "608932235743068180",
+      "nwords": 583,
+      "cooldown": 0
+    },
+    {
+      "username": "Jordan._",
+      "id": "699424455759495210",
+      "nwords": 204,
+      "cooldown": 0
+    },
+    {
+      "username": "Nígger yuh",
+      "id": "598365736716468241",
+      "nwords": 61,
+      "cooldown": 0
+    },
+    {
+      "username": "Hauxy",
+      "id": "526311990138765312",
+      "nwords": 17,
+      "cooldown": 0
+    },
+    {
+      "username": "c0rba",
+      "id": "330281456624467971",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "Neroisms",
+      "id": "646619634224726016",
+      "nwords": 621,
+      "cooldown": 0
+    },
+    {
+      "username": "𝕍𝕀",
+      "id": "256706242267840512",
+      "nwords": 14,
+      "cooldown": 0
+    },
+    {
+      "username": "Lachlan",
+      "id": "689693876998504550",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Dr_Doorknob",
+      "id": "287842314531897345",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Gecko",
+      "id": "292809356695568384",
+      "nwords": 13,
+      "cooldown": 0
+    },
+    {
+      "username": "Eray._53",
+      "id": "440871789342490656",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "𝔅𝔩𝔬𝔬𝔡𝔶",
+      "id": "704098963313262702",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "ekimu",
+      "id": "269106246156681216",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Andromeda",
+      "id": "445446635774935040",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Crepeax",
+      "id": "345809592422367232",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Mincx",
+      "id": "572653549100466187",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Lumap",
+      "id": "635383782576357407",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "2nd Lieutenant Elias F-16",
+      "id": "468773355902992413",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Neluna.",
+      "id": "700521297959977021",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "Sincerpoopybutcheek",
+      "id": "470118635294162945",
+      "nwords": 137,
+      "cooldown": 0
+    },
+    {
+      "username": "e-bot",
+      "id": "252045280806043648",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "𝕝𝕥𝕤𝕁𝕦𝕕",
+      "id": "441664865585594369",
+      "nwords": 13,
+      "cooldown": 0
+    },
+    {
+      "username": "lex",
+      "id": "706335529658089515",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "TwoFactor",
+      "id": "244218620668805131",
+      "nwords": 30,
+      "cooldown": 0
+    },
+    {
+      "username": "miilk",
+      "id": "699583053756104745",
+      "nwords": 11,
+      "cooldown": 0
+    },
+    {
+      "username": "Darwen",
+      "id": "445668261338677248",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Masplayer_Offical",
+      "id": "709579733943189556",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "pew",
+      "id": "333742777504497666",
+      "nwords": 105,
+      "cooldown": 0
+    },
+    {
+      "username": "loud",
+      "id": "419269765908135936",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ＪｕａｎＪａ",
+      "id": "603929888826720282",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "eepi",
+      "id": "223044717963771905",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Baldboy;)",
+      "id": "691105183480021132",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "☭ pingu ☭",
+      "id": "429484319619416065",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "TrashBird",
+      "id": "321776541912793089",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Grafzwerg",
+      "id": "607594885645860874",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "matevzstrmcnik",
+      "id": "198526094830338049",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Dramnov",
+      "id": "489913222581846017",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Syve",
+      "id": "400036156248424449",
+      "nwords": 14,
+      "cooldown": 0
+    },
+    {
+      "username": "Lego Stalin",
+      "id": "190612506085949441",
+      "nwords": 39,
+      "cooldown": 0
+    },
+    {
+      "username": "HasteS",
+      "id": "251909499189854209",
+      "nwords": 1194,
+      "cooldown": 0
+    },
+    {
+      "username": "SoSheolH",
+      "id": "309028535526227969",
+      "nwords": 29,
+      "cooldown": 0
+    },
+    {
+      "username": "CloneBoyOllie",
+      "id": "136829619545440256",
+      "nwords": 12,
+      "cooldown": 0
+    },
+    {
+      "username": "Anime.-.Chill",
+      "id": "678320696794939393",
+      "nwords": 34,
+      "cooldown": 0
+    },
+    {
+      "username": "BadOptics",
+      "id": "494215886115176448",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Imperator Rex",
+      "id": "189898174360584192",
+      "nwords": 95,
+      "cooldown": 0
+    },
+    {
+      "username": "Guccimeme",
+      "id": "398284789024817153",
+      "nwords": 582,
+      "cooldown": 0
+    },
+    {
+      "username": "HandsomelyDitto",
+      "id": "254002530827108354",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Mango",
+      "id": "533451799282188288",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Teiko",
+      "id": "376483510560489472",
+      "nwords": 19,
+      "cooldown": 0
+    },
+    {
+      "username": "Zachary.",
+      "id": "529045623576461312",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Benj1",
+      "id": "163958029757186048",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "zumbi_comtuamulhé",
+      "id": "493852428094013452",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "002",
+      "id": "659608164454498304",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "╲⎝⧹xLust22⧸⎠╱",
+      "id": "277448811788500992",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "😪the simp ñeko😪",
+      "id": "662165486339096586",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Owo-Weeb",
+      "id": "361939019300601856",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Chess_Swervoo",
+      "id": "702236725644361828",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "PiscesEnergy(sick)",
+      "id": "591618981299748931",
+      "nwords": 17,
+      "cooldown": 0
+    },
+    {
+      "username": "googskedly",
+      "id": "255102205772824576",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "chikem nodle sup smel lik peepee",
+      "id": "681661142476914688",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Pevides",
+      "id": "436487964349169665",
+      "nwords": 15,
+      "cooldown": 0
+    },
+    {
+      "username": "Emeritus",
+      "id": "260858854877822976",
+      "nwords": 280,
+      "cooldown": 0
+    },
+    {
+      "username": "Kragnalls Krunk",
+      "id": "710629363766395011",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "dogburgerzz",
+      "id": "357319272764145664",
+      "nwords": 43,
+      "cooldown": 0
+    },
+    {
+      "username": "Anonting",
+      "id": "689899698085298204",
+      "nwords": 31,
+      "cooldown": 0
+    },
+    {
+      "username": "terme",
+      "id": "492994949361434624",
+      "nwords": 273,
+      "cooldown": 0
+    },
+    {
+      "username": "Kovalt",
+      "id": "541108261789892614",
+      "nwords": 14,
+      "cooldown": 0
+    },
+    {
+      "username": "Glitzerate",
+      "id": "349980985070321664",
+      "nwords": 36,
+      "cooldown": 0
+    },
+    {
+      "username": "kiminimumu",
+      "id": "195703008410075136",
+      "nwords": 59,
+      "cooldown": 0
+    },
+    {
+      "username": "ChrisC-RD",
+      "id": "523683195061796875",
+      "nwords": 46,
+      "cooldown": 0
+    },
+    {
+      "username": "Squidward Pee",
+      "id": "300003122418548736",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Siorc",
+      "id": "690434907285225534",
+      "nwords": 279,
+      "cooldown": 0
+    },
+    {
+      "username": "Bahama Maxxwell",
+      "id": "325841887112200192",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "NightLing",
+      "id": "568159106968322061",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "LiquidatedOnion",
+      "id": "427955925194899456",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Zepho",
+      "id": "231706807284793344",
+      "nwords": 20,
+      "cooldown": 0
+    },
+    {
+      "username": "Mr O' Donald",
+      "id": "642771548775776276",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Collar",
+      "id": "359054266888880130",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "yk",
+      "id": "430337131593072640",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "perpslo10993",
+      "id": "378773368255545347",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Todd from Mario Kart",
+      "id": "695719272080474113",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "FormulatedMathematic",
+      "id": "183377229097598977",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "mr.clean",
+      "id": "711003043100885054",
+      "nwords": 143,
+      "cooldown": 0
+    },
+    {
+      "username": "Skippy",
+      "id": "648656308924579867",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "TBattle",
+      "id": "208356904513175553",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "suffer.",
+      "id": "657960388075192341",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "NotSoCringey",
+      "id": "210192758177136642",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Welcome Garden",
+      "id": "712873193857089598",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Past",
+      "id": "712867310892875826",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "Esteemed Cross",
+      "id": "712876991912869898",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "Firm",
+      "id": "712879786149675018",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Infatuated Magazine",
+      "id": "712868180548386877",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Distorted",
+      "id": "712876876053348403",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Harmonious Concentrate",
+      "id": "712880626163777576",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "First",
+      "id": "712874050321383475",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Old-fashioned",
+      "id": "712877286331777086",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Noisy",
+      "id": "712867900213690410",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Nifty Dark",
+      "id": "712874418283479041",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Small",
+      "id": "712881242655424541",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Second-hand Box",
+      "id": "712870191863693332",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Wordy Invite",
+      "id": "712878262581198888",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Both",
+      "id": "712874805526921228",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Internal Celebration",
+      "id": "712882107625504779",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Orange Society",
+      "id": "712878975566872587",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Dependent Welcome",
+      "id": "712871263311233074",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Alarming Master",
+      "id": "712882165758820432",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Subtle Book",
+      "id": "712875979567136819",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Empty Map",
+      "id": "712878870021275678",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Drafty Occasion",
+      "id": "712871615591088159",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Brisk",
+      "id": "712876349844619334",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Competent",
+      "id": "712882495305285724",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Loving Local",
+      "id": "712883093807038495",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "nino",
+      "id": "693627640480923743",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Tabasco Sauce",
+      "id": "190074287208529921",
+      "nwords": 23,
+      "cooldown": 0
+    },
+    {
+      "username": "Chiller",
+      "id": "444812330707189801",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Circuit",
+      "id": "255114091360681986",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "timmy.",
+      "id": "499771809038598145",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Resurrection-X",
+      "id": "466160921740574722",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "andreas",
+      "id": "403308385539194880",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "UnshavenInk",
+      "id": "436634414596751382",
+      "nwords": 422,
+      "cooldown": 0
+    },
+    {
+      "username": "CHAD",
+      "id": "459840304317726760",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "John™",
+      "id": "544316442380730369",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "firewolfx",
+      "id": "489123842518810625",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Darklord2349",
+      "id": "227876477096558592",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Rez",
+      "id": "241288855368499200",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "leventeve",
+      "id": "261581347905077248",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Foewi",
+      "id": "398431558756859904",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Unit 50079",
+      "id": "613143022590492702",
+      "nwords": 23,
+      "cooldown": 0
+    },
+    {
+      "username": "SuperDoge",
+      "id": "709838529689026560",
+      "nwords": 99,
+      "cooldown": 0
+    },
+    {
+      "username": "jona",
+      "id": "699785851609153536",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ReeceDotpng",
+      "id": "593142340521295913",
+      "nwords": 294,
+      "cooldown": 0
+    },
+    {
+      "username": "Primordial Soup",
+      "id": "400005814125068290",
+      "nwords": 77,
+      "cooldown": 0
+    },
+    {
+      "username": "Em",
+      "id": "459825508822286347",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ok bruh",
+      "id": "691655099335966731",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Patty",
+      "id": "554418387460030465",
+      "nwords": 15,
+      "cooldown": 0
+    },
+    {
+      "username": "Killdozer",
+      "id": "643910473477128234",
+      "nwords": 188,
+      "cooldown": 0
+    },
+    {
+      "username": "INS~4sh",
+      "id": "546051438980235285",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "boomerboy",
+      "id": "712337029165482034",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "HottestMommyCoitus",
+      "id": "310960848258465794",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "golomp",
+      "id": "679312253564223519",
+      "nwords": 666,
+      "cooldown": 0
+    },
+    {
+      "username": "Lomato?-Kun",
+      "id": "646853947809726494",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "beanmaster",
+      "id": "277611488422789121",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "B u B",
+      "id": "490598572291653632",
+      "nwords": 12,
+      "cooldown": 0
+    },
+    {
+      "username": "xamillyonx",
+      "id": "710192236872335392",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Morgel",
+      "id": "644989402417725440",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Fetus ya yeetus",
+      "id": "453062713556598785",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Harry Hart",
+      "id": "709300731454161038",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Alexis.",
+      "id": "516366078360682496",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "JJ56YT",
+      "id": "712399899227848774",
+      "nwords": 279,
+      "cooldown": 0
+    },
+    {
+      "username": "umalwer",
+      "id": "394232152444895245",
+      "nwords": 269,
+      "cooldown": 0
+    },
+    {
+      "username": "GuyOnTheDiscord",
+      "id": "379290650660569090",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Definitely Gaige",
+      "id": "296074822050512919",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "RapazJota",
+      "id": "526046243533619218",
+      "nwords": 180,
+      "cooldown": 0
+    },
+    {
+      "username": "afrykańczyk",
+      "id": "650437594865336342",
+      "nwords": 143,
+      "cooldown": 0
+    },
+    {
+      "username": "_Narde_",
+      "id": "331736540227305473",
+      "nwords": 100,
+      "cooldown": 0
+    },
+    {
+      "username": "NANI!?",
+      "id": "607874126526283797",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "Dawido19",
+      "id": "648567675894890531",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "genetic_exp",
+      "id": "355384344874975234",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "Jaylon",
+      "id": "294544470953689088",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ak1ra",
+      "id": "186348278713942019",
+      "nwords": 29,
+      "cooldown": 0
+    },
+    {
+      "username": "sorry guys",
+      "id": "440105408837844992",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Melon Musk",
+      "id": "520089525343748106",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Szarik29",
+      "id": "494856108263866368",
+      "nwords": 50,
+      "cooldown": 0
+    },
+    {
+      "username": "negroman",
+      "id": "673234490533085185",
+      "nwords": 677,
+      "cooldown": 0
+    },
+    {
+      "username": "DJP",
+      "id": "379732105820766209",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "grar",
+      "id": "382576510260871196",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Raet Kzuluri",
+      "id": "156123774356291585",
+      "nwords": 10,
+      "cooldown": 0
+    },
+    {
+      "username": "bruh7",
+      "id": "690047889816551480",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Danx26",
+      "id": "456142614018916352",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "MigitMan",
+      "id": "453334661523832843",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "notif",
+      "id": "638563059438190620",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Chazzer",
+      "id": "580089406845616178",
+      "nwords": 22,
+      "cooldown": 0
+    },
+    {
+      "username": "𝕷𝖚𝖈𝖎𝖋𝖊𝖗",
+      "id": "706049895051821169",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "...Loading",
+      "id": "689515111693680787",
+      "nwords": 21,
+      "cooldown": 0
+    },
+    {
+      "username": "TheMemeInator",
+      "id": "613523885911965697",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Theuz",
+      "id": "295151922602835970",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "😉❤Flavern_ArticYt❤😉",
+      "id": "708210514848907316",
+      "nwords": 333,
+      "cooldown": 0
+    },
+    {
+      "username": "Xupr3me",
+      "id": "564329947062075396",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "succ my dick faggot",
+      "id": "672652663409606658",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Jotaro_KuJo",
+      "id": "697890778306969631",
+      "nwords": 13,
+      "cooldown": 0
+    },
+    {
+      "username": "Astro. 🖤💫",
+      "id": "496482427795931147",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "DMBY",
+      "id": "203285111758651393",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "umalwer",
+      "id": "234354744934662144",
+      "nwords": 11,
+      "cooldown": 0
+    },
+    {
+      "username": "mam fajny nick",
+      "id": "480382520580505621",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Jolo",
+      "id": "394240649127264266",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "─=≡Σ((( つ◕ل͜◕)つ",
+      "id": "462699156071383061",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "iiAmRenegade",
+      "id": "481565080928911373",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Autismo Bean",
+      "id": "222429615933751317",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "TheYeetWizard",
+      "id": "484931215846014977",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "m&m",
+      "id": "356952844877955074",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Russian_Lownwolf",
+      "id": "559597482154393621",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Am I Okay?",
+      "id": "488529578076405771",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "HERESJOHNNY61",
+      "id": "494825954997174273",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Big_up_Josh",
+      "id": "331019895146020875",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "tylerhatake95",
+      "id": "214594675447824394",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "wizardman321",
+      "id": "528390806512336896",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "MILASQUE DICOSTA",
+      "id": "364090631280263168",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Mr. Clean (Scott)",
+      "id": "481279920807608330",
+      "nwords": 467,
+      "cooldown": 0
+    },
+    {
+      "username": "mr1000ccooll",
+      "id": "455523852420907009",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "TSM MashMan",
+      "id": "319750001280417792",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "P.",
+      "id": "477570036463173633",
+      "nwords": 108,
+      "cooldown": 0
+    },
+    {
+      "username": "Houxrs Cartoon💜",
+      "id": "561179940737908736",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "pc btw",
+      "id": "714147953589223454",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "NateTH",
+      "id": "546558917929598978",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "JefferyColon JarTribute",
+      "id": "316989385386229760",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "youngexhaustpipe",
+      "id": "310840325700583426",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "shk",
+      "id": "718820398325825637",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "KingAbi🔥",
+      "id": "720363824154279957",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "lol ur gay hahahahahahh",
+      "id": "700488843740184616",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "trentin",
+      "id": "483792758038069249",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "K.",
+      "id": "363438617512771584",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "potatoaim_xd",
+      "id": "416748558658699274",
+      "nwords": 7631,
+      "cooldown": 0
+    },
+    {
+      "username": "caleb",
+      "id": "626959001908674572",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Mortar",
+      "id": "256370352819666944",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "bruhwhatsgood",
+      "id": "406939659185160193",
+      "nwords": 13,
+      "cooldown": 0
+    },
+    {
+      "username": "Neko...",
+      "id": "650457972979269652",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "KrysMelonッ",
+      "id": "680121693594714115",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Horizon",
+      "id": "682338949087363219",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "iSmokeMeth🚬",
+      "id": "444170457286180884",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Skuawk",
+      "id": "718928608898449439",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "HorseRadish",
+      "id": "305548529789566977",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Tuper",
+      "id": "720040502728327309",
+      "nwords": 154,
+      "cooldown": 0
+    },
+    {
+      "username": "masked",
+      "id": "262063190790242304",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "ObamaObamaObamaObamaObamaObamaOb",
+      "id": "377804331522719746",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "DRayZ",
+      "id": "434766677582938122",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "theliitletinytinytinyrafael",
+      "id": "699285654370254930",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Hans von blitzkrieg",
+      "id": "688006170513768469",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "P T",
+      "id": "394937553230233611",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "Smerth",
+      "id": "401896635526807553",
+      "nwords": 18,
+      "cooldown": 0
+    },
+    {
+      "username": "d’AreilleCalabria",
+      "id": "500655751912620047",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "d wex",
+      "id": "390617803423744000",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Line of Coom",
+      "id": "475175473580867585",
+      "nwords": 5,
+      "cooldown": 0
+    },
+    {
+      "username": "M66",
+      "id": "441712954493370380",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "NWG",
+      "id": "647700440686919680",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "Aqua",
+      "id": "279779055006384139",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Potatojo",
+      "id": "486113262392442900",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "pasta;))",
+      "id": "444574049931231233",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Deathbot181",
+      "id": "274004550896320513",
+      "nwords": 23,
+      "cooldown": 0
+    },
+    {
+      "username": "Nick_X",
+      "id": "627271396732567612",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "LUCAS",
+      "id": "444129974492856321",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Mikey_The_Husky",
+      "id": "351802181407473675",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Fizzy",
+      "id": "392380113909579787",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "aalex",
+      "id": "326761819131871233",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "simpsaregay",
+      "id": "722908976114565140",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "White Lil Yatchy",
+      "id": "681308946148884532",
+      "nwords": 9,
+      "cooldown": 0
+    },
+    {
+      "username": "BoomBangsGames",
+      "id": "234753285418909706",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "RealPapaJohn",
+      "id": "677314680120803339",
+      "nwords": 12,
+      "cooldown": 0
+    },
+    {
+      "username": "throwawaytrash",
+      "id": "605602424329338882",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ScarletSlaughter",
+      "id": "212793373290004480",
+      "nwords": 962,
+      "cooldown": 0
+    },
+    {
+      "username": "Ender",
+      "id": "375660120895389713",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "pengun",
+      "id": "407736666317389824",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "ッッ",
+      "id": "406464194322366464",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "DrFryingPan",
+      "id": "197807115874598912",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Lehanson",
+      "id": "442325546773250048",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "WizardPenguinTB",
+      "id": "398263311822618634",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Shag",
+      "id": "283055251798622209",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "jetsnapper559",
+      "id": "195694201822773248",
+      "nwords": 8,
+      "cooldown": 0
+    },
+    {
+      "username": "Yotsuba",
+      "id": "118857932568788992",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "viscousworms",
+      "id": "238863948919603202",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Pacyficzny",
+      "id": "339758020492001280",
+      "nwords": 133,
+      "cooldown": 0
+    },
+    {
+      "username": "SolNyeusi",
+      "id": "366475556470128641",
+      "nwords": 130,
+      "cooldown": 0
+    },
+    {
+      "username": "Kevin530",
+      "id": "400451889759649802",
+      "nwords": 52,
+      "cooldown": 0
+    },
+    {
+      "username": "Pooj1225",
+      "id": "352977760592986114",
+      "nwords": 44,
+      "cooldown": 0
+    },
+    {
+      "username": "KravinDeslie",
+      "id": "215312298779082762",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "conzxo",
+      "id": "420368647769292810",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Maria",
+      "id": "185524207403270144",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Bends",
+      "id": "445317667822239746",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "👌👌👌",
+      "id": "275667246259372033",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "𝐒𝐡𝐚𝐪𝐖𝐑𝐋𝐃",
+      "id": "589929981430464522",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "ｂｏｉ",
+      "id": "619218368834175001",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Subleaf Gaming",
+      "id": "705116185230049321",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Kibie",
+      "id": "269628817776050176",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Dudegamer145",
+      "id": "597656056264392745",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "moth8mylampYT",
+      "id": "560580551652933633",
+      "nwords": 18,
+      "cooldown": 0
+    },
+    {
+      "username": "IdioticMoose",
+      "id": "554813419338072073",
+      "nwords": 122,
+      "cooldown": 0
+    },
+    {
+      "username": "The Berd Of Good Morale",
+      "id": "554504527999401984",
+      "nwords": 28,
+      "cooldown": 0
+    },
+    {
+      "username": "RandomTree",
+      "id": "716949913069420624",
+      "nwords": 19,
+      "cooldown": 0
+    },
+    {
+      "username": "Giro",
+      "id": "334341710626684928",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "LaNgOStInO",
+      "id": "608303444855488533",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Bugha",
+      "id": "613848693736472640",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "FemDev",
+      "id": "722329582098972713",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "A̷͝͞ú͞t̴̢̀ų̨̨m҉̷̡͝n̸̴",
+      "id": "321495399510573056",
+      "nwords": 2,
+      "cooldown": 0
+    },
+    {
+      "username": "Liester - chan",
+      "id": "699665589232336937",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "i stomp on babies",
+      "id": "403297604345266176",
+      "nwords": 33684,
+      "cooldown": 0
+    },
+    {
+      "username": "BobbyBBrown",
+      "id": "601218157998374921",
+      "nwords": 595,
+      "cooldown": 0
+    },
+    {
+      "username": "RUS",
+      "id": "335964484789338123",
+      "nwords": 2361,
+      "cooldown": 0
+    },
+    {
+      "username": "SaltyTea1773",
+      "id": "509011426887598119",
+      "nwords": 298,
+      "cooldown": 0
+    },
+    {
+      "username": "moe nmr",
+      "id": "400816428107825162",
+      "nwords": 6,
+      "cooldown": 0
+    },
+    {
+      "username": "Lepur.",
+      "id": "347184618044391435",
+      "nwords": 3,
+      "cooldown": 0
+    },
+    {
+      "username": "nxiv",
+      "id": "717462470553239643",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Ty Macz Bombu",
+      "id": "257615720983166977",
+      "nwords": 369,
+      "cooldown": 0
+    },
+    {
+      "username": "Jakobe",
+      "id": "325753529459539979",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Killer12345678905",
+      "id": "276098487542874113",
+      "nwords": 4,
+      "cooldown": 0
+    },
+    {
+      "username": "noobly",
+      "id": "525811062357098496",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Mùrphy",
+      "id": "362030709612740609",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "𝕂𝕒𝕨𝕒𝕚𝕚❤",
+      "id": "708175502413791313",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Deathfang11",
+      "id": "207315830655025153",
+      "nwords": 7,
+      "cooldown": 0
+    },
+    {
+      "username": "A7med",
+      "id": "453470897081286666",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Chef",
+      "id": "540655538392793100",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Blond",
+      "id": "388941662447075338",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "Vincxnt2",
+      "id": "634083708013510676",
+      "nwords": 1,
+      "cooldown": 0
+    },
+    {
+      "username": "hypening",
+      "id": "111478728218902528",
+      "nwords": 1,
+      "cooldown": 0
+    }
+  ]
+}

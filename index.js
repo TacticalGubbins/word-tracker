@@ -5,7 +5,7 @@ const client = new Client();
 
 const fs = require('fs');
 
-const config = require("./config.json");
+const config = require("../test.json");
 const changelog = require("./changelog.json");
 
 const DBL = require("dblapi.js");
@@ -656,20 +656,25 @@ client.on("message", (message) => {
     curr = wordArgs[j];
 
     let trackedWords = getTrackWords(message, data);
-    if(trackedWords.has(curr.toLowerCase())) {
-      //var authorPos = -1;
-      checkIfShouldWrite = true;
+    try {
+      if(trackedWords.has(curr.toLowerCase())) {
+        //var authorPos = -1;
+        checkIfShouldWrite = true;
 
-      ////
+        ////
 
-      if(data.servers[server].users[authorPos].cooldown < Date.now()) {
-        data.servers[server].users[authorPos].cooldown = 0;
-        //write(data);
-      }
-      if(data.servers[server].users[authorPos].cooldown > 0) {
-        authorPos = authorPos;
-        break;
-      }
+        if(data.servers[server].users[authorPos].cooldown < Date.now()) {
+          data.servers[server].users[authorPos].cooldown = 0;
+          //write(data);
+        }
+        if(data.servers[server].users[authorPos].cooldown > 0) {
+          authorPos = authorPos;
+          break;
+        }
+    }
+    catch(err) {
+      console.log("Oops something when wrong with curr being undefined probably");
+    }
 
 
       //add +1 to the user in the data array

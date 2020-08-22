@@ -1,10 +1,10 @@
 {
-  "totalSent": 0,
+  "totalSent": 4,
   "topUser": {
-    "username": "USER",
-    "id": "0000",
-    "words": 0,
-    "avatar": ""
+    "username": "Cyakat",
+    "id": "249382933054357504",
+    "words": 4,
+    "avatar": "https://cdn.discordapp.com/avatars/249382933054357504/19c8ba50c1abd9c357a836547f8bb903.webp"
   },
   "ogs": [],
   "servers": [
@@ -21,7 +21,7 @@
         {
           "username": "Cyakat",
           "id": "249382933054357504",
-          "words": 0,
+          "words": 4,
           "cooldown": 0
         }
       ]
