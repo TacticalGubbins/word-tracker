@@ -13,6 +13,9 @@
           "Added custom prefix ability use with n!setPrefix",
           "Added an easter egg!",
           "If you find issues with the bot or have suggestions you can always send them in the server's respective channels!"
+        ],
+        "1": [
+          "Fixed a bug that would cause the bot to crash"
         ]
       }
     }

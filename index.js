@@ -671,16 +671,17 @@ client.on("message", (message) => {
           authorPos = authorPos;
           break;
         }
+
+
+
+        //add +1 to the user in the data array
+        data.servers[server].users[authorPos].words = parseInt(data.servers[server].users[authorPos].words) + 1;
+        data.totalSent++;
+        nword++;
+      }
     }
     catch(err) {
       console.log("Oops something when wrong with curr being undefined probably");
-    }
-
-
-      //add +1 to the user in the data array
-      data.servers[server].users[authorPos].words = parseInt(data.servers[server].users[authorPos].words) + 1;
-      data.totalSent++;
-      nword++;
     }
 
 
