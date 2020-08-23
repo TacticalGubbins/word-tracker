@@ -13,7 +13,7 @@ const dbl = new DBL(config.topToken, client);
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
-const version = '3.7.1';
+const version = '3.7.2';
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
 //const prefix = "n!";
@@ -582,13 +582,24 @@ client.on("message", (message) => {
       message.channel.send(embed);
     }
     catch(err) {
-      let embed = new MessageEmbed()
-      .setTitle("jesus christ your dumn")
-      .setColor(0xFF7777)
-      .setDescription("stupid idiot")
-      .setFooter("try " + prefix + "changelog 3.6.4");
+      if(args[1] === stupid) {
+        let embed = new MessageEmbed()
+        .setTitle("jesus christ your dumn")
+        .setColor(0xFF7777)
+        .setDescription("stupid idiot")
+        .setFooter("try " + prefix + "changelog 3.6.4");
 
-      message.channel.send(embed);
+        message.channel.send(embed);
+      }
+      else {
+        let embed = new MessageEmbed()
+        .setTitle("Version not found")
+        .setColor(0xFF7777)
+        .setDescription("The version specified could not be found. The oldest changelog is for 3.6.4")
+        .setFooter("try " + prefix + "changelog 3.6.4");
+
+        message.channel.send(embed);
+      }
     }
   }
 
@@ -648,11 +659,10 @@ client.on("message", (message) => {
     message.channel.send("Current verify message: **" + fs.readFileSync('PASSWORD.txt').toString() + "**");
   }
 
+  let wordArgs = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+  wordArgs = wordArgs.filter(item => !!item);
+  for(var j = 0; j < wordArgs.length; j++) {
 
-
-  for(var j = 0; j < args.length; j++) {
-    let wordArgs = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
-    wordArgs = wordArgs.filter(item => !!item);
     curr = wordArgs[j];
 
     let trackedWords = getTrackWords(message, data);
