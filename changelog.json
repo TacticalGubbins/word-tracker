@@ -23,6 +23,13 @@
         "3": [
           "Removed the very in-your-face error message that the changelog command would give if an incorrect version was specified",
           "Also may or may not have kept it in as an easter egg"
+        ],
+        "4": [
+          "Fixed a bug with the prefix command breaking the bot",
+          "Made the prefix length a max of 5 characters",
+          "*Finally* made the bot check the user who runs the n!check command if left blank",
+          "Added a small feature relating to an EE",
+          "Changed a few commands to have different aliases"
         ]
       }
     }

@@ -14,7 +14,7 @@ const dbl = new DBL(config.topToken, client);
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
 
-const version = '3.7.3';
+const version = '3.7.4';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -60,9 +60,17 @@ client.on('ready', () => {
       if(stat === 0) {
         client.user.setActivity(`n! help for help`, {type : 'PLAYING'});
         stat = 1;
-      } else {
+      }
+      else if(stat === 1) {
         client.user.setActivity(`${data.totalSent} words`, {type : 'WATCHING'});
-        stat = 0;
+        stat = Math.floor(Math.random() * Math.floor(10));
+        if(stat === 1 || stat > 2) {
+          stat = 0;
+        }
+      }
+      else if(stat === 2) {
+          client.user.setActivity(`with my ${data.ppLength} pp`, {type : 'PLAYING'});
+          stat = 0;
       }
         write(data);
 
@@ -266,20 +274,22 @@ client.on("message", (message) => {
 
   //see how many n-words somebody has sent
   if(message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")) {
+    let user;
 
     //check to see if the value inputted is a user
-    if(args[1] == null) {
-      let embed = new MessageEmbed()
+    if(args[1] === undefined) {
+      /*let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
       .setDescription('You must include an @!');
       //message.channel.send("You must include an @!")
       message.channel.send(embed);
 
-      return;
+      return;*/
+      user = message.author.id;
+    } else {
+      user = args[1].replace(/\D/g,'');
     }
-
-    let user = args[1].replace(/\D/g,'');
 
     if(user == client.user.id) {
       let embed = new MessageEmbed()
@@ -296,7 +306,6 @@ client.on("message", (message) => {
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
       //find the id of the user in question
-      let user = args[1].replace(/\D/g,'');
       console.log(`\nFetching info for ${user}`);
 
 
@@ -545,8 +554,8 @@ client.on("message", (message) => {
     .addField(prefix + 'count', 'Same as **ncheck**', true)
     .addField(prefix + 'total', 'Retrieves the total amount of words recorded', true)
     .addField(prefix + 'top', 'Gives info about top-sending user', true)
-    .addField(prefix + 'lead', '(leaderboard) Retrieves the top 10 users in a server', true)
-    .addField(prefix + 'globalLead', 'Retrieves the top 10 sending users world-wide', true)
+    .addField(prefix + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+    .addField(prefix + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
     .addField(prefix + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
     .addField(prefix + 'info', 'Gives info about the bot', true)
     .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
@@ -556,7 +565,7 @@ client.on("message", (message) => {
     .addField(prefix + "settings", "View all current server settings", true)
     .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
     .addField(prefix + 'cooldown', 'Change the server cooldown for counted words', true)
-    .addField(prefix + 'setPrefix', 'Changes the prefix for the server', true)
+    .addField(prefix + 'setPrefix', '(prefix) Changes the prefix for the server', true)
     ;
     //message.author.send(`${help}`);
     message.author.send(embed);
@@ -584,7 +593,7 @@ client.on("message", (message) => {
       message.channel.send(embed);
     }
     catch(err) {
-      if(args[1] === "stupid") {
+      if(args[1] === "stupid" || args[1] === "idiot" || args[1] === "dumb") {
         let embed = new MessageEmbed()
         .setTitle("jesus christ your dumn")
         .setColor(0xFF7777)
@@ -605,15 +614,32 @@ client.on("message", (message) => {
     }
   }
 
-  if(message.content.toLowerCase().startsWith(prefix + "setprefix")) {
+  if(message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")) {
     if(message.member.hasPermission('ADMINISTRATOR')) {
-    data.servers[server].prefix = args[1].toLowerCase();
-    let embed = new MessageEmbed()
-    .setTitle('')
-    .setColor(0xBF66E3)
-    .setDescription("Prefix has been changed to **" + data.servers[server].prefix + "**");
-
-    message.channel.send(embed);
+      if(args[1] === undefined) {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xFF0000)
+        .setDescription('Please include a prefix after the command!');
+        message.channel.send(embed);
+        return;
+      }
+      if(args[1].length <= 5) {
+        data.servers[server].prefix = args[1].toLowerCase();
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription("Prefix has been changed to **" + data.servers[server].prefix + "**")
+        .setFooter('Requested by ' + message.author.tag);
+        message.channel.send(embed);
+      } else {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xFF0000)
+        .setDescription('Please make the prefix less than 5 characters!');
+        message.channel.send(embed);
+        return;
+      }
   } else {
       let embed = new MessageEmbed()
       .setTitle('')
@@ -623,7 +649,7 @@ client.on("message", (message) => {
       return;
     }
   }
-  if(message.content.toLowerCase().startsWith(prefix + "setpplength")) {
+  if(message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")) {
 
     if(args[1] != undefined ) {
       args.shift();
