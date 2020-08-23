@@ -19,6 +19,10 @@
         ],
         "2": [
           "Actually fixed the bug that caused the bot crash"
+        ],
+        "3": [
+          "Removed the very in-your-face error message that the changelog command would give if an incorrect version was specified",
+          "Also may or may not have kept it in as an easter egg"
         ]
       }
     }
