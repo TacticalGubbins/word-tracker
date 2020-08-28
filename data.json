@@ -1,5 +1,5 @@
 {
-  "totalSent": 5,
+  "totalSent": 6,
   "topUser": {
     "username": "Cyakat",
     "id": "249382933054357504",
@@ -22,6 +22,12 @@
           "username": "Cyakat",
           "id": "249382933054357504",
           "words": 5,
+          "cooldown": 0
+        },
+        {
+          "username": "TacticalGubbins",
+          "id": "250408653830619137",
+          "words": 1,
           "cooldown": 0
         }
       ]

@@ -344,7 +344,6 @@ client.on("message", (message) => {
               //send the number of words counted
               let embed = new MessageEmbed()
               .setTitle('')
-              .setColor(0xBF66E3)
               .setDescription(client.users.cache.get(user).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
               .setFooter('Requested by ' + message.author.tag)
               ;
@@ -353,18 +352,42 @@ client.on("message", (message) => {
                 embed.addField("Cooldown:", userCooldown)
               }
 
-              let ogs = getOGS(data);
-              if(ogs.has(client.users.cache.get(user).id)) {
-                embed.setColor(0xFFA417);
+
+                dbl.hasVoted(user).then(voted => {
+                  let ogs = getOGS(data);
+                  if(ogs.has(user)) {
+                    embed.setColor(0xFFA417);
+                  }
+                  else if(voted) {
+                    embed.setColor(0x34c200);
+                  }
+
+                  //custom colors for pog people
+                  else if(user === '445668261338677248') {
+                    embed.setColor(0xFF1CC5);
+                  }
+                  else if(user === '448269007800238080') {
+                    embed.setColor(0x17FF1B);
+                  }
+                  else if(user === '656755471847260170') {
+                    embed.setColor(0x17D1FF);
+                  } else {
+                    embed.setColor(0xBF66E3);
+                  }
+
+                  message.channel.send(embed);
+                });
               }
+
+
               //custom colors for pog people
-              if(client.users.cache.get(user).id === '445668261338677248') {
+              if(user === '445668261338677248') {
                 embed.setColor(0xFF1CC5);
               }
-              if(client.users.cache.get(user).id === '448269007800238080') {
+              if(user === '448269007800238080') {
                 embed.setColor(0x17FF1B);
               }
-              if(client.users.cache.get(user).id === '656755471847260170') {
+              if(user === '656755471847260170') {
                 embed.setColor(0x17D1FF);
               }
 
