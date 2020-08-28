@@ -31,6 +31,11 @@
           "Added a small feature relating to an EE",
           "Changed a few commands to have different aliases"
         ]
+      },
+      "8": {
+        "0": [
+          "Voting will now change the embed color when n!check is called on your profile"
+        ]
       }
     }
   }
