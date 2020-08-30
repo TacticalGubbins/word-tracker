@@ -14,7 +14,7 @@ const dbl = new DBL(config.topToken, client);
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
 
-const version = '3.7.4';
+const version = '3.7.5';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -88,6 +88,10 @@ dbl.on('error', e => {
 });
 
 
+client.on("guildCreate", (guild) => {
+  addServerNames(data);
+});
+
 
 
 client.on("message", (message) => {
@@ -122,7 +126,7 @@ client.on("message", (message) => {
   }
 
   if(message.content === "hi" && message.author.id === "249382933054357504") {
-    addServerNames(message, data);
+    addServerNames(data);
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
@@ -1131,7 +1135,7 @@ function getGlobalTop(message, data) {
       for(var p = 0; p < arr.users.length; p++) {
         if(data.servers[i].users[o].id === arr.users[p].id) {
           arr.users[p].serverName = data.servers[i].name;
-          if(arr.users[p].serverName != undefined) {
+          if(arr.users[p].serverName !== undefined) {
             break;
           }
         }
@@ -1231,7 +1235,7 @@ function getGlobalTop(message, data) {
 }
 
 //adds the name of the server to the data file
-function addServerNames(message, data) {
+function addServerNames(data) {
   for(var i = 0; i < data.servers.length; i++) {
     try {
       data.servers[i].name = client.guilds.cache.get(data.servers[i].id).name;
