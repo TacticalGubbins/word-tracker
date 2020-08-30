@@ -30,6 +30,12 @@
           "*Finally* made the bot check the user who runs the n!check command if left blank",
           "Added a small feature relating to an EE",
           "Changed a few commands to have different aliases"
+        ],
+        "5": [
+          "Fixed an issue where server names would not be saved when the bot joined a new server"
+        ],
+        "6": [
+          "Optimized the the previous fix"
         ]
       }
     }
