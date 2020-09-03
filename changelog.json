@@ -33,6 +33,9 @@
         ],
         "5": [
           "Fixed an issue where server names would not be saved when the bot joined a new server"
+        ],
+        "6": [
+          "Optimized the the previous fix"
         ]
       }
     }

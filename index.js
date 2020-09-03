@@ -14,7 +14,7 @@ const dbl = new DBL(config.topToken, client);
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
 
-const version = '3.7.5';
+const version = '3.7.6';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -89,7 +89,7 @@ dbl.on('error', e => {
 
 
 client.on("guildCreate", (guild) => {
-  addServerNames(data);
+  storeServerName(guild, data);
 });
 
 
@@ -1242,6 +1242,20 @@ function addServerNames(data) {
     }
     catch(err) {
       console.log("Bot is no longer in the server with id " + data.servers[i].id);
+    }
+  }
+}
+
+function storeServerName(guild, data) {
+  for(var i = 0; i < data.servers.length; i++) {
+    if (data.servers[i].id === guild.id) {
+      try {
+        data.servers[i].name = guild.name;
+      }
+      catch(err) {
+        console.log("Uhh idk how you could get here but something is wrong with the the bot joining probs " + data.servers[i].id);
+      }
+      break;
     }
   }
 }
