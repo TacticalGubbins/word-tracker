@@ -14,7 +14,7 @@ const dbl = new DBL(config.topToken, client);
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
 
-const version = '3.7.4';
+const version = '3.7.7';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -35,6 +35,8 @@ var checkIfShouldWrite = false;
 var stat = 0;
 
 //cooldown vars
+var watching = new Array();
+
 var nword = 0;
 let cooldown = new Set();
 let cdseconds = 0;
@@ -58,7 +60,7 @@ client.on('ready', () => {
 
   setInterval(() => {
       if(stat === 0) {
-        client.user.setActivity(`n! help for help`, {type : 'PLAYING'});
+        client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
         stat = 1;
       }
       else if(stat === 1) {
@@ -88,6 +90,10 @@ dbl.on('error', e => {
 });
 
 
+/*client.on("guildCreate", (guild) => {
+  storeServerName(guild, data);
+});*/
+
 
 
 client.on("message", (message) => {
@@ -96,9 +102,40 @@ client.on("message", (message) => {
   if(message.author.bot ) return;
 
   //ignore messages sent in dms
-  if(message.channel.type === 'dm') {
+  if(message.channel.type === 'dm' && (message.content === "n!help" || message.content === "help")) {
+    let embed = new MessageEmbed()
+    .setTitle('Bot Help')
+    .setColor(0xBF66E3)
+    .setDescription('')
+    .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+    .addField('n!' + 'help', 'Gives you this message', true)
+    .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+    .addField('Commands', '----')
+    .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
+    .addField('n!' + 'count', 'Same as **n!check**', true)
+    .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
+    .addField('n!' + 'top', 'Gives info about top-sending user', true)
+    .addField('n!' + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+    .addField('n!' + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
+    .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+    .addField('n!' + 'info', 'Gives info about the bot', true)
+    .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+    .addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+    .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+    .addField("Server Setup", "----")
+    .addField('n!' + "settings", "View all current server settings", true)
+    .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
+    .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
+    .addField('n!' + 'setPrefix', '(prefix) Changes the prefix for the server', true)
+    ;
+
+    message.channel.send(embed)
+
+    return;
+  }
+  else if(message.channel.type === 'dm'){
    message.channel.send("Shut up retard go talk in a server");
-   client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
+   //client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
    return;
  }
 
@@ -122,7 +159,7 @@ client.on("message", (message) => {
   }
 
   if(message.content === "hi" && message.author.id === "249382933054357504") {
-    addServerNames(message, data);
+    addServerNames(data);
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
@@ -549,7 +586,9 @@ client.on("message", (message) => {
     .setColor(0xBF66E3)
     .setDescription('')
     .setFooter('For private server:\n\ngetverify: retrieves current verify code')
-    .addField(prefix + 'help', 'Gives you this message')
+    .addField(prefix + 'help', 'Gives you this message', true)
+    .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+    .addField('Commands', '----')
     .addField(prefix + 'check', 'Checks the # of words sent by a user', true)
     .addField(prefix + 'count', 'Same as **ncheck**', true)
     .addField(prefix + 'total', 'Retrieves the total amount of words recorded', true)
@@ -605,7 +644,7 @@ client.on("message", (message) => {
       else {
         let embed = new MessageEmbed()
         .setTitle("Version not found")
-        .setColor(0xFF7777)
+        .setColor(0xFF0000)
         .setDescription("The version specified could not be found. The oldest changelog is for 3.6.4")
         .setFooter("try " + prefix + "changelog 3.6.4");
 
@@ -705,7 +744,14 @@ client.on("message", (message) => {
           data.servers[server].users[authorPos].cooldown = 0;
           //write(data);
         }
-        if(data.servers[server].users[authorPos].cooldown > 0) {
+        var blacklist = getBlacklist(message, data);
+        if(data.servers[server].users[authorPos].cooldown > 0 || blacklist.has(message.author.id)) {
+          for(var o = 0; o < data.blacklist.length; o++) {
+            if(data.blacklist[o].time < Date.now()) {
+              delete data.blacklist[o];
+            }
+          }
+          data.blacklist = data.blacklist.filter(item => !!item);
           authorPos = authorPos;
           break;
         }
@@ -719,11 +765,12 @@ client.on("message", (message) => {
       }
     }
     catch(err) {
-      console.log("Oops something when wrong with curr being undefined probably");
+      console.log(err);
     }
 
 
     if(j == wordArgs.length - 1 && checkIfShouldWrite == true) {
+      let watchingSet = getWatching(watching);
 
       //special message for savi --- simp!
       /*if(message.author.id == 395980133565071360) {
@@ -764,6 +811,55 @@ client.on("message", (message) => {
             }
           }
         }, (data.servers[server].cooldown * nword) * 1000);
+      }
+
+      if(nword >= 20) {
+
+        if(!(watchingSet.has(message.author.id)) && !(blacklist.has(message.author.id))) {
+          watching.push({
+            "id": message.author.id,
+            "words": nword,
+            "time": Date.now() + 600000
+          });
+        }
+      }
+
+
+      if(watchingSet.has(message.author.id)) {
+        for(var o = 0; o < watching.length; o++) {
+          try {
+            if(watching[o].id === message.author.id) {
+              if(watching[o].words > 5000) {
+                data.blacklist.push({
+                  "id": message.author.id,
+                  "time": Date.now() + 345600000
+                });
+                console.log(`${message.author.username} was blacklisted`);
+                let embed = new MessageEmbed()
+                .setTitle('')
+                .setColor()
+                .setColor(0xFF0000)
+                .setDescription(`You sent ${watching[o].words} words within 10 minutes, this is considered spamming, so to keep the bot running optimally, you have been blacklisted for **4** days`)
+                ;
+
+                message.author.send(embed);
+                delete watching[o];
+              }
+              else if(Date.now() > watching[o].time) {
+                delete watching[o];
+                console.log(watching);
+                break;
+              } else {
+                watching[o].words += nword;
+                break;
+              }
+            }
+          }
+          catch(err) {
+
+          }
+        }
+        watching = watching.filter(item => !!item);
       }
 
       nword = 0;
@@ -936,6 +1032,7 @@ function getServer(message, data) {
 
   if(server === -1) {
     data.servers.push({
+      "name": message.guild.name,
       "id": message.guild.id,
       "cooldown": 5,
       "strings": defaultStrings,
@@ -1131,7 +1228,7 @@ function getGlobalTop(message, data) {
       for(var p = 0; p < arr.users.length; p++) {
         if(data.servers[i].users[o].id === arr.users[p].id) {
           arr.users[p].serverName = data.servers[i].name;
-          if(arr.users[p].serverName != undefined) {
+          if(arr.users[p].serverName !== undefined) {
             break;
           }
         }
@@ -1231,7 +1328,7 @@ function getGlobalTop(message, data) {
 }
 
 //adds the name of the server to the data file
-function addServerNames(message, data) {
+function addServerNames(data) {
   for(var i = 0; i < data.servers.length; i++) {
     try {
       data.servers[i].name = client.guilds.cache.get(data.servers[i].id).name;
@@ -1242,12 +1339,56 @@ function addServerNames(message, data) {
   }
 }
 
+function storeServerName(guild, data) {
+  for(var i = 0; i < data.servers.length; i++) {
+    if (data.servers[i].id === guild.id) {
+      try {
+        data.servers[i].name = guild.name;
+      }
+      catch(err) {
+        console.log("Uhh idk how you could get here but something is wrong with the the bot joining probs " + data.servers[i].id);
+      }
+      break;
+    }
+  }
+}
+
 function getPrefix(message, data) {
   if(data.servers[getServer(message, data)].prefix === undefined) {
     return "n!";
   } else {
     return data.servers[getServer(message, data)].prefix;
   }
+}
+
+function getWatching(watching) {
+  let watchingSet = new Set();
+  for(var i = 0; i < watching.length; i++) {
+    try {
+      watchingSet.add(watching[i].id);
+    }
+    catch(err) {
+
+    }
+  }
+  return watchingSet;
+}
+
+function getBlacklist(message, data) {
+  let blacklist = new Set();
+  if(data.blacklist === undefined) {
+    data.blacklist = new Array();
+    console.log(`created blacklist`);
+  }
+  for(var i = 0; i < data.blacklist.length; i++) {
+    if(data.blacklist[i].time > Date.now) {
+      delete data.blacklist[i];
+    } else if(!(blacklist.has(message.author.id))) {
+      blacklist.add(data.blacklist[i].id);
+    }
+  }
+  data.blacklist = data.blacklist.filter(item => !!item);
+  return blacklist;
 }
 
 /*function newBot(message) {
