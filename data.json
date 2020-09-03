@@ -1,31 +1,40 @@
 {
-  "totalSent": 5,
+  "totalSent": 72917,
   "topUser": {
-    "username": "Cyakat",
-    "id": "249382933054357504",
-    "words": 5,
-    "avatar": "https://cdn.discordapp.com/avatars/249382933054357504/19c8ba50c1abd9c357a836547f8bb903.webp"
+    "username": "TacticalGubbins",
+    "id": "250408653830619137",
+    "words": 71367,
+    "avatar": "https://cdn.discordapp.com/avatars/250408653830619137/6be874c93f7ac61defcf7ae1341dd375.webp"
   },
   "ogs": [],
   "servers": [
     {
       "id": "637740070648021000",
-      "cooldown": 5,
+      "cooldown": 0,
       "strings": [
-        "bruh",
-        "nice",
-        "bots",
-        "cow"
+        "b"
       ],
       "users": [
         {
           "username": "Cyakat",
           "id": "249382933054357504",
-          "words": 5,
+          "words": 1550,
+          "cooldown": 0
+        },
+        {
+          "username": "TacticalGubbins",
+          "id": "250408653830619137",
+          "words": 71367,
           "cooldown": 0
         }
       ],
       "name": "Haha Louie Gay"
+    }
+  ],
+  "blacklist": [
+    {
+      "id": "250408653830619137",
+      "time": 1599108350119
     }
   ]
 }

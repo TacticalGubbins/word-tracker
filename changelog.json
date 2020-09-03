@@ -36,6 +36,13 @@
         ],
         "6": [
           "Optimized the the previous fix"
+        ],
+        "7": [
+          "Added a link to the support server in the help file",
+          "Direct Messaging the bot 'help' or 'n!help' will give you the help file",
+          "Fixed a typo in the help file",
+          "Changed the embed color for the changelog error response",
+          "Added a forced cooldown for people spamming way too much"
         ]
       }
     }
