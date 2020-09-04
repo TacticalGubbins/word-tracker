@@ -1301,12 +1301,12 @@ function getGlobalTop(message, data) {
       topWordPos = i;
     }
   }
-  console.log(trackedWordsScoreSorted)
+  //console.log(trackedWordsScoreSorted)
   if(trackedWordsScore[topWordPos] > 1) {
     embed.addField('**The most popular tracked word is:** ', trackedWords[topWordPos]);
   }
 
-  console.log(arr)
+  //console.log(arr)
   //add user positions, max of 10, from json object
   for(var i = 0; i < arr.length && i < 10; i++) {
     if(arr[i].id === message.author.id) {
