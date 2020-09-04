@@ -17,6 +17,7 @@
         "bots",
         "cow"
       ],
+      "prefix": "b!",
       "users": [
         {
           "username": "Cyakat",
@@ -32,5 +33,6 @@
         }
       ]
     }
-  ]
+  ],
+  "ppLength": "smol"
 }
