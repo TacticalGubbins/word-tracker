@@ -4,6 +4,7 @@ const {Client, MessageAttachment, MessageEmbed, MessageCollector} = require('dis
 const client = new Client();
 
 const fs = require('fs');
+const colors = require('colors');
 
 const config = require("../test.json");
 const changelog = require("./changelog.json");
@@ -14,7 +15,7 @@ const dbl = new DBL(config.topToken, client);
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
 
-const version = '3.7.4';
+const version = '3.8.0';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -27,6 +28,12 @@ var data = require("./data.json");
 var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
+/*NOTES********************************************************
+NEW CONSOLE.LOG MESSAGES:
+  Errors: console.log("ERROR".bgRed.black + " " + "(insert custom error message here)"); console.log(err);
+  Warnings: console.log("WARN".bgYellow.black + " " + "(insert custom warning message here)");
+  Information: console.log("INFO".bgGreen.black + " " + "(insert the info message here)");
+*/
 
 //variables relating to users
 var checkIfShouldWrite = false;
@@ -35,11 +42,41 @@ var checkIfShouldWrite = false;
 var stat = 0;
 
 //cooldown vars
+var watching = new Array();
+
 var nword = 0;
 let cooldown = new Set();
 let cdseconds = 0;
 
 var d = new Date();
+
+//OBJECTS************************
+let logging = {
+  info: function(text) {
+    console.log('INFO'.bgGreen.black + ' ' + text);
+  },
+  warn: function(text) {
+    console.log('WARN'.bgYellow.black + ' ' + text);
+  },
+  error: function(text) {
+    console.log('ERROR'.bgRed.black + ' ' + text);
+  },
+  debug: function(text) {
+    console.log('DEBUG'.bgBlue.black + ' ' + text);
+  }
+}
+
+let achievements = {
+  //Back to the roots
+  "roots" : [],
+  //Now that's long
+  "pp" : [],
+  //Stupid idiot
+  "changelog" : [],
+  //Fuck you seb
+  "inviteNow" : []
+
+}
 
 client.on('ready', () => {
   console.log("BOT ONLINE");
@@ -52,13 +89,15 @@ client.on('ready', () => {
           dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
         }
         catch(err) {
-          console.log("Unable to post status to dbl");
+          logging.warn("Something's wrong with dblapi? \n");
+          console.log(err);
+          console.log("\n");
         }
     }, 1800000);
 
   setInterval(() => {
       if(stat === 0) {
-        client.user.setActivity(`n! help for help`, {type : 'PLAYING'});
+        client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
         stat = 1;
       }
       else if(stat === 1) {
@@ -88,6 +127,10 @@ dbl.on('error', e => {
 });
 
 
+/*client.on("guildCreate", (guild) => {
+  storeServerName(guild, data);
+});*/
+
 
 
 client.on("message", (message) => {
@@ -96,9 +139,40 @@ client.on("message", (message) => {
   if(message.author.bot ) return;
 
   //ignore messages sent in dms
-  if(message.channel.type === 'dm') {
+  if(message.channel.type === 'dm' && (message.content === "n!help" || message.content === "help")) {
+    let embed = new MessageEmbed()
+    .setTitle('Bot Help')
+    .setColor(0xBF66E3)
+    .setDescription('')
+    .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+    .addField('n!' + 'help', 'Gives you this message', true)
+    .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+    .addField('Commands', '----')
+    .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
+    .addField('n!' + 'count', 'Same as **n!check**', true)
+    .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
+    .addField('n!' + 'top', 'Gives info about top-sending user', true)
+    .addField('n!' + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+    .addField('n!' + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
+    .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+    .addField('n!' + 'info', 'Gives info about the bot', true)
+    .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+    .addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+    .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+    .addField("Server Setup", "----")
+    .addField('n!' + "settings", "View all current server settings", true)
+    .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
+    .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
+    .addField('n!' + 'setPrefix', '(prefix) Changes the prefix for the server', true)
+    ;
+
+    message.channel.send(embed)
+
+    return;
+  }
+  else if(message.channel.type === 'dm'){
    message.channel.send("Shut up retard go talk in a server");
-   client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
+   //client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
    return;
  }
 
@@ -122,7 +196,7 @@ client.on("message", (message) => {
   }
 
   if(message.content === "hi" && message.author.id === "249382933054357504") {
-    addServerNames(message, data);
+    addServerNames(data);
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
@@ -268,7 +342,7 @@ client.on("message", (message) => {
     .then(invite => message.channel.send("*FUCK YOU SEB :)* https://discord.gg/" + invite.code))
     .catch(console.error);
 
-    console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
+    //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
 
   }
 
@@ -306,7 +380,7 @@ client.on("message", (message) => {
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
       //find the id of the user in question
-      console.log(`\nFetching info for ${user}`);
+      //console.log(`\nFetching info for ${user}`);
 
 
             //let author = getUser(message, data);
@@ -344,6 +418,7 @@ client.on("message", (message) => {
               //send the number of words counted
               let embed = new MessageEmbed()
               .setTitle('')
+              .setColor(0xBF66E3)
               .setDescription(client.users.cache.get(user).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
               .setFooter('Requested by ' + message.author.tag)
               ;
@@ -352,42 +427,18 @@ client.on("message", (message) => {
                 embed.addField("Cooldown:", userCooldown)
               }
 
-
-                dbl.hasVoted(user).then(voted => {
-                  let ogs = getOGS(data);
-                  if(ogs.has(user)) {
-                    embed.setColor(0xFFA417);
-                  }
-                  else if(voted) {
-                    embed.setColor(0x34c200);
-                  }
-
-                  //custom colors for pog people
-                  else if(user === '445668261338677248') {
-                    embed.setColor(0xFF1CC5);
-                  }
-                  else if(user === '448269007800238080') {
-                    embed.setColor(0x17FF1B);
-                  }
-                  else if(user === '656755471847260170') {
-                    embed.setColor(0x17D1FF);
-                  } else {
-                    embed.setColor(0xBF66E3);
-                  }
-
-                  message.channel.send(embed);
-                });
+              let ogs = getOGS(data);
+              if(ogs.has(client.users.cache.get(user).id)) {
+                embed.setColor(0xFFA417);
               }
-
-
               //custom colors for pog people
-              if(user === '445668261338677248') {
+              if(client.users.cache.get(user).id === '445668261338677248') {
                 embed.setColor(0xFF1CC5);
               }
-              if(user === '448269007800238080') {
+              if(client.users.cache.get(user).id === '448269007800238080') {
                 embed.setColor(0x17FF1B);
               }
-              if(user === '656755471847260170') {
+              if(client.users.cache.get(user).id === '656755471847260170') {
                 embed.setColor(0x17D1FF);
               }
 
@@ -419,7 +470,7 @@ client.on("message", (message) => {
     message.channel.send(embed);
 
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
   }
   if(message.content.toLowerCase().startsWith(prefix + "invite")) {
     let embed = new MessageEmbed()
@@ -446,7 +497,7 @@ client.on("message", (message) => {
     //message.react('❌')
     //.catch(console.error);
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
   }
 
   //fetch and return the top sending user info
@@ -464,7 +515,7 @@ client.on("message", (message) => {
       message.channel.send(embed);
 
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
   }
 
   //retrive top 10 users
@@ -572,7 +623,9 @@ client.on("message", (message) => {
     .setColor(0xBF66E3)
     .setDescription('')
     .setFooter('For private server:\n\ngetverify: retrieves current verify code')
-    .addField(prefix + 'help', 'Gives you this message')
+    .addField(prefix + 'help', 'Gives you this message', true)
+    .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+    .addField('Commands', '----')
     .addField(prefix + 'check', 'Checks the # of words sent by a user', true)
     .addField(prefix + 'count', 'Same as **ncheck**', true)
     .addField(prefix + 'total', 'Retrieves the total amount of words recorded', true)
@@ -593,7 +646,7 @@ client.on("message", (message) => {
     //message.author.send(`${help}`);
     message.author.send(embed);
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
   }
 
   //fetches the changelog for the version specified
@@ -628,7 +681,7 @@ client.on("message", (message) => {
       else {
         let embed = new MessageEmbed()
         .setTitle("Version not found")
-        .setColor(0xFF7777)
+        .setColor(0xFF0000)
         .setDescription("The version specified could not be found. The oldest changelog is for 3.6.4")
         .setFooter("try " + prefix + "changelog 3.6.4");
 
@@ -698,7 +751,7 @@ client.on("message", (message) => {
   if(message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')) {
     message.guild.member(message.author).roles.add('694263460355244074');
     message.guild.member(message.author).roles.remove('694264932706943096');
-    console.log(`\n\n` + message.author.username + ` just verified`);
+    //console.log(`\n\n` + message.author.username + ` just verified`);
 
     password = newPASSWORD();
 
@@ -728,7 +781,14 @@ client.on("message", (message) => {
           data.servers[server].users[authorPos].cooldown = 0;
           //write(data);
         }
-        if(data.servers[server].users[authorPos].cooldown > 0) {
+        var blacklist = getBlacklist(message, data);
+        if(data.servers[server].users[authorPos].cooldown > 0 || blacklist.has(message.author.id)) {
+          for(var o = 0; o < data.blacklist.length; o++) {
+            if(data.blacklist[o].time < Date.now()) {
+              delete data.blacklist[o];
+            }
+          }
+          data.blacklist = data.blacklist.filter(item => !!item);
           authorPos = authorPos;
           break;
         }
@@ -742,11 +802,13 @@ client.on("message", (message) => {
       }
     }
     catch(err) {
-      console.log("Oops something when wrong with curr being undefined probably");
+      console.log("Something happened with the blacklist stuff \n \n".red);
+      console.log(err + "\n \n");
     }
 
 
     if(j == wordArgs.length - 1 && checkIfShouldWrite == true) {
+      let watchingSet = getWatching(watching);
 
       //special message for savi --- simp!
       /*if(message.author.id == 395980133565071360) {
@@ -770,8 +832,8 @@ client.on("message", (message) => {
       data.servers[server].users[authorPos].username = message.author.username;
 
 
-      console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
-      console.log(data.totalSent)
+      //console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
+      //console.log(data.totalSent)
       checkIfShouldWrite = false;
 
       if(nword >= 5) {
@@ -787,6 +849,55 @@ client.on("message", (message) => {
             }
           }
         }, (data.servers[server].cooldown * nword) * 1000);
+      }
+
+      if(nword >= 20) {
+
+        if(!(watchingSet.has(message.author.id)) && !(blacklist.has(message.author.id))) {
+          watching.push({
+            "id": message.author.id,
+            "words": nword,
+            "time": Date.now() + 600000
+          });
+        }
+      }
+
+
+      if(watchingSet.has(message.author.id)) {
+        for(var o = 0; o < watching.length; o++) {
+          try {
+            if(watching[o].id === message.author.id) {
+              if(watching[o].words > 5000) {
+                data.blacklist.push({
+                  "id": message.author.id,
+                  "time": Date.now() + 345600000
+                });
+                logging.info(`${message.author.username} was blacklisted`);
+                let embed = new MessageEmbed()
+                .setTitle('')
+                .setColor()
+                .setColor(0xFF0000)
+                .setDescription(`You sent ${watching[o].words} words within 10 minutes, this is considered spamming, so to keep the bot running optimally, you have been blacklisted for **4** days`)
+                ;
+
+                message.author.send(embed);
+                delete watching[o];
+              }
+              else if(Date.now() > watching[o].time) {
+                delete watching[o];
+                //console.log(watching);
+                break;
+              } else {
+                watching[o].words += nword;
+                break;
+              }
+            }
+          }
+          catch(err) {
+
+          }
+        }
+        watching = watching.filter(item => !!item);
       }
 
       nword = 0;
@@ -935,7 +1046,7 @@ function newPASSWORD() {
      if (err) throw err;
    });
 
-   console.log(`New PASSWORD Generated: ` + result + `\n\n`);
+   //console.log(`New PASSWORD Generated: ` + result + `\n\n`);
    return result;
 }
 
@@ -959,6 +1070,7 @@ function getServer(message, data) {
 
   if(server === -1) {
     data.servers.push({
+      "name": message.guild.name,
       "id": message.guild.id,
       "cooldown": 5,
       "strings": defaultStrings,
@@ -1154,7 +1266,7 @@ function getGlobalTop(message, data) {
       for(var p = 0; p < arr.users.length; p++) {
         if(data.servers[i].users[o].id === arr.users[p].id) {
           arr.users[p].serverName = data.servers[i].name;
-          if(arr.users[p].serverName != undefined) {
+          if(arr.users[p].serverName !== undefined) {
             break;
           }
         }
@@ -1227,12 +1339,12 @@ function getGlobalTop(message, data) {
       topWordPos = i;
     }
   }
-  console.log(trackedWordsScoreSorted)
+  //console.log(trackedWordsScoreSorted)
   if(trackedWordsScore[topWordPos] > 1) {
     embed.addField('**The most popular tracked word is:** ', trackedWords[topWordPos]);
   }
 
-  console.log(arr)
+  //console.log(arr)
   //add user positions, max of 10, from json object
   for(var i = 0; i < arr.length && i < 10; i++) {
     if(arr[i].id === message.author.id) {
@@ -1254,13 +1366,30 @@ function getGlobalTop(message, data) {
 }
 
 //adds the name of the server to the data file
-function addServerNames(message, data) {
+function addServerNames(data) {
   for(var i = 0; i < data.servers.length; i++) {
     try {
       data.servers[i].name = client.guilds.cache.get(data.servers[i].id).name;
     }
     catch(err) {
-      console.log("Bot is no longer in the server with id " + data.servers[i].id);
+      logging.error("Bot is no longer in the server with id " + data.servers[i].id + "\n Also this shouldn't be showing up \n \n")
+      console.log(err);
+      console.log("\n");
+    }
+  }
+}
+
+function storeServerName(guild, data) {
+  for(var i = 0; i < data.servers.length; i++) {
+    if (data.servers[i].id === guild.id) {
+      try {
+        data.servers[i].name = guild.name;
+      }
+      catch(err) {
+        logging.warn("Uhh idk how you could get here but something is wrong with the the bot joining probs " + data.servers[i].id + "\n \n")
+        console.log(err + "\n");
+      }
+      break;
     }
   }
 }
@@ -1271,6 +1400,40 @@ function getPrefix(message, data) {
   } else {
     return data.servers[getServer(message, data)].prefix;
   }
+}
+
+function getWatching(watching) {
+  let watchingSet = new Set();
+  for(var i = 0; i < watching.length; i++) {
+    try {
+      watchingSet.add(watching[i].id);
+    }
+    catch(err) {
+
+    }
+  }
+  return watchingSet;
+}
+
+function getBlacklist(message, data) {
+  let blacklist = new Set();
+  if(data.blacklist === undefined) {
+    data.blacklist = new Array();
+    //console.log(`created blacklist`);
+  }
+  for(var i = 0; i < data.blacklist.length; i++) {
+    if(data.blacklist[i].time > Date.now) {
+      delete data.blacklist[i];
+    } else if(!(blacklist.has(message.author.id))) {
+      blacklist.add(data.blacklist[i].id);
+    }
+  }
+  data.blacklist = data.blacklist.filter(item => !!item);
+  return blacklist;
+}
+
+function getAchievementList(message, data) {
+
 }
 
 /*function newBot(message) {
