@@ -43,6 +43,9 @@
           "Fixed a typo in the help file",
           "Changed the embed color for the changelog error response",
           "Added a forced cooldown for people spamming way too much"
+        ],
+        "8": [
+          "Made the n!global command a bit faster"
         ]
       }
     }
