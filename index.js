@@ -4,6 +4,7 @@ const {Client, MessageAttachment, MessageEmbed, MessageCollector} = require('dis
 const client = new Client();
 
 const fs = require('fs');
+const colors = require('colors');
 
 const config = require("../test.json");
 const changelog = require("./changelog.json");
@@ -27,6 +28,12 @@ var data = require("./data.json");
 var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
+/*NOTES********************************************************
+NEW CONSOLE.LOG MESSAGES:
+  Errors: console.log("ERROR".bgRed.black + " " + "(insert custom error message here)"); console.log(err);
+  Warnings: console.log("WARN".bgYellow.black + " " + "(insert custom warning message here)");
+  Information: console.log("INFO".bgGreen.black + " " + "(insert the info message here)");
+*/
 
 //variables relating to users
 var checkIfShouldWrite = false;
@@ -43,6 +50,21 @@ let cdseconds = 0;
 
 var d = new Date();
 
+let logging = {
+  info: function(text) {
+    console.log('INFO'.bgGreen.black + ' ' + text);
+  },
+  warn: function(text) {
+    console.log('WARN'.bgYellow.black + ' ' + text);
+  },
+  error: function(text) {
+    console.log('ERROR'.bgRed.black + ' ' + text);
+  },
+  debug: function(text) {
+    console.log('DEBUG'.bgBlue.black + ' ' + text);
+  }
+}
+
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
@@ -54,7 +76,9 @@ client.on('ready', () => {
           dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
         }
         catch(err) {
-          console.log("Unable to post status to dbl");
+          logging.warn("Something's wrong with dblapi? \n");
+          console.log(err);
+          console.log("\n");
         }
     }, 1800000);
 
@@ -305,7 +329,7 @@ client.on("message", (message) => {
     .then(invite => message.channel.send("*FUCK YOU SEB :)* https://discord.gg/" + invite.code))
     .catch(console.error);
 
-    console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
+    //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
 
   }
 
@@ -343,7 +367,7 @@ client.on("message", (message) => {
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
       //find the id of the user in question
-      console.log(`\nFetching info for ${user}`);
+      //console.log(`\nFetching info for ${user}`);
 
 
             //let author = getUser(message, data);
@@ -433,7 +457,7 @@ client.on("message", (message) => {
     message.channel.send(embed);
 
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
   }
   if(message.content.toLowerCase().startsWith(prefix + "invite")) {
     let embed = new MessageEmbed()
@@ -460,7 +484,7 @@ client.on("message", (message) => {
     //message.react('❌')
     //.catch(console.error);
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
   }
 
   //fetch and return the top sending user info
@@ -478,7 +502,7 @@ client.on("message", (message) => {
       message.channel.send(embed);
 
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
   }
 
   //retrive top 10 users
@@ -609,7 +633,7 @@ client.on("message", (message) => {
     //message.author.send(`${help}`);
     message.author.send(embed);
 
-    console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
+    //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested help file in ` + message.channel.guild.name);
   }
 
   //fetches the changelog for the version specified
@@ -714,7 +738,7 @@ client.on("message", (message) => {
   if(message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')) {
     message.guild.member(message.author).roles.add('694263460355244074');
     message.guild.member(message.author).roles.remove('694264932706943096');
-    console.log(`\n\n` + message.author.username + ` just verified`);
+    //console.log(`\n\n` + message.author.username + ` just verified`);
 
     password = newPASSWORD();
 
@@ -765,7 +789,8 @@ client.on("message", (message) => {
       }
     }
     catch(err) {
-      console.log(err);
+      console.log("Something happened with the blacklist stuff \n \n".red);
+      console.log(err + "\n \n");
     }
 
 
@@ -794,8 +819,8 @@ client.on("message", (message) => {
       data.servers[server].users[authorPos].username = message.author.username;
 
 
-      console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
-      console.log(data.totalSent)
+      //console.log(`message sent by ` + message.author.username + ` in ` + message.channel.guild.name + `: ` + message.content);
+      //console.log(data.totalSent)
       checkIfShouldWrite = false;
 
       if(nword >= 5) {
@@ -834,7 +859,7 @@ client.on("message", (message) => {
                   "id": message.author.id,
                   "time": Date.now() + 345600000
                 });
-                console.log(`${message.author.username} was blacklisted`);
+                logging.info(`${message.author.username} was blacklisted`);
                 let embed = new MessageEmbed()
                 .setTitle('')
                 .setColor()
@@ -847,7 +872,7 @@ client.on("message", (message) => {
               }
               else if(Date.now() > watching[o].time) {
                 delete watching[o];
-                console.log(watching);
+                //console.log(watching);
                 break;
               } else {
                 watching[o].words += nword;
@@ -1008,7 +1033,7 @@ function newPASSWORD() {
      if (err) throw err;
    });
 
-   console.log(`New PASSWORD Generated: ` + result + `\n\n`);
+   //console.log(`New PASSWORD Generated: ` + result + `\n\n`);
    return result;
 }
 
@@ -1334,7 +1359,9 @@ function addServerNames(data) {
       data.servers[i].name = client.guilds.cache.get(data.servers[i].id).name;
     }
     catch(err) {
-      console.log("Bot is no longer in the server with id " + data.servers[i].id);
+      logging.error("Bot is no longer in the server with id " + data.servers[i].id + "\n Also this shouldn't be showing up \n \n")
+      console.log(err);
+      console.log("\n");
     }
   }
 }
@@ -1346,7 +1373,8 @@ function storeServerName(guild, data) {
         data.servers[i].name = guild.name;
       }
       catch(err) {
-        console.log("Uhh idk how you could get here but something is wrong with the the bot joining probs " + data.servers[i].id);
+        logging.warn("Uhh idk how you could get here but something is wrong with the the bot joining probs " + data.servers[i].id + "\n \n")
+        console.log(err + "\n");
       }
       break;
     }
@@ -1378,7 +1406,7 @@ function getBlacklist(message, data) {
   let blacklist = new Set();
   if(data.blacklist === undefined) {
     data.blacklist = new Array();
-    console.log(`created blacklist`);
+    //console.log(`created blacklist`);
   }
   for(var i = 0; i < data.blacklist.length; i++) {
     if(data.blacklist[i].time > Date.now) {
