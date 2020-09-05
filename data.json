@@ -1,28 +1,25 @@
 {
-  "totalSent": 6,
+  "totalSent": 9010,
   "topUser": {
     "username": "Cyakat",
     "id": "249382933054357504",
-    "words": 5,
+    "words": 9008,
     "avatar": "https://cdn.discordapp.com/avatars/249382933054357504/19c8ba50c1abd9c357a836547f8bb903.webp"
   },
   "ogs": [],
   "servers": [
     {
       "id": "637740070648021000",
-      "cooldown": 5,
+      "cooldown": 0,
       "strings": [
-        "bruh",
-        "nice",
-        "bots",
-        "cow"
+        "b"
       ],
       "prefix": "b!",
       "users": [
         {
           "username": "Cyakat",
           "id": "249382933054357504",
-          "words": 5,
+          "words": 9008,
           "cooldown": 0
         },
         {
@@ -30,9 +27,21 @@
           "id": "250408653830619137",
           "words": 1,
           "cooldown": 0
+        },
+        {
+          "username": "Darwen",
+          "id": "445668261338677248",
+          "words": 1,
+          "cooldown": 0
         }
       ]
     }
   ],
-  "ppLength": "smol"
+  "ppLength": "s",
+  "blacklist": [
+    {
+      "id": "249382933054357504",
+      "time": 1599684935391
+    }
+  ]
 }

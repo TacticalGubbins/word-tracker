@@ -62,7 +62,7 @@ let logging = {
     console.log('ERROR'.bgRed.black + ' ' + text);
   },
   debug: function(text) {
-    console.log('DEBUG'.bgBlue.black + ' ' + text);
+    console.log('DEBUG'.bgBlue + ' ' + text);
   }
 }
 
@@ -191,6 +191,7 @@ client.on("message", (message) => {
      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n\n');
      console.log(err)
     }
+    giveAchievements(message, data, achievementFlags);
     return;
   }
 
@@ -363,6 +364,7 @@ client.on("message", (message) => {
 
     //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
     achievementFlags.inviteNow = true;
+    giveAchievements(message, data, achievementFlags);
   }
 
   //see how many n-words somebody has sent
@@ -698,6 +700,7 @@ client.on("message", (message) => {
         message.channel.send(embed);
 
         achievementFlags.changelog = true;
+        giveAchievements(message, data, achievementFlags);
       }
       else {
         let embed = new MessageEmbed()
@@ -766,6 +769,7 @@ client.on("message", (message) => {
       message.channel.send(embed);
     }
     achievementFlags.pp = true;
+    giveAchievements(message, data, achievementFlags);
   }
 
 
@@ -926,14 +930,11 @@ client.on("message", (message) => {
 
       //write in the new data
       //write(data);
-
     }
     if(j == wordArgs.length-1) {
       return;
     }
   }
-
-  giveAchievements(message, data, achievementFlags);
 
 });
 
@@ -961,9 +962,11 @@ function giveAchievements(message, data, achievementFlags) {
 
     message.author.send(embed);
 
+    logging.debug(message.author.id);
     if(!(data.achievements.pp.has(message.author.id))) {
-      data.achievements.pp.add(message.author.id);
+      data.achievements.pp.push(message.author.id);
     }
+    logging.debug(data.achievements.pp[0])
   }
   else if(achievementFlags.changelog === true) {
     let embed = new MessageEmbed()
@@ -1513,13 +1516,13 @@ function getBlacklist(message, data) {
 function getAchievementList(message, data) {
   let achievements = {
     //Back to the roots
-    "roots" : [],
+    "roots" : new Array(),
     //Now that's long
-    "pp" : [],
+    "pp" : new Array(),
     //Stupid idiot
-    "changelog" : [],
+    "changelog" : new Array(),
     //Fuck you seb
-    "inviteNow" : []
+    "inviteNow" : new Array()
   }
   if(data.achievements === undefined) {
     data.achievements = achievements;
