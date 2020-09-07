@@ -1,9 +1,9 @@
 {
-  "totalSent": 9012,
+  "totalSent": 16012,
   "topUser": {
     "username": "Cyakat",
     "id": "249382933054357504",
-    "words": 9008,
+    "words": 9010,
     "avatar": "https://cdn.discordapp.com/avatars/249382933054357504/19c8ba50c1abd9c357a836547f8bb903.webp"
   },
   "ogs": [],
@@ -19,13 +19,7 @@
         {
           "username": "Cyakat",
           "id": "249382933054357504",
-          "words": 9008,
-          "cooldown": 0
-        },
-        {
-          "username": "TacticalGubbins",
-          "id": "250408653830619137",
-          "words": 3,
+          "words": 9010,
           "cooldown": 0
         },
         {
@@ -33,23 +27,23 @@
           "id": "445668261338677248",
           "words": 1,
           "cooldown": 0
+        },
+        {
+          "username": "TacticalGubbins",
+          "id": "250408653830619137",
+          "words": 7001,
+          "cooldown": 0
         }
       ]
     }
   ],
   "ppLength": "s",
-  "blacklist": [
-    {
-      "id": "249382933054357504",
-      "time": 1599684935391
-    }
-  ],
   "achievements": {
     "249382933054357504": {
       "pp": 1599450092467,
       "inviteNow": 1599450204425,
       "changelog": 1599450227710,
-      "roots": 1599451218571
+      "roots": 1599453029855
     },
     "250408653830619137": {
       "roots": 1599451587350,
@@ -57,5 +51,6 @@
       "changelog": 1599451737061,
       "inviteNow": 1599451741138
     }
-  }
+  },
+  "blacklist": {}
 }

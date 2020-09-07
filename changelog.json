@@ -51,7 +51,9 @@
       "8": {
         "0": [
           "Added achievements that can be earned when an easter egg is found",
-          "Fixed a problem that would cause the bot to give errors when posting the server count to top.gg"
+          "Fixed a problem that would cause the bot to give errors when posting the server count to top.gg",
+          "Added the ability to view time remaining in blacklist",
+          "DMing the bot `help` or `n!help` is no longer case sensitive"
         ]
       }
     }

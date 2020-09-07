@@ -51,7 +51,7 @@ let cdseconds = 0;
 var d = new Date();
 
 //OBJECTS************************
-let logging = {
+const logging = {
   info: function(text) {
     console.log('INFO'.bgGreen.black + ' ' + text);
   },
@@ -137,7 +137,7 @@ client.on("message", (message) => {
   if(message.author.bot ) return;
 
   //ignore messages sent in dms
-  if(message.channel.type === 'dm' && (message.content === "n!help" || message.content === "help")) {
+  if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help"))) {
     let embed = new MessageEmbed()
     .setTitle('Bot Help')
     .setColor(0xBF66E3)
@@ -185,7 +185,7 @@ client.on("message", (message) => {
       client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
     }
     catch(err) {
-     logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n\n');
+     logging.warn('\nCould not send dm to louie. This should only happen if the testing bot is running \n');
      console.log(err)
     }
     return;
@@ -439,9 +439,12 @@ client.on("message", (message) => {
               .setDescription(client.users.cache.get(user).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
               .setFooter('Requested by ' + message.author.tag)
               ;
-              let userCooldown = ((data.servers[server].users[author].cooldown) - Date.now()) / 1000 + " seconds";
+              let userCooldown = (((data.servers[server].users[author].cooldown) - Date.now()) / 1000).toFixed(1) + " seconds";
               if(((data.servers[server].users[author].cooldown) - Date.now()) > 0) {
-                embed.addField("Cooldown:", userCooldown)
+                embed.addField("Cooldown:", userCooldown, true);
+              }
+              if(data.blacklist[user] - Date.now() > 0) {
+                embed.addField("Blacklisted: ", ((data.blacklist[user] - Date.now()) / 3600000).toFixed(1) + " hours", true);
               }
 
               let ogs = getOGS(data);
@@ -799,18 +802,21 @@ client.on("message", (message) => {
 
         ////
 
+        if(data.blacklist === undefined) {
+          data.blacklist = {};
+        }
+
         if(data.servers[server].users[authorPos].cooldown < Date.now()) {
           data.servers[server].users[authorPos].cooldown = 0;
           //write(data);
         }
-        var blacklist = getBlacklist(message, data);
-        if(data.servers[server].users[authorPos].cooldown > 0 || blacklist.has(message.author.id)) {
-          for(var o = 0; o < data.blacklist.length; o++) {
-            if(data.blacklist[o].time < Date.now()) {
-              delete data.blacklist[o];
-            }
-          }
-          data.blacklist = data.blacklist.filter(item => !!item);
+
+        if(data.blacklist[message.author.id] < Date.now()) {
+          delete data.blacklist[message.author.id];
+          logging.info('Removed ' + message.author.username + 'from the blacklist');
+        }
+
+        if(data.servers[server].users[authorPos].cooldown > 0 || data.blacklist[message.author.id] > Date.now()) {
           authorPos = authorPos;
           break;
         }
@@ -824,7 +830,7 @@ client.on("message", (message) => {
       }
     }
     catch(err) {
-      console.log("Something happened with the blacklist stuff \n \n".red);
+      logging.warn("\nSomething happened with the blacklist stuff \n")
       console.log(err + "\n \n");
     }
 
@@ -875,7 +881,7 @@ client.on("message", (message) => {
 
       if(nword >= 20) {
 
-        if(!(watchingSet.has(message.author.id)) && !(blacklist.has(message.author.id))) {
+        if(!(watchingSet.has(message.author.id)) && data.blacklist[message.author.id] === undefined) {
           watching.push({
             "id": message.author.id,
             "words": nword,
@@ -890,10 +896,7 @@ client.on("message", (message) => {
           try {
             if(watching[o].id === message.author.id) {
               if(watching[o].words > 5000) {
-                data.blacklist.push({
-                  "id": message.author.id,
-                  "time": Date.now() + 345600000
-                });
+                data.blacklist[message.author.id] = Date.now() + 345600000;
                 logging.info(`${message.author.username} was blacklisted`);
                 let embed = new MessageEmbed()
                 .setTitle('')
@@ -947,6 +950,7 @@ function giveAchievements(message, data, achievementFlag) {
         embed.setColor(0xBF66E3)
         embed.addField('Achievement','DM the bot the n-word',true)
         embed.setTimestamp();
+        embed.setThumbnail('https://tikomc.tk/images/nwordpfp128.png')
 
         message.author.send(embed);
 
@@ -1498,7 +1502,7 @@ function getWatching(watching) {
   return watchingSet;
 }
 
-function getBlacklist(message, data) {
+/*function getBlacklist(message, data) {
   let blacklist = new Set();
   if(data.blacklist === undefined) {
     data.blacklist = new Array();
@@ -1513,36 +1517,7 @@ function getBlacklist(message, data) {
   }
   data.blacklist = data.blacklist.filter(item => !!item);
   return blacklist;
-}
-
-function getAchievementList(message, data) {
-  if(data.achievements === undefined) {
-    data.achievements = {
-      //Back to the roots
-      "roots" : new Array(),
-      //Now that's long
-      "pp" : new Array(),
-      //Stupid idiot
-      "changelog" : new Array(),
-      //Fuck you seb
-      "inviteNow" : new Array()
-    }
-    logging.info('Created achievement list');
-  }
-  if (achievements.roots.has(!(message.author.id))) {
-    achievements.roots.add(message.author.id);
-  }
-  if(!(achievements.pp.has(message.author.id))) {
-    achievements.pp.add(message.author.id);
-  }
-  if(!(achievements.changelog.has(message.author.id))) {
-    achievements.changelog.add(message.author.id);
-  }
-  if(!(achievements.inviteNow.has(message.author.id))) {
-    achievements.inviteNow.add(message.author.id);
-  }
-  return achievements;
-}
+}*/
 
 /*function newBot(message) {
   let embed = new MessageEmbed()
