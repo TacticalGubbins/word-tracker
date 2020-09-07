@@ -50,7 +50,8 @@
       },
       "8": {
         "0": [
-          "Added achievements that can be earned when an easter egg is found"
+          "Added achievements that can be earned when an easter egg is found",
+          "Fixed a problem that would cause the bot to give errors when posting the server count to top.gg"
         ]
       }
     }

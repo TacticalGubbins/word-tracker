@@ -77,7 +77,7 @@ client.on('ready', () => {
 
   setInterval(() => {
         try {
-          dbl.postStats(client.guilds.size, client.shards.Id, client.shards.total);
+          dbl.postStats(client.guilds.size);
         }
         catch(err) {
           logging.warn("Something's wrong with dblapi? \n");
@@ -110,7 +110,7 @@ client.on('ready', () => {
 
 
 dbl.on('posted', () => {
-  console.log('Server count posted!');
+  logging.info('Server count posted!')
 });
 
 dbl.on('error', e => {
@@ -125,8 +125,6 @@ dbl.on('error', e => {
 
 
 client.on("message", (message) => {
-
-  getAchievementList(message, data);
 
   let achievementFlags = {
     "roots": false,
@@ -170,6 +168,17 @@ client.on("message", (message) => {
 
     return;
   }
+  else if(message.channel.type === 'dm' && (message.content.toLowerCase() === 'nigga' || message.content.toLowerCase() === 'nigger')) {
+    try {
+      client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
+    }
+    catch(err) {
+      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n\n');
+      console.log(err)
+    }
+    giveAchievements(message, data, "roots");
+    return;
+  }
   else if(message.channel.type === 'dm'){
     message.channel.send("Shut up retard go talk in a server");
     try {
@@ -179,19 +188,6 @@ client.on("message", (message) => {
      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n\n');
      console.log(err)
     }
-    return;
-  }
-  else if(message.channel.type === 'dm' && (message.content === 'nigga' || message.content === 'nigger')) {
-    achievementFlags.roots = true;
-    message.channel.send("Shut up retard go talk in a server");
-    try {
-      client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
-    }
-    catch(err) {
-     logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n\n');
-     console.log(err)
-    }
-    giveAchievements(message, data, achievementFlags);
     return;
   }
 
@@ -364,7 +360,7 @@ client.on("message", (message) => {
 
     //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
     achievementFlags.inviteNow = true;
-    giveAchievements(message, data, achievementFlags);
+    giveAchievements(message, data, "inviteNow");
   }
 
   //see how many n-words somebody has sent
@@ -700,7 +696,7 @@ client.on("message", (message) => {
         message.channel.send(embed);
 
         achievementFlags.changelog = true;
-        giveAchievements(message, data, achievementFlags);
+        giveAchievements(message, data, "changelog");
       }
       else {
         let embed = new MessageEmbed()
@@ -769,7 +765,7 @@ client.on("message", (message) => {
       message.channel.send(embed);
     }
     achievementFlags.pp = true;
-    giveAchievements(message, data, achievementFlags);
+    giveAchievements(message, data, "pp");
   }
 
 
@@ -938,60 +934,66 @@ client.on("message", (message) => {
 
 });
 
-function giveAchievements(message, data, achievementFlags) {
-  logging.debug('yay im running');
-  if(achievementFlags.roots === true) {
-    let embed = new MessageEmbed()
-    .setTitle('Back to the roots')
-    .setColor(0xBF66E3)
-    .addField('Achievement','DM the bot the n-word',true)
-    .setTimestamp();
-
-    message.author.send(embed);
-
-    if(!(data.achievements.roots.has(message.author.id))) {
-      data.achievements.roots.add(message.author.id);
-    }
+function giveAchievements(message, data, achievementFlag) {
+  if(data.achievements[message.author.id] === undefined) {
+    data.achievements[message.author.id] = {};
   }
-  else if(achievementFlags.pp === true) {
-    let embed = new MessageEmbed()
-    .setTitle('PP')
-    .setColor(0xBF66E3)
-    .addField('Achievement','Change the pp length using the command',true)
-    .setTimestamp();
+  let embed = new MessageEmbed();
+  switch(achievementFlag) {
+    case "roots":
 
-    message.author.send(embed);
+      if(data.achievements[message.author.id].roots === undefined) {
+        embed.setTitle('Back to the roots')
+        embed.setColor(0xBF66E3)
+        embed.addField('Achievement','DM the bot the n-word',true)
+        embed.setTimestamp();
 
-    logging.debug(message.author.id);
-    if(!(data.achievements.pp.has(message.author.id))) {
-      data.achievements.pp.push(message.author.id);
-    }
-    logging.debug(data.achievements.pp[0])
-  }
-  else if(achievementFlags.changelog === true) {
-    let embed = new MessageEmbed()
-    .setTitle('Stupid idiot')
-    .setColor(0xBF66E3)
-    .addField('Achievement','Get the special changelog error',true)
-    .setTimestamp();
+        message.author.send(embed);
 
-    message.author.send(embed);
+        data.achievements[message.author.id].roots = Date.now();
+      }
+      break;
+    case "pp":
 
-    if(!(data.achievements.changelog.has(message.author.id))) {
-      data.achievements.changelog.add(message.author.id);
-    }
-  }
-  else if(achievementFlags.inviteNow === true) {
-    let embed = new MessageEmbed()
-    .setTitle('Fuck you seb')
-    .setColor(0xBF66E3)
-    .addField('Achievement','Get the special invite link',true)
-    .setFooter('Earned on ' + today);
+      if(data.achievements[message.author.id].pp === undefined) {
+        embed.setTitle('PP')
+        embed.setColor(0xBF66E3)
+        embed.addField('Achievement','Change the pp length using the command',true)
+        embed.setTimestamp();
 
-    message.author.send(embed);
-    if(!(data.achievements.inviteNow.has(message.author.id))) {
-      data.achievements.inviteNow.add(message.author.id);
-    }
+        message.author.send(embed);
+
+        data.achievements[message.author.id].pp = Date.now();
+      }
+      break;
+    case "changelog":
+
+      if(data.achievements[message.author.id].changelog === undefined) {
+        embed.setTitle('Stupid idiot')
+        embed.setColor(0xBF66E3)
+        embed.addField('Achievement','Get the special changelog error',true)
+        embed.setTimestamp();
+
+        message.author.send(embed);
+
+        data.achievements[message.author.id].changelog = Date.now();
+      }
+      break;
+    case "inviteNow":
+      if(data.achievements[message.author.id].inviteNow === undefined) {
+        embed.setTitle('Fuck you seb')
+        embed.setColor(0xBF66E3)
+        embed.addField('Achievement','Get the special invite link',true)
+        embed.setTimestamp();
+
+        message.author.send(embed);
+
+        data.achievements[message.author.id].inviteNow = Date.now();
+      }
+      break;
+    default:
+      logging.warn("Uh this should not be showing up unless someone added an achievement without adding it here too");
+      break;
   }
 }
 
@@ -1514,20 +1516,32 @@ function getBlacklist(message, data) {
 }
 
 function getAchievementList(message, data) {
-  let achievements = {
-    //Back to the roots
-    "roots" : new Array(),
-    //Now that's long
-    "pp" : new Array(),
-    //Stupid idiot
-    "changelog" : new Array(),
-    //Fuck you seb
-    "inviteNow" : new Array()
-  }
   if(data.achievements === undefined) {
-    data.achievements = achievements;
-    logging.info('Created achievement list')
+    data.achievements = {
+      //Back to the roots
+      "roots" : new Array(),
+      //Now that's long
+      "pp" : new Array(),
+      //Stupid idiot
+      "changelog" : new Array(),
+      //Fuck you seb
+      "inviteNow" : new Array()
+    }
+    logging.info('Created achievement list');
   }
+  if (achievements.roots.has(!(message.author.id))) {
+    achievements.roots.add(message.author.id);
+  }
+  if(!(achievements.pp.has(message.author.id))) {
+    achievements.pp.add(message.author.id);
+  }
+  if(!(achievements.changelog.has(message.author.id))) {
+    achievements.changelog.add(message.author.id);
+  }
+  if(!(achievements.inviteNow.has(message.author.id))) {
+    achievements.inviteNow.add(message.author.id);
+  }
+  return achievements;
 }
 
 /*function newBot(message) {
