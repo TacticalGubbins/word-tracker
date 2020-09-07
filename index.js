@@ -778,28 +778,36 @@ client.on("message", (message) => {
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "achievements")) {
+    let user;
+
+    //check to see if the value inputted is a user
+    if(args[1] === undefined) {
+      user = message.author.id;
+    } else {
+      user = args[1].replace(/\D/g,'');
+    }
     let achievementCounter = 0;
     let embed = new MessageEmbed();
-    if(data.achievements[message.author.id] === undefined) {
-      data.achievements[message.author.id] = {};
+    if(data.achievements[user] === undefined) {
+      data.achievements[user] = {};
     }
-    if(data.achievements[message.author.id].roots != undefined) {
+    if(data.achievements[user].roots != undefined) {
       embed.addField('Back to the Roots', 'DM the bot the n-word');
       achievementCounter += 1;
     }
-    if(data.achievements[message.author.id].pp != undefined) {
+    if(data.achievements[user].pp != undefined) {
       embed.addField('PP', 'Discover the setPpLength command');
       achievementCounter += 1;
     }
-    if(data.achievements[message.author.id].changelog != undefined) {
+    if(data.achievements[user].changelog != undefined) {
       embed.addField('Stupid Idiot', 'Get the special changelog error');
       achievementCounter += 1;
     }
-    if(data.achievements[message.author.id].inviteNow != undefined) {
+    if(data.achievements[user].inviteNow != undefined) {
       embed.addField('Fuck You Seb', 'Get the special invite link');
       achievementCounter += 1;
     }
-    if(data.achievements[message.author.id].joinServer != undefined) {
+    if(data.achievements[user].joinServer != undefined) {
       embed.addField('A Supportive Boi', 'Join the support server');
       achievementCounter += 1;
     }
