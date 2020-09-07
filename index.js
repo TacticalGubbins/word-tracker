@@ -968,22 +968,13 @@ function achievementsCheck(message, data, args) {
     showHidden = false;
   }
 
-  if(user.bot) {
-    embed.setColor(0xFF0000)
-    .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
-    .setFooter('Requested by ' + message.author.tag);
-
-    message.channel.send(embed);
-    return;
-  }
-
   for(let i in keys) {
     achievementCode = keys[i];
     let description = 'This achievement is hidden';
 
     try {
       if(data.achievements[user][achievementCode] != undefined) {
-      if(achievements[achievementCode].hidden && showHidden) {
+      if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
         description = achievements[achievementCode].description
       }
       embed.addField(achievements[achievementCode].title, description);
