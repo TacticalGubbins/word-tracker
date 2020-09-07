@@ -1,0 +1,32 @@
+{
+  "template": {
+    "title": "Change me",
+    "description": "Change me",
+    "hidden": true
+  },
+  "roots": {
+    "title": "Back to the roots",
+    "description": "DM the bot the n-word",
+    "hidden": true
+  },
+  "pp": {
+    "title": "PP",
+    "description": "Discover the setPpLength command",
+    "hidden": true
+  },
+  "changelog": {
+    "title": "Stupid idiot",
+    "description": "Get the special changelog error",
+    "hidden": true
+  },
+  "inviteNow": {
+    "title": "Fuck You Seb",
+    "description": "Get the special invite link",
+    "hidden": true
+  },
+  "joinServer": {
+    "title": "A Supportive Boi",
+    "description": "Join the support server",
+    "hidden": false
+  }
+}

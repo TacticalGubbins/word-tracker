@@ -8,6 +8,7 @@ const colors = require('colors');
 
 const config = require("../test.json");
 const changelog = require("./changelog.json");
+const achievements = require('./achievements.json');
 
 const DBL = require("dblapi.js");
 const dbl = new DBL(config.topToken, client);
@@ -778,49 +779,7 @@ client.on("message", (message) => {
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "achievements")) {
-    let user;
-
-    //check to see if the value inputted is a user
-    if(args[1] === undefined) {
-      user = message.author.id;
-    } else {
-      user = args[1].replace(/\D/g,'');
-    }
-    let achievementCounter = 0;
-    let embed = new MessageEmbed();
-    if(data.achievements[user] === undefined) {
-      data.achievements[user] = {};
-    }
-    if(data.achievements[user].roots != undefined) {
-      embed.addField('Back to the Roots', 'DM the bot the n-word');
-      achievementCounter += 1;
-    }
-    if(data.achievements[user].pp != undefined) {
-      embed.addField('PP', 'Discover the setPpLength command');
-      achievementCounter += 1;
-    }
-    if(data.achievements[user].changelog != undefined) {
-      embed.addField('Stupid Idiot', 'Get the special changelog error');
-      achievementCounter += 1;
-    }
-    if(data.achievements[user].inviteNow != undefined) {
-      embed.addField('Fuck You Seb', 'Get the special invite link');
-      achievementCounter += 1;
-    }
-    if(data.achievements[user].joinServer != undefined) {
-      embed.addField('A Supportive Boi', 'Join the support server');
-      achievementCounter += 1;
-    }
-
-
-    if(achievementCounter === 0) {
-      embed.addField('No achievements','You have not earned any achievements');
-    }
-    embed.setTitle('Achievements')
-    .setColor('0xBF66E3')
-    .setFooter('Requested by ' + message.author.tag );
-
-    message.channel.send(embed);
+    achievementsCheck(message, data, args);
     return;
   }
 
@@ -990,11 +949,89 @@ client.on("message", (message) => {
 
 });
 
-function giveAchievements(user, data, achievementFlag) {
+function achievementsCheck(message, data, args) {
+  let user;
+  let achievementCounter = 0;
+  let showHidden;
+  let keys = Object.keys(achievements);
+  let embed = new MessageEmbed();
+
+  if(data.achievements[user] === undefined) {
+    data.achievements[user] = {};
+  }
+  //check to see if the value inputted is a user
+  if(args[1] === undefined) {
+    user = message.author.id;
+    showHidden = true;
+  } else {
+    user = args[1].replace(/\D/g,'');
+    showHidden = false;
+  }
+
+  if(user.bot) {
+    embed.setColor(0xFF0000)
+    .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
+    .setFooter('Requested by ' + message.author.tag);
+
+    message.channel.send(embed);
+    return;
+  }
+
+  for(let i in keys) {
+    achievementCode = keys[i];
+    let description = 'This achievement is hidden';
+
+    try {
+      if(data.achievements[user][achievementCode] != undefined) {
+      if(achievements[achievementCode].hidden && showHidden) {
+        description = achievements[achievementCode].description
+      }
+      embed.addField(achievements[achievementCode].title, description);
+      achievementCounter += 1;
+      }
+    }
+    catch(err) {
+      embed.setColor(0xFF0000)
+      .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
+      .setFooter('Requested by ' + message.author.tag);
+
+      message.channel.send(embed);
+      return;
+    }
+
+  }
+
+  if(achievementCounter === 0) {
+    if(user === message.author.id){
+      embed.addField('No achievements','You have not earned any achievements');
+    }
+    else {
+      embed.addField('No achievements','They have not earned any achievements');
+    }
+  }
+  embed.setTitle('Achievements')
+  .setColor('0xBF66E3')
+  .setFooter('Requested by ' + message.author.tag );
+
+  message.channel.send(embed);
+}
+
+function giveAchievements(user, data, achievementCode) {
   if(data.achievements[user.id] === undefined) {
     data.achievements[user.id] = {};
   }
-  let embed = new MessageEmbed();
+
+  let embed = new MessageEmbed()
+  .setTitle('Achievement')
+  .setColor(0xBF66E3)
+  .addField(achievements[achievementCode].fieldTitle, achievements[achievementCode].fieldDescription)
+  .setTimestamp();
+
+  user.send(embed);
+
+  data.achievements[user.id][achievementCode] = Date.now();
+
+  /*let embed = new MessageEmbed();
   switch(achievementFlag) {
     case "roots":
 
@@ -1063,7 +1100,7 @@ function giveAchievements(user, data, achievementFlag) {
     default:
       logging.warn("Uh this should not be showing up unless someone added an achievement without adding it here too");
       break;
-  }
+  }*/
 }
 
 //fucntion to write in the array to the data file

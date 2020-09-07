@@ -1,9 +1,9 @@
 {
-  "totalSent": 16025,
+  "totalSent": 16027,
   "topUser": {
     "username": "Cyakat",
     "id": "249382933054357504",
-    "words": 9018,
+    "words": 9020,
     "avatar": "https://cdn.discordapp.com/avatars/249382933054357504/19c8ba50c1abd9c357a836547f8bb903.webp"
   },
   "ogs": [],
@@ -50,7 +50,7 @@
         {
           "username": "Cyakat",
           "id": "249382933054357504",
-          "words": 1,
+          "words": 3,
           "cooldown": 0
         },
         {
@@ -85,7 +85,8 @@
     "249382933054357504": {
       "pp": 1599505877083,
       "joinServer": 1599505877083
-    }
+    },
+    "undefined": {}
   },
   "blacklist": {}
 }
