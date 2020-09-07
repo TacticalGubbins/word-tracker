@@ -65,10 +65,14 @@ const logging = {
     console.log('DEBUG'.bgBlue + ' ' + text);
   }
 }
-
-
-
 //***************************
+
+client.on('guildMemberAdd', (member) => {
+  if(client.guilds.cache.get('708421545005023232').member(member) != undefined) {
+    giveAchievements(member, data, 'joinServer');
+  }
+})
+
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
@@ -114,7 +118,7 @@ dbl.on('posted', () => {
 });
 
 dbl.on('error', e => {
-  console.log(`Oops! ${e}`);
+  logging.warn(`Lets go dbl api is sucking again`);
 });
 
 
@@ -157,6 +161,7 @@ client.on("message", (message) => {
     .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
     .addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
     .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+    .addField('n!' + 'achievements', 'Shows which achievements you or the specified person have earned')
     .addField("Server Setup", "----")
     .addField('n!' + "settings", "View all current server settings", true)
     .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
@@ -176,7 +181,7 @@ client.on("message", (message) => {
       logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n\n');
       console.log(err)
     }
-    giveAchievements(message, data, "roots");
+    giveAchievements(message.author, data, "roots");
     return;
   }
   else if(message.channel.type === 'dm'){
@@ -360,7 +365,7 @@ client.on("message", (message) => {
 
     //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
     achievementFlags.inviteNow = true;
-    giveAchievements(message, data, "inviteNow");
+    giveAchievements(message.author, data, "inviteNow");
   }
 
   //see how many n-words somebody has sent
@@ -657,6 +662,7 @@ client.on("message", (message) => {
     .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
     .addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
     .addField(prefix + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+    .addField(prefix + 'achievements', 'Shows which achievements you or the specified person have earned')
     .addField("Server Setup", "----")
     .addField(prefix + "settings", "View all current server settings", true)
     .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
@@ -699,7 +705,7 @@ client.on("message", (message) => {
         message.channel.send(embed);
 
         achievementFlags.changelog = true;
-        giveAchievements(message, data, "changelog");
+        giveAchievements(member.author, data, "changelog");
       }
       else {
         let embed = new MessageEmbed()
@@ -768,7 +774,46 @@ client.on("message", (message) => {
       message.channel.send(embed);
     }
     achievementFlags.pp = true;
-    giveAchievements(message, data, "pp");
+    giveAchievements(message.author, data, "pp");
+  }
+
+  if(message.content.toLowerCase().startsWith(prefix + "achievements")) {
+    let achievementCounter = 0;
+    let embed = new MessageEmbed();
+    if(data.achievements[message.author.id] === undefined) {
+      data.achievements[message.author.id] = {};
+    }
+    if(data.achievements[message.author.id].roots != undefined) {
+      embed.addField('Back to the Roots', 'DM the bot the n-word');
+      achievementCounter += 1;
+    }
+    if(data.achievements[message.author.id].pp != undefined) {
+      embed.addField('PP', 'Discover the setPpLength command');
+      achievementCounter += 1;
+    }
+    if(data.achievements[message.author.id].changelog != undefined) {
+      embed.addField('Stupid Idiot', 'Get the special changelog error');
+      achievementCounter += 1;
+    }
+    if(data.achievements[message.author.id].inviteNow != undefined) {
+      embed.addField('Fuck You Seb', 'Get the special invite link');
+      achievementCounter += 1;
+    }
+    if(data.achievements[message.author.id].joinServer != undefined) {
+      embed.addField('A Supportive Boi', 'Join the support server');
+      achievementCounter += 1;
+    }
+
+
+    if(achievementCounter === 0) {
+      embed.addField('No achievements','You have not earned any achievements');
+    }
+    embed.setTitle('Achievements')
+    .setColor('0xBF66E3')
+    .setFooter('Requested by ' + message.author.tag );
+
+    message.channel.send(embed);
+    return;
   }
 
 
@@ -937,62 +982,74 @@ client.on("message", (message) => {
 
 });
 
-function giveAchievements(message, data, achievementFlag) {
-  if(data.achievements[message.author.id] === undefined) {
-    data.achievements[message.author.id] = {};
+function giveAchievements(user, data, achievementFlag) {
+  if(data.achievements[user.id] === undefined) {
+    data.achievements[user.id] = {};
   }
   let embed = new MessageEmbed();
   switch(achievementFlag) {
     case "roots":
 
-      if(data.achievements[message.author.id].roots === undefined) {
-        embed.setTitle('Back to the roots')
+      if(data.achievements[user.id].roots === undefined) {
+        embed.setTitle('Back to the Roots')
         embed.setColor(0xBF66E3)
         embed.addField('Achievement','DM the bot the n-word',true)
         embed.setTimestamp();
         embed.setThumbnail('https://tikomc.tk/images/nwordpfp128.png')
 
-        message.author.send(embed);
+      user.send(embed);
 
-        data.achievements[message.author.id].roots = Date.now();
+        data.achievements[user.id].roots = Date.now();
       }
       break;
     case "pp":
 
-      if(data.achievements[message.author.id].pp === undefined) {
+      if(data.achievements[user.id].pp === undefined) {
         embed.setTitle('PP')
         embed.setColor(0xBF66E3)
-        embed.addField('Achievement','Change the pp length using the command',true)
+        embed.addField('Achievement','Discover the setPpLength command',true)
         embed.setTimestamp();
 
-        message.author.send(embed);
+        user.send(embed);
 
-        data.achievements[message.author.id].pp = Date.now();
+        data.achievements[user.id].pp = Date.now();
       }
       break;
     case "changelog":
 
-      if(data.achievements[message.author.id].changelog === undefined) {
-        embed.setTitle('Stupid idiot')
+      if(data.achievements[user.id].changelog === undefined) {
+        embed.setTitle('Stupid Idiot')
         embed.setColor(0xBF66E3)
         embed.addField('Achievement','Get the special changelog error',true)
         embed.setTimestamp();
 
-        message.author.send(embed);
+        user.send(embed);
 
-        data.achievements[message.author.id].changelog = Date.now();
+        data.achievements[user.id].changelog = Date.now();
       }
       break;
     case "inviteNow":
-      if(data.achievements[message.author.id].inviteNow === undefined) {
-        embed.setTitle('Fuck you seb')
+      if(data.achievements[user.id].inviteNow === undefined) {
+        embed.setTitle('Fuck You Seb')
         embed.setColor(0xBF66E3)
         embed.addField('Achievement','Get the special invite link',true)
         embed.setTimestamp();
 
-        message.author.send(embed);
+        user.send(embed);
 
-        data.achievements[message.author.id].inviteNow = Date.now();
+        data.achievements[user.id].inviteNow = Date.now();
+      }
+      break;
+    case "joinServer":
+      if(data.achievements[user.id].joinServer === undefined) {
+        embed.setTitle('A Supportive Boi')
+        embed.setColor(0xBF66E3)
+        embed.addField('Achievement','Join the support server',true)
+        embed.setTimestamp();
+
+        user.send(embed);
+
+        data.achievements[user.id].joinServer = Date.now();
       }
       break;
     default:

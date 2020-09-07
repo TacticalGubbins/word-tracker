@@ -1,9 +1,9 @@
 {
-  "totalSent": 16012,
+  "totalSent": 16025,
   "topUser": {
     "username": "Cyakat",
     "id": "249382933054357504",
-    "words": 9010,
+    "words": 9018,
     "avatar": "https://cdn.discordapp.com/avatars/249382933054357504/19c8ba50c1abd9c357a836547f8bb903.webp"
   },
   "ogs": [],
@@ -19,7 +19,38 @@
         {
           "username": "Cyakat",
           "id": "249382933054357504",
-          "words": 9010,
+          "words": 9017,
+          "cooldown": 0
+        },
+        {
+          "username": "Darwen",
+          "id": "445668261338677248",
+          "words": 3,
+          "cooldown": 0
+        },
+        {
+          "username": "TacticalGubbins",
+          "id": "250408653830619137",
+          "words": 7003,
+          "cooldown": 0
+        }
+      ]
+    },
+    {
+      "name": "Word-Tracker",
+      "id": "708421545005023232",
+      "cooldown": 5,
+      "strings": [
+        "bruh",
+        "nice",
+        "bots",
+        "cow"
+      ],
+      "users": [
+        {
+          "username": "Cyakat",
+          "id": "249382933054357504",
+          "words": 1,
           "cooldown": 0
         },
         {
@@ -31,7 +62,7 @@
         {
           "username": "TacticalGubbins",
           "id": "250408653830619137",
-          "words": 7001,
+          "words": 0,
           "cooldown": 0
         }
       ]
@@ -39,17 +70,20 @@
   ],
   "ppLength": "s",
   "achievements": {
-    "249382933054357504": {
-      "pp": 1599450092467,
-      "inviteNow": 1599450204425,
-      "changelog": 1599450227710,
-      "roots": 1599453029855
-    },
     "250408653830619137": {
       "roots": 1599451587350,
       "pp": 1599451682965,
       "changelog": 1599451737061,
       "inviteNow": 1599451741138
+    },
+    "445668261338677248": {
+      "roots": 1599501770785,
+      "pp": 1599506666599,
+      "joinServer": 1599507479692
+    },
+    "249382933054357504": {
+      "pp": 1599505877083,
+      "joinServer": 1599505877083
     }
   },
   "blacklist": {}
