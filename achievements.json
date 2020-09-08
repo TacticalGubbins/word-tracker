@@ -1,8 +1,8 @@
 {
   "template": {
-    "title": "Change me",
+    "title": "template",
     "description": "Change me",
-    "hidden": true
+    "hidden": false
   },
   "roots": {
     "title": "Back to the roots",

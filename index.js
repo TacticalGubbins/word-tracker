@@ -5,6 +5,7 @@ const client = new Client();
 
 const fs = require('fs');
 const colors = require('colors');
+const math = require('math');
 
 const config = require("../test.json");
 const changelog = require("./changelog.json");
@@ -131,11 +132,10 @@ dbl.on('error', e => {
 
 client.on("message", (message) => {
 
-  let achievementFlags = {
-    "roots": false,
-    "pp": false,
-    "changelog": false,
-    "inviteNow": false
+  let template1 = (math.random() * (31622 - 1) + 1).toFixed(0);
+  let template2 = (math.random() * (31622 - 1) + 1).toFixed(0);
+  if(template1 === template2) {
+    giveAchievements(message.author, data, "template", template1);
   }
 
   //ignore messages sent by bots
@@ -778,7 +778,7 @@ client.on("message", (message) => {
     giveAchievements(message.author, data, "pp");
   }
 
-  if(message.content.toLowerCase().startsWith(prefix + "achievements")) {
+  if(message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement")) {
     achievementsCheck(message, data, args);
     return;
   }
@@ -956,9 +956,6 @@ function achievementsCheck(message, data, args) {
   let keys = Object.keys(achievements);
   let embed = new MessageEmbed();
 
-  if(data.achievements[user] === undefined) {
-    data.achievements[user] = {};
-  }
   //check to see if the value inputted is a user
   if(args[1] === undefined) {
     user = message.author.id;
@@ -968,11 +965,15 @@ function achievementsCheck(message, data, args) {
     showHidden = false;
   }
 
+  if(data.achievements[user] === undefined) {
+    data.achievements[user] = {};
+  }
+
   for(let i in keys) {
     achievementCode = keys[i];
     let description = 'This achievement is hidden';
 
-    try {
+    if(!(user === client.user.id)) {
       if(data.achievements[user][achievementCode] != undefined) {
       if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
         description = achievements[achievementCode].description
@@ -981,7 +982,7 @@ function achievementsCheck(message, data, args) {
       achievementCounter += 1;
       }
     }
-    catch(err) {
+    else {
       embed.setColor(0xFF0000)
       .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
       .setFooter('Requested by ' + message.author.tag);
@@ -989,6 +990,7 @@ function achievementsCheck(message, data, args) {
       message.channel.send(embed);
       return;
     }
+
 
   }
 
@@ -1004,23 +1006,32 @@ function achievementsCheck(message, data, args) {
   .setColor('0xBF66E3')
   .setFooter('Requested by ' + message.author.tag );
 
-  message.channel.send(embed);
+  if(showHidden) {
+    message.author.send(embed);
+  }
+  else {
+    message.channel.send(embed);
+  }
+  return;
 }
 
-function giveAchievements(user, data, achievementCode) {
+function giveAchievements(user, data, achievementCode, specialData) {
   if(data.achievements[user.id] === undefined) {
     data.achievements[user.id] = {};
   }
 
-  let embed = new MessageEmbed()
-  .setTitle('Achievement')
-  .setColor(0xBF66E3)
-  .addField(achievements[achievementCode].fieldTitle, achievements[achievementCode].fieldDescription)
-  .setTimestamp();
+  if(data.achievements[user.id][achievementCode] === undefined){
 
-  user.send(embed);
+    let embed = new MessageEmbed()
+    .setTitle('Achievement')
+    .setColor(0xBF66E3)
+    .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+    .setTimestamp();
 
-  data.achievements[user.id][achievementCode] = Date.now();
+    user.send(embed);
+
+    data.achievements[user.id][achievementCode] = Date.now();
+  }
 
   /*let embed = new MessageEmbed();
   switch(achievementFlag) {
