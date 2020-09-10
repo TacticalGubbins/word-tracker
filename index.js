@@ -688,7 +688,9 @@ client.on("message", (message) => {
       let changes = changelog.versions[versionNumbers[0]][versionNumbers[1]][versionNumbers[2]];
       let embed = new MessageEmbed()
       .setTitle(args[1] + " Changelog")
-      .setColor(0xBF66E3);
+      .setColor(0xBF66E3)
+      .setDescription('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
+      ;
 
       for(var i = 0; i < changes.length; i++) {
         embed.addField(i+1, changes[i]);
@@ -712,7 +714,8 @@ client.on("message", (message) => {
         let embed = new MessageEmbed()
         .setTitle("Version not found")
         .setColor(0xFF0000)
-        .setDescription("The version specified could not be found. The oldest changelog is for 3.6.4")
+        .addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
+        .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)\n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
         .setFooter("try " + prefix + "changelog 3.6.4");
 
         message.channel.send(embed);
@@ -978,7 +981,7 @@ function achievementsCheck(message, data, args) {
       if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
         description = achievements[achievementCode].description
       }
-      embed.addField(achievements[achievementCode].title, description);
+      embed.addField(achievements[achievementCode].title, description, true);
       achievementCounter += 1;
       }
     }
@@ -1007,6 +1010,12 @@ function achievementsCheck(message, data, args) {
   .setFooter('Requested by ' + message.author.tag );
 
   if(showHidden) {
+    let helpEmbed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("Check your dms :>")
+    ;
+    message.channel.send(helpEmbed);
     message.author.send(embed);
   }
   else {
@@ -1023,7 +1032,7 @@ function giveAchievements(user, data, achievementCode, specialData) {
   if(data.achievements[user.id][achievementCode] === undefined){
 
     let embed = new MessageEmbed()
-    .setTitle('Achievement')
+    .setTitle('Achievement Earned:')
     .setColor(0xBF66E3)
     .addField(achievements[achievementCode].title, achievements[achievementCode].description)
     .setTimestamp();
@@ -1426,16 +1435,29 @@ function getOGS(data) {
 }
 
 function getGlobalTop(message, data) {
-  let arr = {"users":[]};
+  let users = new Set();
   let pos = 0;
   let place = 0;
   let inTop = false;
 
   for(var server = 0; server < data.servers.length; server++) {
     for(var user = 0; user < data.servers[server].users.length; user++) {
-      arr.users = arr.users.concat(data.servers[server].users[user]);
+      users.add(data.servers[server].users[user]);
     }
   }
+
+/*  for(let server in data.servers) {
+    users.add(data.servers[server].users);
+  }
+  console.log(users);
+
+  for(let group in users) {
+    for(let usr in users[group]) {
+      totalWords += users[group][usr];
+    }
+  }*/
+
+  console.log(users);
 
   arr = JSON.stringify(arr, null, 2);
   arr = JSON.parse(arr);
@@ -1473,7 +1495,7 @@ function getGlobalTop(message, data) {
     .setTitle('')
     .setColor()
     .setColor(0xFF0000)
-    .setDescription("There isn't enough users to display this leaderboard")
+    .setDescription("There aren't enough users to display this leaderboard")
     ;
     message.channel.send(embed);
     return;
