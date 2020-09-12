@@ -207,7 +207,7 @@ client.on("message", (message) => {
   args = args.filter(item => !!item);
 
   if(message.content === "🥚") {
-    giveAchievement(message.author, data, "egg");
+    giveAchievements(message.author, data, "egg");
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "bottom")) {
@@ -1039,6 +1039,7 @@ function giveAchievements(user, data, achievementCode, specialData) {
     .setTitle('Achievement Earned:')
     .setColor(0xBF66E3)
     .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+    .setThumbnail(achievements[achievementCode].image)
     .setTimestamp();
 
     user.send(embed);
@@ -1439,51 +1440,50 @@ function getOGS(data) {
 }
 
 function getGlobalTop(message, data) {
-  let users = new Set();
+  let users = new Array();
   let pos = 0;
   let place = 0;
   let inTop = false;
 
-  for(var server = 0; server < data.servers.length; server++) {
+  /*for(var server = 0; server < data.servers.length; server++) {
     for(var user = 0; user < data.servers[server].users.length; user++) {
       users.add(data.servers[server].users[user]);
     }
-  }
+  }*/
 
-/*  for(let server in data.servers) {
-    users.add(data.servers[server].users);
+  for(let server of data.servers) {
+    users.push(server.users);
   }
   console.log(users);
 
-  for(let group in users) {
+  /*for(let group in users) {
     for(let usr in users[group]) {
       totalWords += users[group][usr];
     }
   }*/
 
-  console.log(users);
 
-  arr = JSON.stringify(arr, null, 2);
-  arr = JSON.parse(arr);
+  //arr = JSON.stringify(arr, null, 2);
+  //arr = JSON.parse(arr);
 
 
-  for(var i = 0; i < arr.users.length; i++) {
-    for(var o = i+1; o < arr.users.length; o++) {
-      if(arr.users[i].id === arr.users[o].id) {
-        arr.users[i].words += arr.users[o].words;
-        delete arr.users[o];
-        arr.users = arr.users.filter(item => !!item);
+  for(var i in users) {
+    for(var o = i+1; o < users.length; o++) {
+      if(users[i].id === users[o].id) {
+        users[i].words += users[o].words;
+        delete users[o];
         o = i+1;
+        users = users.filter(item => !!item);
       }
     }
   }
 
   for(var i = 0; i < data.servers.length; i++) {
     for(var o = 0; o < data.servers[i].users.length; o++) {
-      for(var p = 0; p < arr.users.length; p++) {
-        if(data.servers[i].users[o].id === arr.users[p].id) {
-          arr.users[p].serverName = data.servers[i].name;
-          if(arr.users[p].serverName !== undefined) {
+      for(var p = 0; p < users.length; p++) {
+        if(data.servers[i].users[o].id === users[p].id) {
+          users[p].serverName = data.servers[i].name;
+          if(users[p].serverName !== undefined) {
             break;
           }
         }
