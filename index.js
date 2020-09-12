@@ -206,6 +206,10 @@ client.on("message", (message) => {
   let args = message.content.split(" ");
   args = args.filter(item => !!item);
 
+  if(message.content === "🥚") {
+    giveAchievement(message.author, data, "egg");
+  }
+
   if(message.content.toLowerCase().startsWith(prefix + "bottom")) {
     let embed = new MessageEmbed()
     .setTitle('')

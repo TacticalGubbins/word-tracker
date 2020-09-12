@@ -28,5 +28,10 @@
     "title": "A Supportive Boi",
     "description": "Join the support server",
     "hidden": false
+  },
+  "egg": {
+    "title": "Egge",
+    "description": "What? You egg?!",
+    "hidden": true
   }
 }
