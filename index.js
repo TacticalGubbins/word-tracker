@@ -226,7 +226,7 @@ client.on("message", (message) => {
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
-    getGlobalTop(message, data);
+    getGlobalTop(message);
     return;
   }
 
@@ -250,6 +250,7 @@ client.on("message", (message) => {
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")) {
+    let timer = startTimer();
     let embed = new MessageEmbed()
     .setTitle(client.user.tag)
     .setColor(0xBF66E3)
@@ -263,6 +264,7 @@ client.on("message", (message) => {
     .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
     .setFooter('Requested by ' + message.author.tag);
     message.channel.send(embed);
+    stopTimer(timer);
     return;
   }
 
@@ -1439,7 +1441,8 @@ function getOGS(data) {
   return ogs;
 }
 
-function getGlobalTop(message, data) {
+function getGlobalTop(message) {
+  let timer = startTimer();
   let users = new Array();
   let pos = 0;
   let place = 0;
@@ -1452,9 +1455,15 @@ function getGlobalTop(message, data) {
   }*/
 
   for(let server of data.servers) {
+    for(let user of server.users) {
+      users.push(user);
+    }
+  }
+
+/*  for(let server of data.servers) {
     users.push(server.users);
   }
-  console.log(users);
+  console.log(users);*/
 
   /*for(let group in users) {
     for(let usr in users[group]) {
@@ -1467,10 +1476,11 @@ function getGlobalTop(message, data) {
   //arr = JSON.parse(arr);
 
 
-  for(var i in users) {
+  for(var i = 0; i < users.length; i++) {
     for(var o = i+1; o < users.length; o++) {
       if(users[i].id === users[o].id) {
         users[i].words += users[o].words;
+        users[i].serverName = "pee";
         delete users[o];
         o = i+1;
         users = users.filter(item => !!item);
@@ -1478,7 +1488,7 @@ function getGlobalTop(message, data) {
     }
   }
 
-  for(var i = 0; i < data.servers.length; i++) {
+/*  for(var i = 0; i < data.servers.length; i++) {
     for(var o = 0; o < data.servers[i].users.length; o++) {
       for(var p = 0; p < users.length; p++) {
         if(data.servers[i].users[o].id === users[p].id) {
@@ -1489,12 +1499,13 @@ function getGlobalTop(message, data) {
         }
       }
     }
-  }
+  }*/
 
-  arr = arr.users.sort((a, b) => b.words - a.words);
+
+  users = users.sort((a, b) => b.words - a.words);
 
   //check to see if there are any users on this server
-  if(arr.length < 3) {
+  if(users.length < 3) {
     let embed = new MessageEmbed()
     .setTitle('')
     .setColor()
@@ -1506,9 +1517,9 @@ function getGlobalTop(message, data) {
   }
 
   //find user who is running command's position
-  for(var i = 0; i < arr.length; i++) {
+  for(let i in users) {
     pos++;
-    if(arr[i].id == message.author.id) {
+    if(users[i].id === message.author.id) {
       break;
     }
   }
@@ -1563,22 +1574,24 @@ function getGlobalTop(message, data) {
 
   //console.log(arr)
   //add user positions, max of 10, from json object
-  for(var i = 0; i < arr.length && i < 10; i++) {
-    if(arr[i].id === message.author.id) {
-      embed.addField('#' + (i+1) + ' `' + arr[i].username + '`', arr[i].words + " in " + arr[i].serverName);
+  for(var i = 0; i < users.length && i < 10; i++) {
+    if(users[i].id === message.author.id) {
+      embed.addField('#' + (i+1) + ' `' + users[i].username + '`', users[i].words + " in " + users[i].serverName);
       inTop = true;
     } else {
-      embed.addField('#' + (i+1) + ' ' + arr[i].username, arr[i].words + " in " + arr[i].serverName);
+      embed.addField('#' + (i+1) + ' ' + users[i].username, users[i].words + " in " + users[i].serverName);
     }
   }
 
   //add final info
   if(inTop === false) {
-    embed.addField('#' + pos + ' `' + message.author.username + '`', arr[pos-1].words, true)
+    embed.addField('#' + pos + ' `' + message.author.username + '`', users[pos-1].words, true)
   }
 
   //console.log(arr);
   message.channel.send(embed);
+
+  stopTimer(timer);
   return;
 }
 
@@ -1630,6 +1643,16 @@ function getWatching(watching) {
     }
   }
   return watchingSet;
+}
+
+function startTimer() {
+  let timer = Date.now();
+  return timer;
+}
+
+function stopTimer(timer) {
+  let timer2 = Date.now();
+  logging.debug((timer2 - timer)/1000);
 }
 
 /*function getBlacklist(message, data) {
