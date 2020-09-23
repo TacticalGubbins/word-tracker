@@ -101,9 +101,7 @@ let ach = data.achievements;
   console.log(rows);
 });*/
 
-con.query('SELECT id, SUM(words) AS \'words\' FROM users GROUP BY id ORDER BY words DESC;', (err, response) => {
-  
-});
+con.query('INSERT INTO servers')
 
 
 /*con.end((err) => {

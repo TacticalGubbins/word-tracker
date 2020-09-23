@@ -56,7 +56,8 @@
           "DMing the bot `help` or `n!help` is no longer case sensitive",
           "Fixed a few grammar errors :>",
           "Significantly increased the time it takes for n!global to respond",
-          "Removed the server names from the global leaderboard"
+          "Removed the server names from the global leaderboard",
+          "Fixed bottom user"
         ]
       }
     }
