@@ -6,6 +6,7 @@ const client = new Client();
 const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
+const mysql = require('mysql');
 
 const config = require("../test.json");
 const changelog = require("./changelog.json");
@@ -51,6 +52,23 @@ let cooldown = new Set();
 let cdseconds = 0;
 
 var d = new Date();
+
+const con = mysql.createConnection({
+  host: '127.0.0.1',
+  user: 'root',
+  password: config.database,
+  database: 'data',
+  supportBigNumbers: true
+});
+
+con.connect(function (err) {
+  if(err) {
+    return console.log('error: ' + err.message);
+  }
+
+    console.log('Connected to the database');
+
+});
 
 //OBJECTS************************
 const logging = {
@@ -111,6 +129,7 @@ client.on('ready', () => {
         write(data);
 
     }, 10000);
+
 });
 
 
@@ -221,12 +240,40 @@ client.on("message", (message) => {
     message.channel.send(embed)
   }
 
+  if(message.content === 'get highest users') {
+    con.query('SELECT id, MAX(words) AS \'topWords\' FROM users;', (err, rows) => {
+      console.log(rows);
+      console.log(rows[0].topWords);
+      console.log(rows[0].id);
+      message.channel.send(rows[0].topWords);
+    });
+  }
+
+  if(message.content === 'get top users') {
+    con.query('SELECT * FROM users ORDER BY words DESC LIMIT 10;', (err, rows) => {
+      console.log(rows);
+      console.log(rows[0].words);
+      console.log(rows[0].id);
+      message.channel.send(rows[0].topWords);
+    });
+  }
+
   if(message.content === "hi" && message.author.id === "249382933054357504") {
     addServerNames(data);
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
-    getGlobalTop(message);
+
+    con.query('SELECT server_id, id, SUM(words) AS \'words\' FROM users GROUP BY id ORDER BY words DESC;', (err, response) => {
+      let embed = new MessageEmbed()
+      .setColor(0xBF66E3)
+      .setTitle('Global Leaderboard')
+      .setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
+      .setFooter('Requested by ' + message.author.tag);
+
+      getTop(message, response, embed);
+    });
+    //getGlobalTop(message);
     return;
   }
 
@@ -553,7 +600,18 @@ client.on("message", (message) => {
   //retrive top 10 users
   if(message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')) {
 
-    getTop(message, data);
+    //quieres stuff
+    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
+      let embed = new MessageEmbed()
+      .setColor(0xBF66E3)
+      .setTitle(message.guild.name + ' Leaderboard')
+      .setDescription("This is the server's local leaderboard")
+      .setFooter('Requested by ' + message.author.tag);
+
+      getTop(message, response, embed);
+    });
+
+    //getTop(message, data);
 
   }
 
@@ -1133,7 +1191,7 @@ function write (data) {
 
 
 //organize users by num of nwords
-function getTop(message, data) {
+/*function getTop(message, data) {
   let server = getServer(message, data);
 
   //create new json object to sort
@@ -1196,7 +1254,7 @@ function getTop(message, data) {
   message.channel.send(embed);
   return;
 
-}
+}*/
 
 function deleteUserInfo(data, message) {
   let server = getServer(message, data);
@@ -1655,6 +1713,38 @@ function stopTimer(timer) {
   logging.debug((timer2 - timer)/1000);
 }
 
+function getTop(message, response, embed) {
+  let inTop = false;
+  let pos = 1;
+
+  for(let i = 0; i < response.length; i++) {
+    try{
+      let user = client.users.cache.get(response[i].id.toString());
+      //get user and server
+      i = parseInt(i);
+
+      //add user positions, max of 10, from json object
+      if(user.id === message.author.id) {
+        embed.addField('#' + (pos) + ' `' + message.author.username + '`', response[i].words);
+        inTop = true;
+      } else {
+        embed.addField('#' + (pos) + ' ' + user.username, response[i].words);
+      }
+
+      if(inTop === false && user.id === message.author.id) {
+        embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words, true);
+        break;
+      } else if(inTop === true && pos === 10) {
+        break;
+      }
+      pos++;
+    }
+    catch(err) {}
+
+  }
+  message.channel.send(embed);
+}
+
 /*function getBlacklist(message, data) {
   let blacklist = new Set();
   if(data.blacklist === undefined) {
@@ -1670,7 +1760,7 @@ function stopTimer(timer) {
   }
   data.blacklist = data.blacklist.filter(item => !!item);
   return blacklist;
-}*/
+}
 
 /*function newBot(message) {
   let embed = new MessageEmbed()

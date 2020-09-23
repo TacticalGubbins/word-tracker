@@ -9,7 +9,8 @@ let con = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'bUt3GhDTruTO8xWeVO48yV13GUO&$^Pgx86wyuUhM',
-  database: 'data'
+  database: 'data',
+  supportBigNumbers: true
 });
 
 con.connect(function (err) {
@@ -25,9 +26,18 @@ con.connect(function (err) {
 let keys = Object.keys(data.achievements);
 let ach = data.achievements;
 
+/*con.query('SELECT id, MAX(words) AS topWords FROM users_with_servers;', (err, rows) => {
+  console.log(rows);
+  console.log(rows[0].topWords);
+  console.log(rows[0].id);
+});*/
 
+//con.query('SELECT * FROM users WHERE words = ' + topWords + ';')
 
-for (let i of keys) {
+//SELECT id, words FROM users WHERE id = id
+
+//SELECT id, SUM(words) FROM users WHERE id IS 249382933054357504;
+/*for (let i of keys) {
   let roots = 0;
   let pp = 0;
   let changelog = 0;
@@ -53,12 +63,12 @@ for (let i of keys) {
   else if(ach[i].egg != undefined) {
     egg = 1;
   }
-  con.query('INSERT INTO achievements (user_id, roots, pp , changelog, inviteNow, joinServer, egg) VALUE (\'' + i + '\', \'' + roots + '\', \'' + pp + '\', \'' + changelog + '\', \'' + inviteNow + '\', \'' + joinServer + '\', \'' + egg + '\');', (err, response) => {
+  con.query('INSERT INTO achievements (user_id, roots, pp , changelog, inviteNow, joinServer, egg) VALUE (' + i + ', ' + roots + ', ' + pp + ', ' + changelog + ', ' + inviteNow + ', ' + joinServer + ', ' + egg + ');', (err, response) => {
     console.log(response);
   });
-}
+}*/
 
-for (let i in data.servers) {
+/*for (let i in data.servers) {
   //con.query('ALTER TABLE t' + data.servers[i].id + ' ADD users '});
   //console.log(data.servers[i].id);
   //console.log(i);
@@ -69,25 +79,40 @@ for (let i in data.servers) {
   else {
     prefix = data.servers[i].prefix;
   }
-  /*for (let o in data.servers[i].users) {
-    con.query('INSERT INTO users (id, server_id, name, cooldown, words) VALUE (\'' + data.servers[i].users[o].id +
-      '\', \'' + data.servers[i].id +
-      '\', \'' + data.servers[i].users[o].username +
-      '\', ' + data.servers[i].users[o].cooldown +
-      ', ' + data.servers[i].users[o].words + ');', (err, response) => {
-      console.log(err);
-    });
-  }*/
-    /*con.query('INSERT INTO servers (id, prefix, words, name) VALUE (' + data.servers[i].id +', \'' + prefix + '\', 0, \'' + data.servers[i].name + '\');', (err, response) => {
+  /*
+  "INSERT INTO users (id, server_id, name, cooldown, words) VALUE ('" + data.servers[i].users[o].id +
+    "', '" + data.servers[i].id +
+    "', '" + data.servers[i].users[o].username +
+    "', '" + data.servers[i].users[o].cooldown +
+    "', '" + data.servers[i].users[o].words + "');"
 
-    console.log(response);
 
-  });*/
-}
+  for (let o in data.servers[i].users) {
+    sql = 'INSERT INTO users (id, server_id, cooldown, words) VALUE (' + data.servers[i].users[o].id + ', ' + data.servers[i].id + ', ' + data.servers[i].users[o].cooldown + ', ' + data.servers[i].users[o].words +');'
+    con.query(sql, (err, response) => {});
+  }
+    //con.query("INSERT INTO servers (id, prefix, words, name) VALUE (' + data.servers[i].id +',  + " + con.escape(prefix) + ', 0');", (err, response) => {
+
+    //console.log(response);
+
+//  });
+}*/
 /*con.query('SELECT * FROM servers', (err, rows) => {
   console.log(rows);
 });*/
 
-con.end((err) => {
-
+con.query('SELECT id, SUM(words) AS \'words\' FROM users GROUP BY id ORDER BY words DESC;', (err, response) => {
+  
 });
+
+
+/*con.end((err) => {
+
+  console.log('done');
+});*/
+
+function query(text) {
+  con.query(text, (err, response) => {
+    return response;
+  });
+}

@@ -54,7 +54,9 @@
           "Fixed a problem that would cause the bot to give errors when posting the server count to top.gg",
           "Added the ability to view time remaining in blacklist",
           "DMing the bot `help` or `n!help` is no longer case sensitive",
-          "Fixed a few grammar errors :>"
+          "Fixed a few grammar errors :>",
+          "Significantly increased the time it takes for n!global to respond",
+          "Removed the server names from the global leaderboard"
         ]
       }
     }
