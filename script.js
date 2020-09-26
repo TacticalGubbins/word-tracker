@@ -26,6 +26,20 @@ con.connect(function (err) {
 let keys = Object.keys(data.achievements);
 let ach = data.achievements;
 
+/*for(let server of data.servers) {
+  let combinedString;
+  for(let string of server.strings) {
+    if (combinedString === undefined){
+      combinedString = string
+    } else {
+      combinedString = combinedString + ", " + string;
+    }
+  }
+  con.query('UPDATE servers SET cooldown = ' + parseInt(server.cooldown) + ', strings = \'' + combinedString + '\' WHERE id = ' +  server.id, (err, response) => {
+    console.log(err);
+  });
+}*/
+
 /*con.query('SELECT id, MAX(words) AS topWords FROM users_with_servers;', (err, rows) => {
   console.log(rows);
   console.log(rows[0].topWords);
@@ -100,8 +114,6 @@ let ach = data.achievements;
 /*con.query('SELECT * FROM servers', (err, rows) => {
   console.log(rows);
 });*/
-
-con.query('INSERT INTO servers')
 
 
 /*con.end((err) => {

@@ -116,8 +116,10 @@ client.on('ready', () => {
         stat = 1;
       }
       else if(stat === 1) {
-        client.user.setActivity(`${data.totalSent} words`, {type : 'WATCHING'});
-        stat = Math.floor(Math.random() * Math.floor(10));
+        con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+          client.user.setActivity(`${total[0].words} words`, {type : 'WATCHING'});
+        });
+        stat = Math.floor(Math.random() * Math.floor(20));
         if(stat === 1 || stat > 2) {
           stat = 0;
         }
@@ -258,9 +260,9 @@ client.on("message", (message) => {
     });
   }
 
-  if(message.content === "hi" && message.author.id === "249382933054357504") {
+  /*if(message.content === "hi" && message.author.id === "249382933054357504") {
     addServerNames(data);
-  }
+  }*/
 
   if(message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")) {
 
@@ -283,35 +285,44 @@ client.on("message", (message) => {
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "settings")) {
-    let embed = new MessageEmbed()
-    .setTitle(message.guild.name + " Settings")
-    .setColor(0xBF66E3)
-    .setDescription("Use:\n**" + prefix + "cooldown** to change the cooldown\n**" + prefix + "triggers** to change the trigger words\n**" + prefix + "setPrefix** to change the server prefix")
-    .setThumbnail(message.guild.iconURL())
-    .addField('Prefix', prefix, true)
-    .addField('Cooldown Time', + data.servers[server].cooldown + " seconds", true)
-    .addField('Trigger Words', data.servers[server].strings)
-    .setFooter('Requested by ' + message.author.tag);
-    message.channel.send(embed);
+    con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , (err, response) => {
+      let cooldown = response[0].cooldown;
+      let strings = response[0].strings;
+
+      let embed = new MessageEmbed()
+      .setTitle(message.guild.name + " Settings")
+      .setColor(0xBF66E3)
+      .setDescription("Use:\n**" + prefix + "cooldown** to change the cooldown\n**" + prefix + "triggers** to change the trigger words\n**" + prefix + "setPrefix** to change the server prefix")
+      .setThumbnail(message.guild.iconURL())
+      .addField('Prefix', prefix, true)
+      .addField('Cooldown Time', + cooldown + " seconds", true)
+      .addField('Trigger Words', strings)
+      .setFooter('Requested by ' + message.author.tag);
+      message.channel.send(embed);
+
+    });
+
     return;
   }
 
   if(message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")) {
-    let timer = startTimer();
-    let embed = new MessageEmbed()
-    .setTitle(client.user.tag)
-    .setColor(0xBF66E3)
-    .setDescription('Counting Words... *please help me*')
-    .setThumbnail(client.user.avatarURL())
-    .addField('Authors', '`TacticalGubbins#0900`\n`Cyakat#5061`', true)
-    .addField('Version', version, true)
-    .addField('Uptime', getUptime(), true)
-    .addField('Total Words Tracked', data.totalSent, true)
-    .addField('Server Count', client.guilds.cache.size, true)
-    .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
-    .setFooter('Requested by ' + message.author.tag);
-    message.channel.send(embed);
-    stopTimer(timer);
+    con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+      //let timer = startTimer();
+      let embed = new MessageEmbed()
+      .setTitle(client.user.tag)
+      .setColor(0xBF66E3)
+      .setDescription('Counting Words... *please help me*')
+      .setThumbnail(client.user.avatarURL())
+      .addField('Authors', '`TacticalGubbins#0900`\n`Cyakat#5061`', true)
+      .addField('Version', version, true)
+      .addField('Uptime', getUptime(), true)
+      .addField('Total Words Tracked', total[0].words, true)
+      .addField('Server Count', client.guilds.cache.size, true)
+      .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
+      .setFooter('Requested by ' + message.author.tag);
+      message.channel.send(embed);
+      //stopTimer(timer);
+    });
     return;
   }
 
@@ -326,7 +337,8 @@ client.on("message", (message) => {
         return;
       }
       if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
-        data.servers[server].cooldown = 0;
+        con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id, (err));
+        //data.servers[server].cooldown = 0;
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
@@ -344,7 +356,8 @@ client.on("message", (message) => {
         return;
       }
       if(!isNaN(args[1])) {
-        data.servers[server].cooldown = parseInt(args[1]);
+        con.query("UPDATE servers SET cooldown = " + args[1] + " WHERE id = " + message.guild.id, (err));
+        //data.servers[server].cooldown = parseInt(args[1]);
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
@@ -370,7 +383,7 @@ client.on("message", (message) => {
       .setTitle('Trigger Setup')
       .setColor(0xBF66E3)
       .setDescription('Please type out any words you would like to be counted. Seperate each word by a space. All punctuation will be ignored')
-      .addField('Example', 'cows bots nice!', true)
+      .addField('Example', 'bots nice!', true)
       .addField('Cancel', 'Type "CANCEL" to cancel', true)
       .setFooter('Requested by ' + message.author.tag);
       message.channel.send(embed);
@@ -389,7 +402,9 @@ client.on("message", (message) => {
           let strings = message.content.toLowerCase().split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
           strings = strings.filter(item => !!item);
           strings = strings.filter((item, index) => strings.indexOf(item) === index);
-          data.servers[server].strings = strings;
+          strings = strings.join(', ');
+          //data.servers[server].strings = strings;
+          con.query("UPDATE servers SET strings = " + strings + "WHERE id = " + message.guild.id, (err));
 
           let embed = new MessageEmbed()
           .setTitle('')
@@ -445,7 +460,7 @@ client.on("message", (message) => {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
-      .setDescription("Bruhg I've counted **__" + data.totalSent + "__** words")
+      .setDescription("Bruhg I've counted **__" + getTotal() + "__** words")
       .setFooter('Requested by ' + message.author.tag);
       //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
       message.channel.send(embed);
@@ -540,15 +555,16 @@ client.on("message", (message) => {
 
   //check the total amount of sent n-words
   if(message.content.toLowerCase().startsWith(prefix + "total")) {
-    let embed = new MessageEmbed()
-    .setTitle('')
-    .setColor(0xBF66E3)
-    .setDescription("There have been a total of **__" + data.totalSent + "__** countable words sent!")
-    .setFooter('Requested by ' + message.author.tag);
-    //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
-    message.channel.send(embed);
-
-
+    con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription("There have been a total of **__" + total[0].words + "__** countable words sent!")
+      .setFooter('Requested by ' + message.author.tag);
+      //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
+      message.channel.send(embed);
+    });
+    return;
     //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested total words: ${data.totalSent} in ` + message.channel.guild.name);
   }
   if(message.content.toLowerCase().startsWith(prefix + "invite")) {
@@ -1743,6 +1759,12 @@ function getTop(message, response, embed) {
 
   }
   message.channel.send(embed);
+}
+
+function getTotal() {
+  con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+    return total;
+  });
 }
 
 /*function getBlacklist(message, data) {
