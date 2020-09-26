@@ -457,88 +457,105 @@ client.on("message", (message) => {
     }
 
     if(user == client.user.id) {
-      let embed = new MessageEmbed()
-      .setTitle('')
-      .setColor(0xBF66E3)
-      .setDescription("Bruhg I've counted **__" + getTotal() + "__** words")
-      .setFooter('Requested by ' + message.author.tag);
-      //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
-      message.channel.send(embed);
+      con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
+        .setFooter('Requested by ' + message.author.tag);
+        //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
+        message.channel.send(embed);
+      });
 
       return;
     }
 
     //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
-      if(client.users.cache.get(user.toString()) !== undefined) {
-      //find the id of the user in question
-      //console.log(`\nFetching info for ${user}`);
+    if(client.users.cache.get(user.toString()) !== undefined) {
+      con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, rows) => {
+        console.log(rows);
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setFooter('Requested by ' + message.author.tag);
+
+        //checks to see if the user is in the database
+        if(rows[0] === undefined || rows[0].words === 0){
+          embed.setDescription('That user hasn\'t sent any countable words!')
+        }
+        else {
+          embed.setDescription(client.users.cache.get(user).tag + " has sent **__" + rows[0].words + "__** countable words!");
+        }
+
+    //find the id of the user in question
+    //console.log(`\nFetching info for ${user}`);
 
 
-            //let author = getUser(message, data);
-            let author = -1;
-            //find the position of the user in the data file
-            for (var i = 0; i < data.servers[server].users.length; i++) {
-              if(user == data.servers[server].users[i].id) {
-                  author = i;
-                  break;
-              }
-            }
+          //let author = getUser(message, data);
+      /*let author = -1;
+      //find the position of the user in the data file
+      for (var i = 0; i < data.servers[server].users.length; i++) {
+        if(user == data.servers[server].users[i].id) {
+            author = i;
+            break;
+        }
+      }*/
 
-            if(author === -1) {
-              let embed = new MessageEmbed()
-              .setTitle('')
-              .setColor(0xBF66E3)
-              .setDescription("That user hasn't sent any countable words!")
-              .setFooter('Requested by ' + message.author.tag);
-              //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
-              message.channel.send(embed);
-              return;
-            }
-            //detect if the user has not sent the n-word
-            if(data.servers[server].users[author].words === 0) {
-              let embed = new MessageEmbed()
-              .setTitle('')
-              .setColor(0xBF66E3)
-              .setDescription(client.users.cache.get(user).tag + " hasn't sent any countable words!")
-              .setFooter('Requested by ' + message.author.tag);
-              //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
-              message.channel.send(embed);
-              return;
-            }
+      /*if(author === -1) {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription("That user hasn't sent any countable words!")
+        .setFooter('Requested by ' + message.author.tag);
+        //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
+        message.channel.send(embed);
+        return;
+      }
+      //detect if the user has not sent the n-word
+      if(data.servers[server].users[author].words === 0) {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription(client.users.cache.get(user).tag + " hasn't sent any countable words!")
+        .setFooter('Requested by ' + message.author.tag);
+        //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
+        message.channel.send(embed);
+        return;
+      }
 
-              //send the number of words counted
-              let embed = new MessageEmbed()
-              .setTitle('')
-              .setColor(0xBF66E3)
-              .setDescription(client.users.cache.get(user).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
-              .setFooter('Requested by ' + message.author.tag)
-              ;
-              let userCooldown = (((data.servers[server].users[author].cooldown) - Date.now()) / 1000).toFixed(1) + " seconds";
-              if(((data.servers[server].users[author].cooldown) - Date.now()) > 0) {
-                embed.addField("Cooldown:", userCooldown, true);
-              }
-              if(data.blacklist[user] - Date.now() > 0) {
-                embed.addField("Blacklisted: ", ((data.blacklist[user] - Date.now()) / 3600000).toFixed(1) + " hours", true);
-              }
+        //send the number of words counted
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription(client.users.cache.get(user).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
+        .setFooter('Requested by ' + message.author.tag)
+        ;
+        let userCooldown = (((data.servers[server].users[author].cooldown) - Date.now()) / 1000).toFixed(1) + " seconds";
+        if(((data.servers[server].users[author].cooldown) - Date.now()) > 0) {
+          embed.addField("Cooldown:", userCooldown, true);
+        }
+        if(data.blacklist[user] - Date.now() > 0) {
+          embed.addField("Blacklisted: ", ((data.blacklist[user] - Date.now()) / 3600000).toFixed(1) + " hours", true);
+        }*/
 
-              let ogs = getOGS(data);
-              if(ogs.has(client.users.cache.get(user).id)) {
-                embed.setColor(0xFFA417);
-              }
-              //custom colors for pog people
-              if(client.users.cache.get(user).id === '445668261338677248') {
-                embed.setColor(0xFF1CC5);
-              }
-              if(client.users.cache.get(user).id === '448269007800238080') {
-                embed.setColor(0x17FF1B);
-              }
-              if(client.users.cache.get(user).id === '656755471847260170') {
-                embed.setColor(0x17D1FF);
-              }
+        let ogs = getOGS(data);
+        if(ogs.has(client.users.cache.get(user).id)) {
+          embed.setColor(0xFFA417);
+        }
+        //custom colors for pog people
+        if(client.users.cache.get(user).id === '445668261338677248') {
+          embed.setColor(0xFF1CC5);
+        }
+        if(client.users.cache.get(user).id === '448269007800238080') {
+          embed.setColor(0x17FF1B);
+        }
+        if(client.users.cache.get(user).id === '656755471847260170') {
+          embed.setColor(0x17D1FF);
+        }
 
 
-              message.channel.send(embed);
-
+        message.channel.send(embed);
+      });
 
 
       //say that the argument is not a user
@@ -597,8 +614,27 @@ client.on("message", (message) => {
 
   //fetch and return the top sending user info
   if(message.content.toLowerCase().startsWith(prefix + "top")) {
+    con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
+      for(let i in rows) {
+        try {
+          let embed = new MessageEmbed()
+          .setTitle('')
+          .setColor(0xBF66E3)
+          .setDescription('Top User')
+          .setFooter('Requested by ' + message.author.tag)
+          .setThumbnail('https://cdn.discordapp.com/avatars/' + rows[i].id + '/' + client.users.cache.get(rows[i].id).avatar + '.png')
+          .addField(client.users.cache.get(rows[i].id).username, '__**' + rows[i].words + '**__ sent');
 
-    let embed = new MessageEmbed()
+          message.channel.send(embed);
+          break;
+        }
+        catch(err) {
+
+        }
+      }
+
+    });
+    /*let embed = new MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
     .setDescription("Top User")
@@ -607,7 +643,7 @@ client.on("message", (message) => {
     .addField(data.topUser.username, '__**' + data.topUser.words + '**__ sent')
     ;
       //message.channel.send("The user with the largest amount of n-words sent is: **" + top[0] + "** with **__" + top[1] + "__** n-words sent!");
-      message.channel.send(embed);
+      message.channel.send(embed);*/
 
 
     //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the top user in ` + message.channel.guild.name);
@@ -650,7 +686,8 @@ client.on("message", (message) => {
 
       //delete user info
       if (message.content === message.author.username) {
-        deleteUserInfo(data, message);
+        //deleteUserInfo(data, message);
+        con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
         collector.stop();
 
         //cancel the collector, do not delete

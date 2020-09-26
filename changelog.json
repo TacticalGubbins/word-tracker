@@ -57,7 +57,8 @@
           "Fixed a few grammar errors :>",
           "Significantly increased the time it takes for n!global to respond",
           "Removed the server names from the global leaderboard",
-          "Fixed bottom user"
+          "Fixed bottom user",
+          "Removed blacklist"
         ]
       }
     }
