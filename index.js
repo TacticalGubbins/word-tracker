@@ -128,7 +128,7 @@ client.on('ready', () => {
           client.user.setActivity(`with my ${data.ppLength} pp`, {type : 'PLAYING'});
           stat = 0;
       }
-        write(data);
+      write(data);
 
     }, 10000);
 
@@ -221,7 +221,7 @@ client.on("message", (message) => {
 
   //let server = getServer(message, data);
   //let authorPos = getUser(message, data);
-  let prefix = getPrefix(message, data);
+  //let prefix = getPrefix(message, data);
   con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
     prefix = prefixResponse[0].prefix;
 
@@ -243,24 +243,6 @@ client.on("message", (message) => {
       .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/' + client.users.cache.get('445668261338677248').avatar + '.png?size=128')
       .addField('Darwen', '__**-69420**__ sent')
       message.channel.send(embed)
-    }
-
-    if(message.content === 'get highest users') {
-      con.query('SELECT id, MAX(words) AS \'topWords\' FROM users;', (err, rows) => {
-        console.log(rows);
-        console.log(rows[0].topWords);
-        console.log(rows[0].id);
-        message.channel.send(rows[0].topWords);
-      });
-    }
-
-    if(message.content === 'get top users') {
-      con.query('SELECT * FROM users ORDER BY words DESC LIMIT 10;', (err, rows) => {
-        console.log(rows);
-        console.log(rows[0].words);
-        console.log(rows[0].id);
-        message.channel.send(rows[0].topWords);
-      });
     }
 
     /*if(message.content === "hi" && message.author.id === "249382933054357504") {
@@ -436,7 +418,6 @@ client.on("message", (message) => {
       .catch(console.error);
 
       //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
-      achievementFlags.inviteNow = true;
       giveAchievements(message.author, data, "inviteNow");
     }
 
@@ -476,7 +457,6 @@ client.on("message", (message) => {
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, rows) => {
-          console.log(rows);
           let embed = new MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
@@ -691,6 +671,14 @@ client.on("message", (message) => {
         if (message.content === message.author.username) {
           //deleteUserInfo(data, message);
           con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
+          con.query('DELETE FROM achievements WHERE id = ' + message.author.id);
+          let deleteEmbed = new MessageEmbed()
+          .setTitle('')
+          .setColor()
+          .setColor(0xFF0000)
+          .setDescription('Your data has been deleted, sorry to see you go :<')
+          ;
+          message.channel.send(deleteEmbed);
           collector.stop();
 
           //cancel the collector, do not delete
@@ -827,8 +815,7 @@ client.on("message", (message) => {
 
           message.channel.send(embed);
 
-          achievementFlags.changelog = true;
-          giveAchievements(member.author, data, "changelog");
+          giveAchievements(message.author, data, "changelog");
         }
         else {
           let embed = new MessageEmbed()
@@ -854,7 +841,7 @@ client.on("message", (message) => {
           return;
         }
         if(args[1].length <= 5) {
-          data.servers[server].prefix = args[1].toLowerCase();
+          //data.servers[server].prefix = args[1].toLowerCase();
           con.query("UPDATE servers SET prefix = '" + args[1].toLowerCase() + "' WHERE id = " + message.guild.id);
           let embed = new MessageEmbed()
           .setTitle('')
@@ -898,7 +885,6 @@ client.on("message", (message) => {
         .setDescription('Come on man, give me at least a little something to work with');
         message.channel.send(embed);
       }
-      achievementFlags.pp = true;
       giveAchievements(message.author, data, "pp");
     }
 
@@ -1128,38 +1114,43 @@ client.on("message", (message) => {
 });
 
 function achievementsCheck(message, data, args) {
-  con.query('SELECT * FROM achievements WHERE id = ' + message.author.id, (err, rows) => {
-    console.log(err);
-    let user;
-    let achievementCounter = 0;
-    let showHidden;
-    let keys = Object.keys(achievements);
-    let embed = new MessageEmbed();
+  let user;
+  let achievementCounter = 0;
+  let showHidden;
+  let keys = Object.keys(achievements);
+  let embed = new MessageEmbed();
+  let newField = false;
 
-    //check to see if the value inputted is a user
-    if(args[1] === undefined) {
-      user = message.author.id;
-      showHidden = true;
-    } else {
-      user = args[1].replace(/\D/g,'');
-      showHidden = false;
-    }
+  //check to see if the value inputted is a user
+  if(args[1] === undefined) {
+    user = message.author.id;
+    showHidden = true;
+  } else {
+    user = args[1].replace(/\D/g,'');
+    showHidden = false;
+  }
+
+  con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
 
     if(rows[0] === undefined) {
-      con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')');
+      con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', (err, res) => {
+      });
+      newField = true;
     }
 
-    for(let i in keys) {
-      achievementCode = keys[i];
-      let description = 'This achievement is hidden';
+    if(!newField) {
+      for(let i in keys) {
+        achievementCode = keys[i];
+        let description = 'This achievement is hidden';
 
-      if(!(user === client.user.id)) {
-        if(rows[0][achievementCode] != 0) {
-        if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
-          description = achievements[achievementCode].description
-        }
-        embed.addField(achievements[achievementCode].title, description, true);
-        achievementCounter += 1;
+        if(user !== client.user.id) {
+          if(rows[0][achievementCode] != 0) {
+            if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
+              description = achievements[achievementCode].description
+            }
+            embed.addField(achievements[achievementCode].title, description, true);
+            achievementCounter += 1;
+          }
         }
         else {
           embed.setColor(0xFF0000)
@@ -1255,22 +1246,41 @@ function achievementsCheck(message, data, args) {
 }
 
 function giveAchievements(user, data, achievementCode, specialData) {
+  let newField  = false;
   con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows) => {
     if(rows[0] === undefined) {
-      con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')');
+      con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', () => {
+        con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows2) => {
+          if(rows2[0][achievementCode] === 0) {
+            let embed = new MessageEmbed()
+            .setTitle('Achievement Earned:')
+            .setColor(0xBF66E3)
+            .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+            .setThumbnail(achievements[achievementCode].image)
+            .setTimestamp();
+
+            user.send(embed);
+
+            con.query('UPDATE achievements SET ' + achievementCode + ' = 1');
+          }
+        });
+      });
+      newField = true;
     }
 
-    if(rows[0][achievementCode] === 0) {
-      let embed = new MessageEmbed()
-      .setTitle('Achievement Earned:')
-      .setColor(0xBF66E3)
-      .addField(achievements[achievementCode].title, achievements[achievementCode].description)
-      .setThumbnail(achievements[achievementCode].image)
-      .setTimestamp();
+    if(!newField){
+      if(rows[0][achievementCode] === 0) {
+        let embed = new MessageEmbed()
+        .setTitle('Achievement Earned:')
+        .setColor(0xBF66E3)
+        .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+        .setThumbnail(achievements[achievementCode].image)
+        .setTimestamp();
 
-      user.send(embed);
+        user.send(embed);
 
-      con.query('UPDATE achievements SET ' + achievementCode + ' = 1');
+        con.query('UPDATE achievements SET ' + achievementCode + ' = 1');
+      }
     }
   });
 /*  if(data.achievements[user.id] === undefined) {
@@ -1440,7 +1450,7 @@ function write (data) {
 
 }*/
 
-function deleteUserInfo(data, message) {
+/*function deleteUserInfo(data, message) {
   let server = getServer(message, data);
 
   for(var i = 0; i < data.servers[server].users.length; i++) {
@@ -1476,7 +1486,7 @@ function deleteUserInfo(data, message) {
   ;
   message.channel.send(embed);
   return;
-}
+}*/
 
 
 //generate a new password
@@ -1500,16 +1510,16 @@ function newPASSWORD() {
 }
 
 
-function getTrackWords(message, data) {
+/*function getTrackWords(message, data) {
   let server = getServer(message, data);
   let words = new Set();
   for(var i = 0; i < data.servers[server].strings.length; i++) {
     words.add(data.servers[server].strings[i]);
   }
   return words;
-}
+}*/
 
-function getServer(message, data) {
+/*function getServer(message, data) {
   let server = -1;
   for(var i = 0; i < data.servers.length; i++) {
     if(data.servers[i].id === message.guild.id) {
@@ -1529,9 +1539,9 @@ function getServer(message, data) {
     server = data.servers.length-1;
   }
   return server;
-}
+}*/
 
-function getUser(message, data) {
+/*function getUser(message, data) {
   let server = getServer(message, data);
   let authorPos = -1;
   //find the position of the user in the data file
@@ -1555,7 +1565,7 @@ function getUser(message, data) {
 
   //write(data);
   return authorPos;
-}
+}*/
 
 function getUptime() {
   let seconds = parseInt(client.uptime/1000);
@@ -1582,7 +1592,7 @@ function getUptime() {
 
 }
 
-function findTopUser(data) {
+/*function findTopUser(data) {
 
   let arr = {"users":[]};
 
@@ -1628,10 +1638,10 @@ function findTopUser(data) {
       }
     }
   }
-  return;*/
-}
+  return;
+}*/
 
-function assignOG(data, message) {
+/*function assignOG(data, message) {
   let server = getServer(message, data);
   let user = getUser(message, data);
   let ogs = getOGS(data);
@@ -1673,7 +1683,7 @@ function assignOG(data, message) {
   ;
   message.channel.send(embed);
   return;
-}
+}*/
 
 function getOGS(data) {
   let ogs = new Set();
@@ -1683,7 +1693,7 @@ function getOGS(data) {
   return ogs;
 }
 
-function getGlobalTop(message) {
+/*function getGlobalTop(message) {
   let timer = startTimer();
   let users = new Array();
   let pos = 0;
@@ -1694,7 +1704,7 @@ function getGlobalTop(message) {
     for(var user = 0; user < data.servers[server].users.length; user++) {
       users.add(data.servers[server].users[user]);
     }
-  }*/
+  }
 
   for(let server of data.servers) {
     for(let user of server.users) {
@@ -1705,20 +1715,20 @@ function getGlobalTop(message) {
 /*  for(let server of data.servers) {
     users.push(server.users);
   }
-  console.log(users);*/
+  console.log(users);
 
   /*for(let group in users) {
     for(let usr in users[group]) {
       totalWords += users[group][usr];
     }
-  }*/
+  }
 
 
   //arr = JSON.stringify(arr, null, 2);
   //arr = JSON.parse(arr);
 
 
-  for(var i = 0; i < users.length; i++) {
+  /*for(var i = 0; i < users.length; i++) {
     for(var o = i+1; o < users.length; o++) {
       if(users[i].id === users[o].id) {
         users[i].words += users[o].words;
@@ -1741,7 +1751,7 @@ function getGlobalTop(message) {
         }
       }
     }
-  }*/
+  }
 
 
   users = users.sort((a, b) => b.words - a.words);
@@ -1835,10 +1845,10 @@ function getGlobalTop(message) {
 
   stopTimer(timer);
   return;
-}
+}*/
 
 //adds the name of the server to the data file
-function addServerNames(data) {
+/*function addServerNames(data) {
   for(var i = 0; i < data.servers.length; i++) {
     try {
       data.servers[i].name = client.guilds.cache.get(data.servers[i].id).name;
@@ -1849,9 +1859,9 @@ function addServerNames(data) {
       console.log("\n");
     }
   }
-}
+}*/
 
-function storeServerName(guild, data) {
+/*function storeServerName(guild, data) {
   for(var i = 0; i < data.servers.length; i++) {
     if (data.servers[i].id === guild.id) {
       try {
@@ -1864,17 +1874,17 @@ function storeServerName(guild, data) {
       break;
     }
   }
-}
+}*/
 
-function getPrefix(message, data) {
+/*function getPrefix(message, data) {
   if(data.servers[getServer(message, data)].prefix === undefined) {
     return "n!";
   } else {
     return data.servers[getServer(message, data)].prefix;
   }
-}
+}*/
 
-function getWatching(watching) {
+/*function getWatching(watching) {
   let watchingSet = new Set();
   for(var i = 0; i < watching.length; i++) {
     try {
@@ -1885,7 +1895,7 @@ function getWatching(watching) {
     }
   }
   return watchingSet;
-}
+}*/
 
 function startTimer() {
   let timer = Date.now();
@@ -1897,7 +1907,7 @@ function stopTimer(timer) {
   logging.debug((timer2 - timer)/1000);
 }
 
-function getTop(message, response, embed) {
+/*function getTop(message, response, embed) {
   let inTop = false;
   let pos = 1;
 
@@ -1927,7 +1937,7 @@ function getTop(message, response, embed) {
 
   }
   message.channel.send(embed);
-}
+}*/
 
 function getTotal() {
   con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
