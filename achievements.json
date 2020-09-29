@@ -1,0 +1,43 @@
+{
+  "template": {
+    "title": "template",
+    "description": "Change me",
+    "hidden": false,
+    "image": "https://tikomc.tk/resources/template.png"
+  },
+  "roots": {
+    "title": "Back to the roots",
+    "description": "DM the bot the n-word",
+    "hidden": true,
+    "image": "https://tikomc.tk/resources/nwordpfp128.png"
+  },
+  "pp": {
+    "title": "PP",
+    "description": "Discover the setPpLength command",
+    "hidden": true,
+    "image": "https://tikomc.tk/resources/pp.png"
+  },
+  "changelog": {
+    "title": "Stupid idiot",
+    "description": "Get the special changelog error",
+    "hidden": true
+  },
+  "inviteNow": {
+    "title": "Fuck You Seb",
+    "description": "Get the special invite link",
+    "hidden": true,
+    "image": "https://tikomc.tk/resources/truck.png"
+  },
+  "joinServer": {
+    "title": "A Supportive Boi",
+    "description": "Join the support server",
+    "hidden": false,
+    "image": "https://tikomc.tk/resources/botpfp.png"
+  },
+  "egg": {
+    "title": "Egge",
+    "description": "What? You egg?!",
+    "hidden": true,
+    "image": "https://tikomc.tk/resources/512%20egge.png"
+  }
+}

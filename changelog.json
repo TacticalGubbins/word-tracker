@@ -47,6 +47,18 @@
         "8": [
           "Made the n!global command a bit faster"
         ]
+      },
+      "8": {
+        "0": [
+          "Added achievements that can be earned when an easter egg is found",
+          "Fixed a problem that would cause the bot to give errors when posting the server count to top.gg",
+          "DMing the bot `help` or `n!help` is no longer case sensitive",
+          "Fixed a few grammar errors :>",
+          "Significantly decreased the time it takes for n!global to respond",
+          "Removed the server names from the global leaderboard",
+          "Fixed bottom user",
+          "Removed blacklist"
+        ]
       }
     }
   }
