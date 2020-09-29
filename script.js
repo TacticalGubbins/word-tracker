@@ -7,8 +7,8 @@ var data = require("./data.json");
 
 let con = mysql.createConnection({
   host: '127.0.0.1',
-  user: 'root',
-  password: 'bUt3GhDTruTO8xWeVO48yV13GUO&$^Pgx86wyuUhM',
+  user: 'cyakat',
+  password: 'QWOP}{+_)(*&^%$#@!',
   database: 'data',
   supportBigNumbers: true
 });
@@ -23,10 +23,10 @@ con.connect(function (err) {
 
 });
 
-let keys = Object.keys(data.achievements);
-let ach = data.achievements;
+//let keys = Object.keys(data.achievements);
+//let ach = data.achievements;
 
-/*for(let server of data.servers) {
+for(let server of data.servers) {
   let combinedString;
   for(let string of server.strings) {
     if (combinedString === undefined){
@@ -38,7 +38,7 @@ let ach = data.achievements;
   con.query('UPDATE servers SET cooldown = ' + parseInt(server.cooldown) + ', strings = \'' + combinedString + '\' WHERE id = ' +  server.id, (err, response) => {
     console.log(err);
   });
-}*/
+}
 
 /*con.query('SELECT id, MAX(words) AS topWords FROM users_with_servers;', (err, rows) => {
   console.log(rows);
@@ -93,23 +93,23 @@ let ach = data.achievements;
   else {
     prefix = data.servers[i].prefix;
   }
-  /*
-  "INSERT INTO users (id, server_id, name, cooldown, words) VALUE ('" + data.servers[i].users[o].id +
+
+  /*"INSERT INTO users (id, server_id, name, cooldown, words) VALUE ('" + data.servers[i].users[o].id +
     "', '" + data.servers[i].id +
     "', '" + data.servers[i].users[o].username +
     "', '" + data.servers[i].users[o].cooldown +
-    "', '" + data.servers[i].users[o].words + "');"
+    "', '" + data.servers[i].users[o].words + "');"*/
 
 
-  for (let o in data.servers[i].users) {
+  /*for (let o in data.servers[i].users) {
     sql = 'INSERT INTO users (id, server_id, cooldown, words) VALUE (' + data.servers[i].users[o].id + ', ' + data.servers[i].id + ', ' + data.servers[i].users[o].cooldown + ', ' + data.servers[i].users[o].words +');'
     con.query(sql, (err, response) => {});
-  }
-    //con.query("INSERT INTO servers (id, prefix, words, name) VALUE (' + data.servers[i].id +',  + " + con.escape(prefix) + ', 0');", (err, response) => {
+  }*//*
+    con.query("INSERT INTO servers (id, prefix, words) VALUE (" + data.servers[i].id +", " + con.escape(prefix) + ", 0);", (err, response) => {
 
-    //console.log(response);
+    console.log(err);
 
-//  });
+  });
 }*/
 /*con.query('SELECT * FROM servers', (err, rows) => {
   console.log(rows);
