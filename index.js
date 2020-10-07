@@ -8,7 +8,7 @@ const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
 
-const config = require("../test.json");
+const config = require("../config.json");
 const changelog = require("./changelog.json");
 const achievements = require('./achievements.json');
 
@@ -18,7 +18,7 @@ const dbl = new DBL(config.topToken, client);
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy'
 
-const version = '3.8.0';
+const version = '3.8.1';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -55,8 +55,8 @@ var d = new Date();
 
 const con = mysql.createConnection({
   host: '127.0.0.1',
-  user: 'root',
-  password: config.database,
+  user: config.databaseUser,
+  password: config.databasePass,
   database: 'data',
   supportBigNumbers: true
 });
@@ -221,7 +221,13 @@ client.on("message", (message) => {
 
   //query retrieves the prefix from the server that the message was sent in
   con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
-    prefix = prefixResponse[0].prefix;
+    try {
+      prefix = prefixResponse[0].prefix;
+    }
+    catch(err) {
+      prefix = 'n!'
+      con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', \'n!\', 5, \'bruh, nice, bots, cow\')');
+    }
 
     //splits the sentence into an array, splitting at spaces
     let args = message.content.split(" ");
@@ -317,7 +323,14 @@ client.on("message", (message) => {
         let nword = 0;
         let doesNotExist = false;
         let trackedWords = new Set();
-        let wordArgs = server[0].strings.split(/[\s ,]/);
+        let wordArgs
+        try {
+          wordArgs = server[0].strings.split(/[\s ,]/);
+        }
+        catch(err) {
+          wordArgs = ['bruh','nice','bots','cow'];
+          con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', \'n!\', 5, \'bruh, nice, bots, cow\')');
+        }
         wordArgs = wordArgs.filter(item => !!item);
         for(let i of wordArgs) {
           trackedWords.add(i);
@@ -350,13 +363,22 @@ client.on("message", (message) => {
           }
         }
         if(checkIfShouldWrite) {
+          let cooldownTime
+          try {
+            cooldownTime = server[0].cooldown;
+          }
+          catch(err)
+          {
+            cooldownTime = 5;
+            con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', \'n!\', 5, \'bruh, nice, bots, cow\')');
+          }
           checkIfShouldWrite = false;
           con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
           if(nword >= 5) {
             con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
             setTimeout(() => {
               con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
-            }, (server[0].cooldown) * 1000);
+            }, (cooldownTime) * 1000);
           }
         }
         if(doesNotExist) {
@@ -1890,7 +1912,7 @@ function triggers(message) {
         strings = strings.filter((item, index) => strings.indexOf(item) === index);
         strings = strings.join(', ');
         //data.servers[server].strings = strings;
-        con.query("UPDATE servers SET strings = \'" + strings + "\' WHERE id = " + message.guild.id);
+        con.query("UPDATE servers SET strings = '" + strings + "' WHERE id = " + message.guild.id);
 
         let embed = new MessageEmbed()
         .setTitle('')
@@ -1922,7 +1944,7 @@ function cooldownFunction(message, args) {
       return;
     }
     if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
-      con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id, (err));
+      con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id);
       //data.servers[server].cooldown = 0;
       let embed = new MessageEmbed()
       .setTitle('')
@@ -1941,7 +1963,7 @@ function cooldownFunction(message, args) {
       return;
     }
     if(!isNaN(args[1])) {
-      con.query("UPDATE servers SET cooldown = " + args[1] + " WHERE id = " + message.guild.id, (err));
+      con.query("UPDATE servers SET cooldown = " + args[1] + " WHERE id = " + message.guild.id);
       //data.servers[server].cooldown = parseInt(args[1]);
       let embed = new MessageEmbed()
       .setTitle('')
@@ -2045,66 +2067,72 @@ function achievementsCheck(message, data, args) {
     user = args[1].replace(/\D/g,'');
     showHidden = false;
   }
+  if(client.users.cache.get(args[1].toString()) !== undefined) {
+    con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
 
-  con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
+      if(rows[0] === undefined) {
+        con.query('INSERT INTO achievements (id) VALUE (' + user + ')', (err, res) => {
+        });
+        newField = true;
+      }
 
-    if(rows[0] === undefined) {
-      con.query('INSERT INTO achievements (id) VALUE (' + user + ')', (err, res) => {
-      });
-      newField = true;
-    }
+      if(!newField) {
+        for(let i in keys) {
+          achievementCode = keys[i];
+          let description = 'This achievement is hidden';
 
-    if(!newField) {
-      for(let i in keys) {
-        achievementCode = keys[i];
-        let description = 'This achievement is hidden';
-
-        if(user !== client.user.id) {
-          if(rows[0][achievementCode] != 0) {
-            if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
-              description = achievements[achievementCode].description
+          if(user !== client.user.id) {
+            if(rows[0][achievementCode] != 0) {
+              if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
+                description = achievements[achievementCode].description
+              }
+              embed.addField(achievements[achievementCode].title, description, true);
+              achievementCounter += 1;
             }
-            embed.addField(achievements[achievementCode].title, description, true);
-            achievementCounter += 1;
+          }
+          else {
+            embed.setColor(0xFF0000)
+            .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
+            .setFooter('Requested by ' + message.author.tag);
+
+            message.channel.send(embed);
+            return;
           }
         }
-        else {
-          embed.setColor(0xFF0000)
-          .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
-          .setFooter('Requested by ' + message.author.tag);
+      }
 
-          message.channel.send(embed);
-          return;
+      if(achievementCounter === 0) {
+        if(user === message.author.id){
+          embed.addField('No achievements','You have not earned any achievements');
+        }
+        else {
+          embed.addField('No achievements','They have not earned any achievements');
         }
       }
-    }
+      embed.setTitle('Achievements')
+      .setColor('0xBF66E3')
+      .setFooter('Requested by ' + message.author.tag );
 
-    if(achievementCounter === 0) {
-      if(user === message.author.id){
-        embed.addField('No achievements','You have not earned any achievements');
+      if(showHidden) {
+        let helpEmbed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription("Check your dms :>")
+        ;
+        message.channel.send(helpEmbed);
+        message.author.send(embed);
+      } else {
+        message.channel.send(embed);
       }
-      else {
-        embed.addField('No achievements','They have not earned any achievements');
-      }
-    }
-    embed.setTitle('Achievements')
-    .setColor('0xBF66E3')
-    .setFooter('Requested by ' + message.author.tag );
-
-    if(showHidden) {
-      let helpEmbed = new MessageEmbed()
-      .setTitle('')
-      .setColor(0xBF66E3)
-      .setDescription("Check your dms :>")
-      ;
-      message.channel.send(helpEmbed);
-      message.author.send(embed);
-    }
-    else {
+      });
+    } else {
+      embed.setTitle('')
+      embed.setColor(0xFF0000)
+      embed.setDescription("That's not a person!");
+      //message.channel.send("That's not a person!")
       message.channel.send(embed);
     }
     return;
-  });
   /*if(data.achievements[user] === undefined) {
     data.achievements[user] = {};
   }

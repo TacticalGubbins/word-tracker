@@ -58,6 +58,9 @@
           "Removed the server names from the global leaderboard",
           "Fixed bottom user",
           "Removed blacklist"
+        ],
+        "1":[
+          "Fixed bug where the bot would not add a server to the database when it joined"
         ]
       }
     }

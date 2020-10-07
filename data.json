@@ -103143,7 +103143,7 @@
       ]
     },
     {
-      "name": "Fucktards",
+      "name": "Haha Louie Gay",
       "id": "268847709912301569",
       "cooldown": 5,
       "strings": [
@@ -103156,17 +103156,9 @@
           "words": 0,
           "cooldown": 0
         }
-      ],
-      "name": "Haha Louie Gay"
+      ]
     }
   ],
-  "blacklist": [
-    {
-      "id": "250408653830619137",
-      "time": 1599108350119
-    }
-  ],
-  "ppLength": "ver loarg",
   "blacklist": [
     {
       "id": "429807452175728640",
@@ -103185,6 +103177,7 @@
       "time": 1600446913862
     }
   ],
+  "ppLength": "ver loarg",
   "achievements": {
     "249382933054357504": {
       "pp": 1600141260971,
