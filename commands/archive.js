@@ -1,6 +1,18 @@
 module.exports = {
-  name: 'invitenow',
-  description: 'creates an invite for the server it was called in',
+  name: 'archive',
+  description: 'responds with archive with users messages',
   execute(message, Discord, client) {
+    let archiveEmbed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('Sorry, this feature is currently disabled :(');
+    //message.channel.send("sorry, this feature is disabled for the time being");
+    message.channel.send(archiveEmbed);
+
+    //message.react('&#10060;')
+    //.catch(console.error);
+
+    //console.log(`n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
+    return;
   }
 };
