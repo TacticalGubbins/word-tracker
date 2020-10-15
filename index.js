@@ -4,15 +4,6 @@ const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js'
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-//command handler ecks dee
-client.commands = new Client.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
-}
-
-
 const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
@@ -243,8 +234,8 @@ client.on("message", (message) => {
       prefix = prefixResponse[0].prefix;
     }
     catch(err) {
-      prefix = 'n!'
-      con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')');
+      prefix = 'n!';
+      con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
     }
 
     //splits the sentence into an array, splitting at spaces
@@ -368,7 +359,7 @@ client.on("message", (message) => {
         }
         catch(err) {
           wordArgs = ['bruh','nice','bots','cow'];
-          con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')');
+          con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
         }
         wordArgs = wordArgs.filter(item => !!item);
         for(let i of wordArgs) {
@@ -409,7 +400,7 @@ client.on("message", (message) => {
           catch(err)
           {
             cooldownTime = 5;
-            con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')');
+            con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
           }
           checkIfShouldWrite = false;
           con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
@@ -799,7 +790,7 @@ function check(message, args) {
 
       //checks to see if the user is in the database
       if(rows[0] === undefined || rows[0].words === 0){
-        embed.setDescription('That user hasn't sent any countable words!')
+        embed.setDescription("That user hasn't sent any countable words!")
       }
       else {
         embed.setDescription(client.users.cache.get(user).tag + " has sent **__" + rows[0].words + "__** countable words!");
@@ -989,7 +980,7 @@ function settings(message) {
 }
 
 function global(message) {
-  con.query('SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;', (err, response) => {
+  con.query("SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
     let embed = new MessageEmbed()
     .setColor(0xBF66E3)
     .setTitle('Global Leaderboard')
@@ -1055,7 +1046,7 @@ function achievementsCheck(message, data, args) {
           }
           else {
             embed.setColor(0xFF0000)
-            .addField('Bots can't earn achivements', 'They just can't. It says it right here in the code')
+            .addField("Bots can't earn achivements", "They just can't. It says it right here in the code")
             .setFooter('Requested by ' + message.author.tag);
 
             message.channel.send(embed);
