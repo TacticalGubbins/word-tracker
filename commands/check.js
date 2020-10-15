@@ -7,7 +7,7 @@ module.exports = {
 
       //check to see if the value inputted is a user
       if(args[1] === undefined) {
-        /*let embed = new MessageEmbed()
+        /*let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must include an @!');
@@ -22,7 +22,7 @@ module.exports = {
 
       if(user == client.user.id) {
         con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
-          let embed = new MessageEmbed()
+          let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
@@ -37,7 +37,7 @@ module.exports = {
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, rows) => {
-          let embed = new MessageEmbed()
+          let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
           .setFooter('Requested by ' + message.author.tag);
@@ -72,7 +72,7 @@ module.exports = {
 
         //say that the argument is not a user
       } else {
-        let embed = new MessageEmbed()
+        let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription("That's not a person!");

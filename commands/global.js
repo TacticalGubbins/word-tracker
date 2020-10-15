@@ -4,7 +4,7 @@ module.exports = {
   execute(message, Discord, client) {
 
       con.query("SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
-        let embed = new MessageEmbed()
+        let embed = new Discord.MessageEmbed()
         .setColor(0xBF66E3)
         .setTitle('Global Leaderboard')
         .setDescription('The top-sending users world-widenThis uses a collection of all messages these users have sent')

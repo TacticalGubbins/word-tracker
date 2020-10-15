@@ -5,7 +5,7 @@ module.exports = {
 
       con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
         //let timer = startTimer();
-        let embed = new MessageEmbed()
+        let embed = new Discord.MessageEmbed()
         .setTitle(client.user.tag)
         .setColor(0xBF66E3)
         .setDescription('Counting Words... *please help me*')

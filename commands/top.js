@@ -5,7 +5,7 @@ module.exports = {
     con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
       for(let i in rows) {
         try {
-          let embed = new MessageEmbed()
+          let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription('Top User')

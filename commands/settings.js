@@ -7,7 +7,7 @@ module.exports = {
         let cooldown = response[0].cooldown;
         let strings = response[0].strings;
 
-        let embed = new MessageEmbed()
+        let embed = new Discord.MessageEmbed()
         .setTitle(message.guild.name + " Settings")
         .setColor(0xBF66E3)
         .setDescription("Use:n**" + prefix + "cooldown** to change the cooldownn**" + prefix + "triggers** to change the trigger wordsn**" + prefix + "setPrefix** to change the server prefix")

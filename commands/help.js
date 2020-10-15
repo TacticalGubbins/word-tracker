@@ -3,7 +3,7 @@ module.exports = {
   description: 'dms the user the help file',
   execute(message, prefix, Discord, client) {
 
-      let dmEmbed = new MessageEmbed()
+      let dmEmbed = new Discord.MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
       .setDescription("Check your dms :>")
@@ -11,7 +11,7 @@ module.exports = {
       message.channel.send(dmEmbed);
 
       //let help = fs.readFileSync('help.txt')
-      let helpEmbed = new MessageEmbed()
+      let helpEmbed = new Discord.MessageEmbed()
       .setTitle('All Commands')
       .setColor(0xBF66E3)
       .setDescription('')

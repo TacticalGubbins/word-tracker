@@ -3,7 +3,7 @@ module.exports = {
   description: 'doesn\'t work bad ufncntion',
   execute(message, Discord, client) {
 
-      let archiveEmbed = new MessageEmbed()
+      let archiveEmbed = new Discord.MessageEmbed()
       .setTitle('')
       .setColor(0xFF0000)
       .setDescription('Sorry, this feature is currently disabled :(');

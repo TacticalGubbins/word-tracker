@@ -3,7 +3,7 @@ module.exports = {
   description: 'prompts the user to confirm that they would indeed like to remove their data from the bot',
   execute(message, Discord, client) {
 
-      let deleteEmbed = new MessageEmbed()
+      let deleteEmbed = new Discord.MessageEmbed()
       .setTitle('Data Deletion')
       .setColor(0xBF66E3)
       .setDescription('Are you sure all of your data on this server? *this is non-recoverable*\n\n Type:')
@@ -22,7 +22,7 @@ module.exports = {
           //deleteUserInfo(data, message);
           con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
           con.query('DELETE FROM achievements WHERE id = ' + message.author.id);
-          let deleteEmbed2 = new MessageEmbed()
+          let deleteEmbed2 = new Discord.MessageEmbed()
           .setTitle('')
           .setColor()
           .setColor(0xFF0000)
@@ -33,7 +33,7 @@ module.exports = {
 
           //cancel the collector, do not delete
         } else if (message.content.toLowerCase() === "cancel") {
-          let saveEmbed = new MessageEmbed()
+          let saveEmbed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor()
           .setColor(0x00FF00)
@@ -48,7 +48,7 @@ module.exports = {
 
           //check for incorrect responses
         } else {
-          let wrongEmbed = new MessageEmbed()
+          let wrongEmbed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor()
           .setColor(0xFF0000)

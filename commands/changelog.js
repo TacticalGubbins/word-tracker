@@ -10,7 +10,7 @@ module.exports = {
       //console.log(JSON.stringify(changelog, 2, null));
       try {
         let changes = changelog.versions[versionNumbers[0]][versionNumbers[1]][versionNumbers[2]];
-        let embed = new MessageEmbed()
+        let embed = new Discord.MessageEmbed()
         .setTitle(args[1] + " Changelog")
         .setColor(0xBF66E3)
         .setDescription('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
@@ -23,7 +23,7 @@ module.exports = {
       }
       catch(err) {
         if(args[1] === "stupid" || args[1] === "idiot" || args[1] === "dumb") {
-          let embed = new MessageEmbed()
+          let embed = new Discord.MessageEmbed()
           .setTitle("jesus christ your dumn")
           .setColor(0xFF7777)
           .setDescription("stupid idiot")
@@ -34,7 +34,7 @@ module.exports = {
           giveAchievements(message.author, data, "changelog");
         }
         else {
-          let embed = new MessageEmbed()
+          let embed = new Discord.MessageEmbed()
           .setTitle("Version not found")
           .setColor(0xFF0000)
           .addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
