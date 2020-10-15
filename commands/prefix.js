@@ -1,7 +1,7 @@
 module.exports = {
   name: 'prefix',
   description: 'sets server prefix',
-  execute(message, prefix, args, Discord, client) {
+  execute(message, prefix, args, Discord, client, con) {
     if(message.member.hasPermission('ADMINISTRATOR')) {
       if(args[1] === undefined) {
         let embed = new Discord.MessageEmbed()

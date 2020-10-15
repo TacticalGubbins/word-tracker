@@ -1,7 +1,7 @@
 module.exports = {
   name: 'pp',
   description: 'changes pp length',
-  execute(message, data, args, Discord, client) {
+  execute(message, data, args, Discord, client, con) {
     if(args[1] != undefined ) {
       args.shift();
       args = args.toString();

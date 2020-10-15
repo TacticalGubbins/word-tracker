@@ -1,7 +1,7 @@
 module.exports = {
   name: 'info',
   description: 'gets the info of the bot',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
 
       con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
         //let timer = startTimer();

@@ -1,7 +1,7 @@
 module.exports = {
   name: 'triggers',
   description: 'allows the admin to change the triggers for the server',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
 
       if(message.member.hasPermission('ADMINISTRATOR')) {
         let embed = new Discord.MessageEmbed()

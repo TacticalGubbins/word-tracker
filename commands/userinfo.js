@@ -1,7 +1,7 @@
 module.exports = {
   name: 'userInfo',
   description: 'retrieves basic info on a user',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
     if(args[1] === undefined) {
       let embed = new Discord.MessageEmbed()
       .setTitle('')

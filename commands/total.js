@@ -1,7 +1,7 @@
 module.exports = {
   name: 'total',
   description: 'gets the total amount of words counted ever',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
 
       con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
         let embed = new Discord.MessageEmbed()

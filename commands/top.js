@@ -1,7 +1,7 @@
 module.exports = {
   name: 'top',
   description: 'gets top sending user',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
     con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
       for(let i in rows) {
         try {

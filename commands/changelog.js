@@ -1,7 +1,7 @@
 module.exports = {
   name: 'changelog',
   description: 'gets the changelog specified',
-  execute(message, args, Discord, client) {
+  execute(message, args, Discord, client, con) {
 
       if(args[1] === undefined) {
         args[1] = version;

@@ -1,7 +1,7 @@
 module.exports = {
   name: 'leaderboard',
   description: 'gets leaderboard stuffs',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
     //quieres stuff
     con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
       let embed = new Discord.MessageEmbed()

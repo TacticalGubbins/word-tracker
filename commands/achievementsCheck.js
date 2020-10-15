@@ -1,7 +1,7 @@
 module.exports = {
   name: 'achievementsCheck',
   description: 'shows the achievements of the specified person',
-  execute(message, data, args, Discord, client) {
+  execute(message, data, args, Discord, client, con) {
 
       let user;
       let achievementCounter = 0;

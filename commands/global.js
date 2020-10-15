@@ -1,7 +1,7 @@
 module.exports = {
   name: 'global',
   description: 'gets the global leaderboard',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
 
       con.query("SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
         let embed = new Discord.MessageEmbed()

@@ -1,7 +1,7 @@
 module.exports = {
   name: 'bottom',
   description: 'Gets the bottom',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
     let bottomEmbed = new Discord.MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)

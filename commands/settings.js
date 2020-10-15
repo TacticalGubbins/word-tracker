@@ -1,7 +1,7 @@
 module.exports = {
   name: 'settings',
   description: 'displays the current settings for the server',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
 
       con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , (err, response) => {
         let cooldown = response[0].cooldown;

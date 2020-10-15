@@ -1,7 +1,7 @@
 module.exports = {
   name: 'check',
   description: 'checks the amount of words the specified user sent',
-  execute(message, args,Discord, client) {
+  execute(message, args,Discord, client, con) {
 
       let user;
 

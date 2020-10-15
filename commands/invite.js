@@ -1,7 +1,7 @@
 module.exports = {
   name: 'invite',
   description: 'responds with invite to bot and support server',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
     let inviteEmbed = new Discord.MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)

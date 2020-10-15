@@ -1,7 +1,7 @@
 module.exports = {
   name: 'deleteInfo',
   description: 'prompts the user to confirm that they would indeed like to remove their data from the bot',
-  execute(message, Discord, client) {
+  execute(message, Discord, client, con) {
 
       let deleteEmbed = new Discord.MessageEmbed()
       .setTitle('Data Deletion')

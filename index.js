@@ -25,7 +25,7 @@ const DBL = require("dblapi.js");
 const dbl = new DBL(config.topToken, client);
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
-const discordLink = 'https://discord.gg/Z6rYnpy'
+const discordLink = 'https://discord.gg/Z6rYnpy';
 
 const version = '3.8.1';
 
@@ -249,88 +249,88 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "bottom")):
         //bottom(message);
-				client.commands.get('bottom').execute(message, Discord, client);
+				client.commands.get('bottom').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")):
         //global(message);
-				client.commands.get('global').execute(message, Discord, client);
+				client.commands.get('global').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "settings")):
         //settings(message);
-				client.commands.get('settings').execute(message, Discord, client);
+				client.commands.get('settings').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")):
         //info(message);
-				client.commands.get('info').execute(message, Discord, client);
+				client.commands.get('info').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "cooldown")):
         //cooldownFunction(message, args);
-				client.commands.get('cooldown').execute(message, args, Discord, client);
+				client.commands.get('cooldown').execute(message, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "triggers")):
         //triggers(message);
-				client.commands.get('triggers').execute(message, Discord, client);
+				client.commands.get('triggers').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith("invitenow")):
         //invitenow(message);
-				client.commands.get('invitenow').execute(message, Discord, client);
+				client.commands.get('invitenow').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")):
         //check(message, args);
-				client.commands.get('check').execute(message, args, Discord, client);
+				client.commands.get('check').execute(message, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "total")):
         //total(message);
-				client.commands.get('total').execute(message, Discord, client);
+				client.commands.get('total').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "invite")):
         //invite(message);
-				client.commands.get('invite').execute(message, Discord, client);
+				client.commands.get('invite').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "archive")):
         //archive(message);
-				client.commands.get('archive').execute(message, Discord, client);
+				client.commands.get('archive').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "top")):
         //top(message);
-				client.commands.get('top').execute(message, Discord, client);
+				client.commands.get('top').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')):
         //leaderboard(message);
-				client.commands.get('leaderboard').execute(message, Discord, client);
+				client.commands.get('leaderboard').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + 'deleteinfo') || message.content.toLowerCase().startsWith(prefix + 'delete')):
         //deleteInfo(message);
-				client.commands.get('deleteInfo').execute(message, Discord, client);
+				client.commands.get('deleteInfo').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + 'userinfo')):
         //userinfo(message);
-				client.commands.get('userinfo').execute(message, Discord, client);
+				client.commands.get('userinfo').execute(message, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "help")):
         //help(message, prefix);
-				client.commands.get('help').execute(message, prefix, Discord, client);
+				client.commands.get('help').execute(message, prefix, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "changelog")):
         //changelogFunction(message, args);
-				client.commands.get('changelog').execute(message, args, Discord, client);
+				client.commands.get('changelog').execute(message, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
         //prefixFunction(message, prefix, args);
-				client.commands.get('prefix').execute(message, prefix, args, Discord, client);
+				client.commands.get('prefix').execute(message, prefix, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")):
         //pp(message, data, args);
-				client.commands.get('pp').execute(message, data, args, Discord, client);
+				client.commands.get('pp').execute(message, data, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement")):
         //achievementsCheck(message, data, args);
-				client.commands.get('achievementsCheck').execute(message, data, args, Discord, client);
+				client.commands.get('achievementsCheck').execute(message, data, args, Discord, client, con);
         return;
         break;
       case (message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')):
         //checkVerify(message);
-				client.commands.get('checkVerify').execute(message, Discord, client);
+				client.commands.get('checkVerify').execute(message, Discord, client, con);
         break;
       case (message.guild.id == 694263395884728412 && message.channel.id != 694265200454402108 && message.content.toLowerCase().startsWith("getverify")):
         message.channel.send("Current verify message: **" + fs.readFileSync('PASSWORD.txt').toString() + "**");

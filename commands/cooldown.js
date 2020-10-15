@@ -1,7 +1,7 @@
 module.exports = {
   name: 'cooldown',
   description: 'Allows the Administrators set up the cooldown time for the server',
-  execute(message, args, Discord, client) {
+  execute(message, args, Discord, client, con) {
 
       if(message.member.hasPermission('ADMINISTRATOR')) {
         if(args[1] === undefined) {
