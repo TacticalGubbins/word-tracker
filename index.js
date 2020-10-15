@@ -4,6 +4,15 @@ const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js'
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+//command handler ecks dee
+client.commands = new Client.Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
+}
+
+
 const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
@@ -98,7 +107,7 @@ const logging = {
 
 client.on('guildMemberAdd', (member) => {
   if(client.guilds.cache.get('708421545005023232').member(member) != undefined) {
-    giveAchievements(member, data, 'joinServer');
+    giveAchievements(member, data, 'joinServer', 0, false);
   }
 })
 
@@ -113,9 +122,9 @@ client.on('ready', () => {
           dbl.postStats(client.guilds.size);
         }
         catch(err) {
-          logging.warn("Something's wrong with dblapi? \n");
+          logging.warn("Something's wrong with dblapi? n");
           console.log(err);
-          console.log("\n");
+          console.log("n");
         }
     }, 1800000);
 
@@ -179,7 +188,7 @@ client.on("message", (message) => {
     .setTitle('Bot Help')
     .setColor(0xBF66E3)
     .setDescription('')
-    .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+    .setFooter('For private server:nngetverify: retrieves current verify code')
     .addField('n!' + 'help', 'Gives you this message', true)
     .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
     .addField('Commands', '----')
@@ -211,7 +220,7 @@ client.on("message", (message) => {
       client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
     }
     catch(err) {
-      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running \n');
+      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running n');
     }
     giveAchievements(message.author, data, "roots");
     return;
@@ -222,7 +231,7 @@ client.on("message", (message) => {
       client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
     }
     catch(err) {
-     logging.warn('\nCould not send dm to louie. This should only happen if the testing bot is running \n');
+     logging.warn('nCould not send dm to louie. This should only happen if the testing bot is running n');
      console.log(err)
     }
     return;
@@ -235,7 +244,7 @@ client.on("message", (message) => {
     }
     catch(err) {
       prefix = 'n!'
-      con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', \'n!\', 5, \'bruh, nice, bots, cow\')');
+      con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')');
     }
 
     //splits the sentence into an array, splitting at spaces
@@ -244,12 +253,20 @@ client.on("message", (message) => {
 
     //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
     switch(true) {
+<<<<<<< HEAD
       case (message.content === "🥚"):
+=======
+      case (message.content === "&#129370;"):
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
         giveAchievements(message.author, data, "egg", 0, false);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "bottom")):
         //bottom(message);
+<<<<<<< HEAD
 				client.commands.get('bottom').execute(message, Discord, client);
+=======
+        client.commands.get('bottom').execute(message);
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
         break;
       case (message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")):
         //global(message);
@@ -341,7 +358,7 @@ client.on("message", (message) => {
 
         break;
     }
-    let words = message.content.split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+    let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
     /*for(var j = 0; j < wordArgs.length; j++) {
 
@@ -355,11 +372,11 @@ client.on("message", (message) => {
         let trackedWords = new Set();
         let wordArgs
         try {
-          wordArgs = server[0].strings.split(/[\s ,]/);
+          wordArgs = server[0].strings.split(/[s ,]/);
         }
         catch(err) {
           wordArgs = ['bruh','nice','bots','cow'];
-          con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', \'n!\', 5, \'bruh, nice, bots, cow\')');
+          con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')');
         }
         wordArgs = wordArgs.filter(item => !!item);
         for(let i of wordArgs) {
@@ -400,7 +417,7 @@ client.on("message", (message) => {
           catch(err)
           {
             cooldownTime = 5;
-            con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', \'n!\', 5, \'bruh, nice, bots, cow\')');
+            con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')');
           }
           checkIfShouldWrite = false;
           con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
@@ -424,11 +441,19 @@ client.on("message", (message) => {
 function checkVerify(message) {
   message.guild.member(message.author).roles.add('694263460355244074');
   message.guild.member(message.author).roles.remove('694264932706943096');
+<<<<<<< HEAD
   //console.log(`\n\n` + message.author.username + ` just verified`);
 
   password = newPASSWORD();
 
   message.guild.member('250408653830619137').send(message.author.username + " Just verfied\n\n**NEW PASSWORD:**\n`" + password + "`");
+=======
+  //console.log(`nn` + message.author.username + ` just verified`);
+
+  password = newPASSWORD();
+
+  message.guild.member('250408653830619137').send(message.author.username + " Just verfiednn**NEW PASSWORD:**n`" + password + "`");
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
   return;
 }
 
@@ -508,6 +533,7 @@ function changelogFunction(message, args) {
     .setColor(0xBF66E3)
     .setDescription('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
     ;
+<<<<<<< HEAD
 
     for(var i = 0; i < changes.length; i++) {
       embed.addField(i+1, changes[i]);
@@ -536,10 +562,113 @@ function changelogFunction(message, args) {
 
       message.channel.send(embed);
     }
+=======
+
+    for(var i = 0; i < changes.length; i++) {
+      embed.addField(i+1, changes[i]);
+    }
+    message.channel.send(embed);
+  }
+  catch(err) {
+    if(args[1] === "stupid" || args[1] === "idiot" || args[1] === "dumb") {
+      let embed = new MessageEmbed()
+      .setTitle("jesus christ your dumn")
+      .setColor(0xFF7777)
+      .setDescription("stupid idiot")
+      .setFooter("try " + prefix + "changelog 3.6.4");
+
+      message.channel.send(embed);
+
+      giveAchievements(message.author, data, "changelog");
+    }
+    else {
+      let embed = new MessageEmbed()
+      .setTitle("Version not found")
+      .setColor(0xFF0000)
+      .addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
+      .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)nn**The version specified could not be found. The oldest changelog is for 3.6.4**")
+      .setFooter("try " + prefix + "changelog 3.6.4");
+
+      message.channel.send(embed);
+    }
   }
   return;
 }
 
+//this function will dm the message author the help embed
+function help(message, prefix) {
+  let dmEmbed = new MessageEmbed()
+  .setTitle('')
+  .setColor(0xBF66E3)
+  .setDescription("Check your dms :>")
+  ;
+  message.channel.send(dmEmbed);
+
+  //let help = fs.readFileSync('help.txt')
+  let helpEmbed = new MessageEmbed()
+  .setTitle('All Commands')
+  .setColor(0xBF66E3)
+  .setDescription('')
+  .setFooter('For private server:nngetverify: retrieves current verify code')
+  .addField(prefix + 'help', 'Gives you this message', true)
+  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+  .addField('Commands', '----')
+  .addField(prefix + 'check', 'Checks the # of words sent by a user', true)
+  .addField(prefix + 'count', 'Same as **ncheck**', true)
+  .addField(prefix + 'total', 'Retrieves the total amount of words recorded', true)
+  .addField(prefix + 'top', 'Gives info about top-sending user', true)
+  .addField(prefix + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+  .addField(prefix + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
+  .addField(prefix + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+  .addField(prefix + 'info', 'Gives info about the bot', true)
+  .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
+  //.addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+  .addField(prefix + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+  .addField(prefix + 'achievements', 'Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself')
+  .addField("Server Setup", "----")
+  .addField(prefix + "settings", "View all current server settings", true)
+  .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
+  .addField(prefix + 'cooldown', 'Change the server cooldown for counted words', true)
+  .addField(prefix + 'setPrefix', '(prefix) Changes the prefix for the server', true)
+  ;
+  //message.author.send(`${help}`);
+  message.author.send(helpEmbed);
+  return;
+}
+
+function userInfo(message) {
+  if(args[1] === undefined) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('You must include an @!');
+    message.channel.send(embed);
+    return;
+  }
+  else if(client.users.cache.get(args[1].toString()) !== undefined) {
+    userInf = client.users.cache.get(args[1].toString());
+    let embed = new MessageEmbed()
+    .setTitle(userInf.tag)
+    .setColor(0x00FF00)
+    .setDescription('<@!' + userInf.id + '>')
+    .setThumbnail(userInf.avatarURL())
+    .setTimestamp()
+    .addField('Registered', userInf.createdAt)
+    ;
+
+    message.channel.send(embed);
+  } else {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription("That's not a person!");
+    message.channel.send(embed);
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
+  }
+  return;
+}
+
+<<<<<<< HEAD
 //this function will dm the message author the help embed
 function help(message, prefix) {
   let dmEmbed = new MessageEmbed()
@@ -612,11 +741,17 @@ function userInfo(message) {
   return;
 }
 
+=======
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
 function deleteInfo(message) {
   let deleteEmbed = new MessageEmbed()
   .setTitle('Data Deletion')
   .setColor(0xBF66E3)
+<<<<<<< HEAD
   .setDescription('Are you sure all of your data on this server? *this is non-recoverable*\n\n Type:')
+=======
+  .setDescription('Are you sure all of your data on this server? *this is non-recoverable*nn Type:')
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
   .addField('**' + message.author.username + '** (your username)', 'to delete your data')
   .addField("**Cancel**", 'to cancel')
   .setFooter('Requested by ' + message.author.tag)
@@ -716,10 +851,10 @@ function archive(message) {
   //message.channel.send("sorry, this feature is disabled for the time being");
   message.channel.send(archiveEmbed);
 
-  //message.react('❌')
+  //message.react('&#10060;')
   //.catch(console.error);
 
-  //console.log(`\n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
+  //console.log(`n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
   return;
 }
 
@@ -727,7 +862,7 @@ function invite(message) {
   let inviteEmbed = new MessageEmbed()
   .setTitle('')
   .setColor(0xBF66E3)
-  .setDescription("[[Click here to invite me]](" + invLink + ")" + "\n[[Click here to join the bot's server]](" + discordLink + ")")
+  .setDescription("[[Click here to invite me]](" + invLink + ")" + "n[[Click here to join the bot's server]](" + discordLink + ")")
   .setFooter('Requested by ' + message.author.tag)
   ;
 
@@ -763,7 +898,7 @@ function check(message, args) {
     return;*/
     user = message.author.id;
   } else {
-    user = args[1].replace(/\D/g,'');
+    user = args[1].replace(/D/g,'');
   }
 
   if(user == client.user.id) {
@@ -790,12 +925,66 @@ function check(message, args) {
 
       //checks to see if the user is in the database
       if(rows[0] === undefined || rows[0].words === 0){
-        embed.setDescription('That user hasn\'t sent any countable words!')
+        embed.setDescription('That user hasn't sent any countable words!')
       }
       else {
         embed.setDescription(client.users.cache.get(user).tag + " has sent **__" + rows[0].words + "__** countable words!");
       }
 
+<<<<<<< HEAD
+=======
+  //find the id of the user in question
+  //console.log(`nFetching info for ${user}`);
+
+
+        //let author = getUser(message, data);
+    /*let author = -1;
+    //find the position of the user in the data file
+    for (var i = 0; i < data.servers[server].users.length; i++) {
+      if(user == data.servers[server].users[i].id) {
+          author = i;
+          break;
+      }
+    }*/
+
+    /*if(author === -1) {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription("That user hasn't sent any countable words!")
+      .setFooter('Requested by ' + message.author.tag);
+      //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
+      message.channel.send(embed);
+      return;
+    }
+    //detect if the user has not sent the n-word
+    if(data.servers[server].users[author].words === 0) {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription(client.users.cache.get(user).tag + " hasn't sent any countable words!")
+      .setFooter('Requested by ' + message.author.tag);
+      //message.channel.send("I think <@!" + args[1] + "> isn't very racist because they haven't said the n-word!")
+      message.channel.send(embed);
+      return;
+    }
+
+      //send the number of words counted
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription(client.users.cache.get(user).tag + ' has sent **__' + data.servers[server].users[author].words + '__** countable words!')
+      .setFooter('Requested by ' + message.author.tag)
+      ;
+      let userCooldown = (((data.servers[server].users[author].cooldown) - Date.now()) / 1000).toFixed(1) + " seconds";
+      if(((data.servers[server].users[author].cooldown) - Date.now()) > 0) {
+        embed.addField("Cooldown:", userCooldown, true);
+      }
+      if(data.blacklist[user] - Date.now() > 0) {
+        embed.addField("Blacklisted: ", ((data.blacklist[user] - Date.now()) / 3600000).toFixed(1) + " hours", true);
+      }*/
+
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
       let ogs = getOGS(data);
       if(ogs.has(client.users.cache.get(user).id)) {
         embed.setColor(0xFFA417);
@@ -834,7 +1023,7 @@ function invitenow(message) {
   .then(invite => message.channel.send("*FUCK YOU SEB :)* https://discord.gg/" + invite.code))
   .catch(console.error);
 
-  //console.log(`\nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
+  //console.log(`nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
   giveAchievements(message.author, data, "inviteNow");
   return;
 }
@@ -861,7 +1050,7 @@ function triggers(message) {
         collector.stop();
 
       } else {
-        let strings = message.content.toLowerCase().split(/[\s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+        let strings = message.content.toLowerCase().split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
         strings = strings.filter(item => !!item);
         strings = strings.filter((item, index) => strings.indexOf(item) === index);
         strings = strings.join(', ');
@@ -871,7 +1060,7 @@ function triggers(message) {
         let embed = new MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
-        .setDescription('**Trigger Setup Complete**\n\n Triggers added:\n' + strings);
+        .setDescription('**Trigger Setup Complete**nn Triggers added:n' + strings);
         message.channel.send(embed);
 
         collector.stop();
@@ -903,7 +1092,7 @@ function cooldownFunction(message, args) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
-      .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
+      .setDescription('**Removed cooldown time!**nn*active cooldowns will not be cleared*')
       .setFooter('Requested by ' + message.author.tag);
       message.channel.send(embed);
       return;
@@ -922,7 +1111,7 @@ function cooldownFunction(message, args) {
       let embed = new MessageEmbed()
       .setTitle('')
       .setColor(0xBF66E3)
-      .setDescription('Changed cooldown time to **__' + args[1] + '__** seconds\n\n*active cooldowns will not be cleared*')
+      .setDescription('Changed cooldown time to **__' + args[1] + '__** secondsnn*active cooldowns will not be cleared*')
       .setFooter('Requested by ' + message.author.tag);
       message.channel.send(embed);
       return;
@@ -945,7 +1134,7 @@ function info(message) {
     .setColor(0xBF66E3)
     .setDescription('Counting Words... *please help me*')
     .setThumbnail(client.user.avatarURL())
-    .addField('Authors', '`TacticalGubbins#0900`\n`Cyakat#5061`', true)
+    .addField('Authors', '`TacticalGubbins#0900`n`Cyakat#5061`', true)
     .addField('Version', version, true)
     .addField('Uptime', getUptime(), true)
     .addField('Total Words Tracked', total[0].words, true)
@@ -966,7 +1155,7 @@ function settings(message) {
     let embed = new MessageEmbed()
     .setTitle(message.guild.name + " Settings")
     .setColor(0xBF66E3)
-    .setDescription("Use:\n**" + prefix + "cooldown** to change the cooldown\n**" + prefix + "triggers** to change the trigger words\n**" + prefix + "setPrefix** to change the server prefix")
+    .setDescription("Use:n**" + prefix + "cooldown** to change the cooldownn**" + prefix + "triggers** to change the trigger wordsn**" + prefix + "setPrefix** to change the server prefix")
     .setThumbnail(message.guild.iconURL())
     .addField('Prefix', prefix, true)
     .addField('Cooldown Time', + cooldown + " seconds", true)
@@ -980,11 +1169,11 @@ function settings(message) {
 }
 
 function global(message) {
-  con.query('SELECT server_id, id, SUM(words) AS \'words\' FROM users GROUP BY id ORDER BY words DESC;', (err, response) => {
+  con.query('SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;', (err, response) => {
     let embed = new MessageEmbed()
     .setColor(0xBF66E3)
     .setTitle('Global Leaderboard')
-    .setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
+    .setDescription('The top-sending users world-widenThis uses a collection of all messages these users have sent')
     .setFooter('Requested by ' + message.author.tag);
 
     getTop(message, response, embed);
@@ -1018,7 +1207,7 @@ function achievementsCheck(message, data, args) {
     user = message.author.id;
     showHidden = true;
   } else {
-    user = args[1].replace(/\D/g,'');
+    user = args[1].replace(/D/g,'');
     showHidden = false;
   }
   if(client.users.cache.get(args[1].toString()) !== undefined) {
@@ -1046,7 +1235,7 @@ function achievementsCheck(message, data, args) {
           }
           else {
             embed.setColor(0xFF0000)
-            .addField('Bots can\'t earn achivements', 'They just can\'t. It says it right here in the code')
+            .addField('Bots can't earn achivements', 'They just can't. It says it right here in the code')
             .setFooter('Requested by ' + message.author.tag);
 
             message.channel.send(embed);
@@ -1090,23 +1279,31 @@ function achievementsCheck(message, data, args) {
 }
 
 function giveAchievements(user, data, achievementCode, specialData, notification) {
+<<<<<<< HEAD
 	if(notification === undefined) {
 		notification = true;
 	}
+=======
+  if(notification === undefined) {
+    notification = true;
+  }
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
   let newField  = false;
   con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows) => {
     if(rows[0] === undefined) {
       con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', () => {
         con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows2) => {
           if(rows2[0][achievementCode] === 0) {
-            let embed = new MessageEmbed()
-            .setTitle('Achievement Earned:')
-            .setColor(0xBF66E3)
-            .addField(achievements[achievementCode].title, achievements[achievementCode].description)
-            .setThumbnail(achievements[achievementCode].image)
-            .setTimestamp();
+            if(notification) {
+              let embed = new MessageEmbed()
+              .setTitle('Achievement Earned:')
+              .setColor(0xBF66E3)
+              .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+              .setThumbnail(achievements[achievementCode].image)
+              .setTimestamp();
 
-            user.send(embed);
+              user.send(embed);
+            }
 
             con.query('UPDATE achievements SET ' + achievementCode + ' = 1 WHERE id = ' + user.id);
           }
@@ -1130,7 +1327,10 @@ function giveAchievements(user, data, achievementCode, specialData, notification
       }
     }
   });
+<<<<<<< HEAD
 }
+=======
+>>>>>>> 4289dbefeebf2eb7b605aa16a27a6017c3d074a3
 
 //fucntion to write in the array to the data file
 function write (data) {
@@ -1158,7 +1358,7 @@ function newPASSWORD() {
      if (err) throw err;
    });
 
-   //console.log(`New PASSWORD Generated: ` + result + `\n\n`);
+   //console.log(`New PASSWORD Generated: ` + result + `nn`);
    return result;
 }
 
