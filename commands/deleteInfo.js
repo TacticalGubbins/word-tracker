@@ -14,7 +14,7 @@ module.exports = {
       message.channel.send(deleteEmbed);
 
       //create a message collector that checks for cancel or username
-      let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
+      let collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
       collector.on('collect', message => {
 
         //delete user info

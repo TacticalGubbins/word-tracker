@@ -26,6 +26,7 @@ const dbl = new DBL(config.topToken, client);
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy';
+const voteLink = 'https://top.gg/bot/730199839199199315/vote'
 
 const version = '3.8.1';
 
@@ -261,7 +262,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")):
         //info(message);
-				client.commands.get('info').execute(message, Discord, client, con);
+				client.commands.get('info').execute(message, version, voteLink, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "cooldown")):
         //cooldownFunction(message, args);
@@ -277,7 +278,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")):
         //check(message, args);
-				client.commands.get('check').execute(message, args, Discord, client, con);
+				client.commands.get('check').execute(message, args, Discord, client, con, data);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "total")):
         //total(message);
@@ -285,7 +286,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "invite")):
         //invite(message);
-				client.commands.get('invite').execute(message, Discord, client, con);
+				client.commands.get('invite').execute(message, discordLink, invLink, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "archive")):
         //archive(message);
@@ -309,11 +310,14 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "help")):
         //help(message, prefix);
-				client.commands.get('help').execute(message, prefix, Discord, client, con);
+				client.commands.get('help').execute(message, prefix, discordLink, invLink, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "changelog")):
         //changelogFunction(message, args);
-				client.commands.get('changelog').execute(message, args, Discord, client, con);
+				achievement = client.commands.get('changelog').execute(message, args, version, Discord, client, con);
+				if(achievement) {
+					giveAchievements(message.author, data, "changelog");
+				}
         break;
       case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
         //prefixFunction(message, prefix, args);
@@ -325,7 +329,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement")):
         //achievementsCheck(message, data, args);
-				client.commands.get('achievementsCheck').execute(message, data, args, Discord, client, con);
+				client.commands.get('achievementsCheck').execute(message, data, args, achievements, Discord, client, con);
         return;
         break;
       case (message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')):
@@ -336,7 +340,10 @@ client.on("message", (message) => {
         message.channel.send("Current verify message: **" + fs.readFileSync('PASSWORD.txt').toString() + "**");
         return;
         break;
-
+			case (message.content.toLowerCase().startsWith(prefix + "vote")):
+				client.commands.get('vote').execute(message, voteLink, Discord, client, con);
+				return;
+				break;
       default:
 
         break;

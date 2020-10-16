@@ -1,7 +1,7 @@
 module.exports = {
   name: 'check',
   description: 'checks the amount of words the specified user sent',
-  execute(message, args,Discord, client, con) {
+  execute(message, args, Discord, client, con, data) {
 
       let user;
 
@@ -50,7 +50,11 @@ module.exports = {
             embed.setDescription(client.users.cache.get(user).tag + " has sent **__" + rows[0].words + "__** countable words!");
           }
 
-          let ogs = getOGS(data);
+          let ogs = new Set();
+          for(var i = 0; i < data.ogs.length; i++) {
+            ogs.add(data.ogs[i]);
+          }
+
           if(ogs.has(client.users.cache.get(user).id)) {
             embed.setColor(0xFFA417);
           }

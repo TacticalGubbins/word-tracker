@@ -1,7 +1,8 @@
 module.exports = {
   name: 'changelog',
   description: 'gets the changelog specified',
-  execute(message, args, Discord, client, con) {
+  execute(message, args, version, Discord, client, con) {
+    acvhievement = false;
 
       if(args[1] === undefined) {
         args[1] = version;
@@ -31,7 +32,8 @@ module.exports = {
 
           message.channel.send(embed);
 
-          giveAchievements(message.author, data, "changelog");
+          achievement = true;
+          //giveAchievements(message.author, data, "changelog");
         }
         else {
           let embed = new Discord.MessageEmbed()
@@ -44,7 +46,7 @@ module.exports = {
           message.channel.send(embed);
         }
       }
-      return;
+      return achievement;
 
   }
 };

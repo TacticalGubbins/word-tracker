@@ -1,7 +1,7 @@
 module.exports = {
   name: 'achievementsCheck',
   description: 'shows the achievements of the specified person',
-  execute(message, data, args, Discord, client, con) {
+  execute(message, data, args, achievements, Discord, client, con) {
 
       let user;
       let achievementCounter = 0;
@@ -18,7 +18,7 @@ module.exports = {
         user = args[1].replace(/D/g,'');
         showHidden = false;
       }
-      if(client.users.cache.get(args[1].toString()) !== undefined) {
+      if(client.users.cache.get(user) !== undefined) {
         con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
 
           if(rows[0] === undefined) {

@@ -18,7 +18,7 @@ module.exports = {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
-          .setDescription('**Removed cooldown time!**nn*active cooldowns will not be cleared*')
+          .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
           .setFooter('Requested by ' + message.author.tag);
           message.channel.send(embed);
           return;
@@ -37,7 +37,7 @@ module.exports = {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
-          .setDescription('Changed cooldown time to **__' + args[1] + '__** secondsnn*active cooldowns will not be cleared*')
+          .setDescription('Changed cooldown time to **__' + args[1] + '__** seconds\n\n*active cooldowns will not be cleared*')
           .setFooter('Requested by ' + message.author.tag);
           message.channel.send(embed);
           return;

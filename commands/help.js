@@ -1,9 +1,7 @@
 module.exports = {
   name: 'help',
   description: 'dms the user the help file',
-  execute(message, prefix, Discord, client, con) {
-    const discordLink = 'https://discord.gg/Z6rYnpy';
-    const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';;
+  execute(message, prefix, discordLink, invLink, Discord, client, con) {
 
       let dmEmbed = new Discord.MessageEmbed()
       .setTitle('')
