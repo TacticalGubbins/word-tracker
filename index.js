@@ -114,9 +114,9 @@ client.on('ready', () => {
           dbl.postStats(client.guilds.size);
         }
         catch(err) {
-          logging.warn("Something's wrong with dblapi? n");
+          logging.warn("Something's wrong with dblapi? \n");
           console.log(err);
-          console.log("n");
+          console.log("\n");
         }
     }, 1800000);
 
@@ -195,7 +195,7 @@ client.on("message", (message) => {
     .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
     //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
     .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
-    .addField('n!' + 'achievements', 'Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself')
+    .addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
     .addField("Server Setup", "----")
     .addField('n!' + "settings", "View all current server settings", true)
     .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
@@ -223,7 +223,7 @@ client.on("message", (message) => {
       client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
     }
     catch(err) {
-     logging.warn('nCould not send dm to louie. This should only happen if the testing bot is running n');
+     logging.warn('\nCould not send dm to louie. This should only happen if the testing bot is running \n');
      console.log(err)
     }
     return;
@@ -236,7 +236,10 @@ client.on("message", (message) => {
     }
     catch(err) {
       prefix = 'n!';
-      con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+      try{
+				con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+			}
+			catch(err){};
     }
 
     //splits the sentence into an array, splitting at spaces
@@ -314,10 +317,10 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "changelog")):
         //changelogFunction(message, args);
-				achievement = client.commands.get('changelog').execute(message, args, version, Discord, client, con);
-				if(achievement) {
-					giveAchievements(message.author, data, "changelog");
-				}
+				client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
+				//if(achievement) {
+					//giveAchievements(message.author, data, "changelog");
+				//}
         break;
       case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
         //prefixFunction(message, prefix, args);
@@ -326,8 +329,9 @@ client.on("message", (message) => {
       case (message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")):
         //pp(message, data, args);
 				client.commands.get('pp').execute(message, data, args, Discord, client, con);
+
         break;
-      case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement")):
+      case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement") || message.content.toLowerCase().startsWith(prefix + "ach")):
         //achievementsCheck(message, data, args);
 				client.commands.get('achievementsCheck').execute(message, data, args, achievements, Discord, client, con);
         return;
@@ -366,7 +370,10 @@ client.on("message", (message) => {
         }
         catch(err) {
           wordArgs = ['bruh','nice','bots','cow'];
-          con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+          try {
+						con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+					}
+					catch(err){};
         }
         wordArgs = wordArgs.filter(item => !!item);
         for(let i of wordArgs) {
@@ -378,26 +385,31 @@ client.on("message", (message) => {
         for(let j in words) {
           curr = words[j];
 
-          try {
+					try {
 
-            if(trackedWords.has(curr.toLowerCase())) {
-              if(user[0].cooldown < Date.now()) {
-                con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
-              }
+	          if(trackedWords.has(curr.toLowerCase())) {
 
-              checkIfShouldWrite = true;
+							checkIfShouldWrite = true;
 
-              if (user[0].cooldown > 0) {
-                break;
-              }
+		            if(user[0].cooldown < Date.now()) {
+		              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
+		            }
 
-              nword++;
+	              if (user[0].cooldown > 0) {
+	                break;
+	              }
 
-            }
-          }
-          catch(err) {
-            doesNotExist = true;
-          }
+
+							nword++;
+	          }
+					}
+					catch(err) {
+						doesNotExist = true;
+					}
+					if(doesNotExist) {
+	          con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
+	          doesNotExist = false;
+	        }
         }
         if(checkIfShouldWrite) {
           let cooldownTime
@@ -407,7 +419,10 @@ client.on("message", (message) => {
           catch(err)
           {
             cooldownTime = 5;
-            con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+            try {
+							con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+						}
+						catch(err){};
           }
           checkIfShouldWrite = false;
           con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
@@ -418,10 +433,7 @@ client.on("message", (message) => {
             }, (cooldownTime) * 1000);
           }
         }
-        if(doesNotExist) {
-          con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
-          doesNotExist = false;
-        }
+
       });
     });
   });

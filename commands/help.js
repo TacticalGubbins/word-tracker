@@ -30,7 +30,7 @@ module.exports = {
       .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
       //.addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
       .addField(prefix + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
-      .addField(prefix + 'achievements', 'Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself')
+      .addField(prefix + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
       .addField("Server Setup", "----")
       .addField(prefix + "settings", "View all current server settings", true)
       .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)

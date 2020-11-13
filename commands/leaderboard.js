@@ -15,6 +15,7 @@ module.exports = {
 
         let inTop = false;
         let pos = 1;
+        let o = 0;
 
         for(let i = 0; i < response.length; i++) {
           try{
@@ -22,12 +23,13 @@ module.exports = {
             //get user and server
             i = parseInt(i);
 
+            o++;
             //add user positions, max of 10, from json object
             if(user.id === message.author.id) {
               embed.addField('#' + (pos) + ' `' + message.author.username + '`', response[i].words);
               inTop = true;
             } else {
-              if(i < 11) {
+              if(o < 11) {
                 embed.addField('#' + (pos) + ' ' + user.username, response[i].words);
               }
             }

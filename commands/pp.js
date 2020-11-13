@@ -19,7 +19,7 @@ module.exports = {
       .setDescription('Come on man, give me at least a little something to work with');
       message.channel.send(embed);
     }
-    giveAchievements(message.author, data, "pp");
+    //giveAchievements(message.author, data, "pp");
     return;
   }
 };

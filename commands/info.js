@@ -38,6 +38,7 @@ module.exports = {
         .addField('Total Words Tracked', total[0].words, true)
         .addField('Server Count', client.guilds.cache.size, true)
         .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
+        .addField('Vote for the bot', 'Vote for the bot [here](' + voteLink + ')', true)
         .setFooter('Requested by ' + message.author.tag);
         message.channel.send(embed);
         //stopTimer(timer);

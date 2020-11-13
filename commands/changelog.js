@@ -1,8 +1,8 @@
 module.exports = {
   name: 'changelog',
   description: 'gets the changelog specified',
-  execute(message, args, version, Discord, client, con) {
-    acvhievement = false;
+  execute(message, args, version, changelog, Discord, client, con) {
+    let achievement = false;
 
       if(args[1] === undefined) {
         args[1] = version;
@@ -39,8 +39,8 @@ module.exports = {
           let embed = new Discord.MessageEmbed()
           .setTitle("Version not found")
           .setColor(0xFF0000)
-          .addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
-          .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)\n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
+          //.addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)', '​')
+          .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A) \n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
           .setFooter("try " + prefix + "changelog 3.6.4");
 
           message.channel.send(embed);
