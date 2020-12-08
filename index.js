@@ -249,7 +249,7 @@ client.on("message", (message) => {
     //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
     switch(true) {
       case (message.content === "🥚"):
-        giveAchievements(message.author, data, "egg", 0, false);
+        giveAchievements(message.author, data, "egg");
         break;
       case (message.content.toLowerCase().startsWith(prefix + "bottom")):
         //bottom(message);
@@ -278,6 +278,7 @@ client.on("message", (message) => {
       case (message.content.toLowerCase().startsWith("invitenow")):
         //invitenow(message);
 				client.commands.get('invitenow').execute(message, Discord, client, con);
+				giveAchievements(message.author, data, "inviteNow");
         break;
       case (message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")):
         //check(message, args);
@@ -317,10 +318,11 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "changelog")):
         //changelogFunction(message, args);
-				client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
-				//if(achievement) {
-					//giveAchievements(message.author, data, "changelog");
-				//}
+				let achievement = false;
+				achievement = client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
+				if(achievement) {
+					giveAchievements(message.author, data, "changelog");
+				}
         break;
       case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
         //prefixFunction(message, prefix, args);
@@ -329,6 +331,7 @@ client.on("message", (message) => {
       case (message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")):
         //pp(message, data, args);
 				client.commands.get('pp').execute(message, data, args, Discord, client, con);
+				giveAchievements(message.author, data, "pp");
 
         break;
       case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement") || message.content.toLowerCase().startsWith(prefix + "ach")):
@@ -361,79 +364,96 @@ client.on("message", (message) => {
       let trackedWords = getTrackWords(message, data);*/
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
-        let nword = 0;
-        let doesNotExist = false;
-        let trackedWords = new Set();
-        let wordArgs
-        try {
-          wordArgs = server[0].strings.split(/[s ,]/);
-        }
-        catch(err) {
-          wordArgs = ['bruh','nice','bots','cow'];
-          try {
-						con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
-					}
-					catch(err){};
-        }
-        wordArgs = wordArgs.filter(item => !!item);
-        for(let i of wordArgs) {
-          trackedWords.add(i);
-        }
-
-
-
-        for(let j in words) {
-          curr = words[j];
-
+				con.query('SELECT words FROM users WHERE id = ' + message.author.id + ' GROUP BY id', (err3	, totalWords) => {
 					try {
-
-	          if(trackedWords.has(curr.toLowerCase())) {
-
-							checkIfShouldWrite = true;
-
-		            if(user[0].cooldown < Date.now()) {
-		              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
-		            }
-
-	              if (user[0].cooldown > 0) {
-	                break;
-	              }
-
-
-							nword++;
-	          }
+						totalWords = totalWords[0].words;
+						switch(true) {
+							case (totalWords >= 10000):
+								giveAchievements(message.author, data, "10000");
+							case (totalWords >= 1000):
+								giveAchievements(message.author, data, "1000");
+							case (totalWords >= 100):
+								giveAchievements(message.author, data, "100");
+								break;
+							default:
+							break;
+						}
 					}
-					catch(err) {
-						doesNotExist = true;
-					}
-					if(doesNotExist) {
-	          con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
-	          doesNotExist = false;
+					catch(err){}
+
+	        let nword = 0;
+	        let doesNotExist = false;
+	        let trackedWords = new Set();
+	        let wordArgs
+	        try {
+	          wordArgs = server[0].strings.split(/[s ,]/);
 	        }
-        }
-        if(checkIfShouldWrite) {
-          let cooldownTime
-          try {
-            cooldownTime = server[0].cooldown;
-          }
-          catch(err)
-          {
-            cooldownTime = 5;
-            try {
+	        catch(err) {
+	          wordArgs = ['bruh','nice','bots','cow'];
+	          try {
 							con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
 						}
 						catch(err){};
-          }
-          checkIfShouldWrite = false;
-          con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
-          if(nword >= 5) {
-            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
-            setTimeout(() => {
-              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
-            }, (cooldownTime) * 1000);
-          }
-        }
+	        }
+	        wordArgs = wordArgs.filter(item => !!item);
+	        for(let i of wordArgs) {
+	          trackedWords.add(i);
+	        }
 
+
+
+	        for(let j in words) {
+	          curr = words[j];
+
+						try {
+
+		          if(trackedWords.has(curr.toLowerCase())) {
+
+								checkIfShouldWrite = true;
+
+			            if(user[0].cooldown < Date.now()) {
+			              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
+			            }
+
+		              if (user[0].cooldown > 0) {
+		                break;
+		              }
+
+
+								nword++;
+		          }
+						}
+						catch(err) {
+							doesNotExist = true;
+						}
+						if(doesNotExist) {
+		          con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
+		          doesNotExist = false;
+		        }
+	        }
+	        if(checkIfShouldWrite) {
+	          let cooldownTime
+	          try {
+	            cooldownTime = server[0].cooldown;
+	          }
+	          catch(err)
+	          {
+	            cooldownTime = 5;
+	            try {
+								con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+							}
+							catch(err){};
+	          }
+	          checkIfShouldWrite = false;
+	          con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+	          if(nword >= 5) {
+	            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+	            setTimeout(() => {
+	              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+	            }, (cooldownTime) * 1000);
+	          }
+	        }
+				});
       });
     });
   });
@@ -1108,13 +1128,18 @@ function achievementsCheck(message, data, args) {
     return;
 }
 
-function giveAchievements(user, data, achievementCode, specialData, notification) {
-	if(notification === undefined) {
-		notification = true;
-	}
+function giveAchievements(user, data, achievementCode, specialData) {
+
+	notification = achievements[achievementCode].notification;
+
   let newField  = false;
   con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows) => {
     if(rows[0] === undefined) {
+			let myDate = new Date(Date.now());
+			let timestamp = myDate.toGMTString() + myDate.toLocaleString();
+			timestamp = timestamp.substr(0,16);
+			console.log(timestamp);
+
       con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', () => {
         con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows2) => {
           if(rows2[0][achievementCode] === 0) {
@@ -1124,12 +1149,14 @@ function giveAchievements(user, data, achievementCode, specialData, notification
               .setColor(0xBF66E3)
               .addField(achievements[achievementCode].title, achievements[achievementCode].description)
               .setThumbnail(achievements[achievementCode].image)
-              .setTimestamp();
+              .setDescription("Earned at " + timestamp)
 
-              user.send(embed);
+							if(achievements[achievementCode].notification) {
+								user.send(embed);
+							}
             }
 
-            con.query('UPDATE achievements SET ' + achievementCode + ' = 1 WHERE id = ' + user.id);
+            con.query('UPDATE achievements SET \`' + achievementCode + '\` = ' + Date.now() + ' WHERE id = ' + user.id);
           }
         });
       });
@@ -1145,9 +1172,11 @@ function giveAchievements(user, data, achievementCode, specialData, notification
         .setThumbnail(achievements[achievementCode].image)
         .setTimestamp();
 
-        user.send(embed);
+				if(achievements[achievementCode].notification) {
+        	user.send(embed);
+				}
 
-        con.query('UPDATE achievements SET ' + achievementCode + ' = 1 WHERE id = ' + user.id);
+        con.query('UPDATE achievements SET \`' + achievementCode + '\` = ' + Date.now() + ' WHERE id = ' + user.id);
       }
     }
   });

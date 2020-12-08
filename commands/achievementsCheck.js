@@ -16,10 +16,13 @@ module.exports = {
         showHidden = true;
       } else {
         user = args[1].replace(/D/g,'');
+        user = user.replace(/<@!/, '');
+        user = user.replace(/>/, '');
         showHidden = false;
       }
       if(client.users.cache.get(user) !== undefined) {
         con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
+
 
           if(rows[0] === undefined) {
             con.query('INSERT INTO achievements (id) VALUE (' + user + ')', (err, res) => {
@@ -31,13 +34,17 @@ module.exports = {
             for(let i in keys) {
               achievementCode = keys[i];
               let description = 'This achievement is hidden';
+              let time = rows[0][achievementCode];
+              let myDate = new Date(parseInt(time));
+              let timestamp = myDate.toGMTString() + myDate.toLocaleString();
+              timestamp = timestamp.substr(0,16);
 
               if(user !== client.user.id) {
                 if(rows[0][achievementCode] != 0) {
                   if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
                     description = achievements[achievementCode].description
                   }
-                  embed.addField(achievements[achievementCode].title, description, true);
+                  embed.addField(achievements[achievementCode].title, "\"" + description + "\" Earned on \n" + timestamp, true);
                   achievementCounter += 1;
                 }
               }

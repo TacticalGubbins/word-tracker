@@ -13,7 +13,7 @@ module.exports = {
       }
       if(args[1].length <= 5) {
         //data.servers[server].prefix = args[1].toLowerCase();
-        con.query("UPDATE servers SET prefix = '" + args[1].toLowerCase() + "' WHERE id = " + message.guild.id);
+        con.query("UPDATE servers SET prefix = \`" + args[1].toLowerCase() + "\` WHERE id = " + message.guild.id);
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)
