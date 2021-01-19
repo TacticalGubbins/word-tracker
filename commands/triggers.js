@@ -34,7 +34,7 @@ module.exports = {
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
-            .setDescription('**Trigger Setup Complete**nn Triggers added:n' + strings);
+            .setDescription('**Trigger Setup Complete**\n\n Triggers added:\n' + strings);
             message.channel.send(embed);
 
             collector.stop();

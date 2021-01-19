@@ -440,12 +440,17 @@ client.on("message", (message) => {
 	          {
 	            cooldownTime = 5;
 	            try {
-								con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+								con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', "n!", 5, "bruh, nice, bots, cow")');
 							}
 							catch(err){};
 	          }
 	          checkIfShouldWrite = false;
-	          con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+						if(user[0] === undefined) {
+							con.query('UPDATE users SET words = ' + (0 + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+						}
+						else {
+	          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+						}
 	          if(nword >= 5) {
 	            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 	            setTimeout(() => {
@@ -1138,7 +1143,7 @@ function giveAchievements(user, data, achievementCode, specialData) {
 			let myDate = new Date(Date.now());
 			let timestamp = myDate.toGMTString() + myDate.toLocaleString();
 			timestamp = timestamp.substr(0,16);
-			console.log(timestamp);
+			//console.log(timestamp);
 
       con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', () => {
         con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows2) => {
