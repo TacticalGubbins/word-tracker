@@ -62,7 +62,8 @@
         "1":[
           "Fixed bug where the bot would not add a server to the database when it joined",
           "Fixed the leaderboards not showing the top ten properly if people had left the server",
-          "You can now check yours and others achievements with n!ach instead of the garbage that used to be n!achievements cuz that was god awful to type out everytime"
+          "You can now check yours and others achievements with n!ach instead of the garbage that used to be n!achievements cuz that was god awful to type out everytime",
+          "Made n!check work better and it will also display your total tracked words too"
         ]
       }
     }
