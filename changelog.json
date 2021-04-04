@@ -60,8 +60,9 @@
           "Removed blacklist"
         ],
         "1":[
-          "Fixed bug where the bot would not add a server to the database when it joined",
+          "Fixed bug where the bot would not add a server to the database when it joined (At least I think I did)",
           "Fixed the leaderboards not showing the top ten properly if people had left the server",
+          "Fixed the global leaderboard not showing people correctly (God I should have done this earlier)",
           "You can now check yours and others achievements with n!ach instead of the garbage that used to be n!achievements cuz that was god awful to type out everytime",
           "Made n!check work better and it will also display your total tracked words too"
         ]

@@ -26,7 +26,7 @@ const dbl = new DBL(config.topToken, client);
 
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 const discordLink = 'https://discord.gg/Z6rYnpy';
-const voteLink = 'https://top.gg/bot/730199839199199315/vote'
+const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 const version = '3.8.1';
 
@@ -236,10 +236,13 @@ client.on("message", (message) => {
     }
     catch(err) {
       prefix = 'n!';
-      try{
-				con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
-			}
-			catch(err){};
+			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, (err, idResponse) => {
+				console.log(idResponse[0]);
+				if(idResponse[0] === undefined) {
+					con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
+				}
+			});
+
     }
 
     //splits the sentence into an array, splitting at spaces
@@ -391,7 +394,7 @@ client.on("message", (message) => {
 	        catch(err) {
 	          wordArgs = ['bruh','nice','bots','cow'];
 	          try {
-							con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', 'n!', 5, 'bruh, nice, bots, cow')");
+							con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
 						}
 						catch(err){};
 	        }
