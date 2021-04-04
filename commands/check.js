@@ -39,8 +39,9 @@ module.exports = {
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
-          con.query("SELECT SUM(words) AS words, cooldown FROM users WHERE id = " + user, (err, globalwords) => {
+          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
             con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
+              console.log(user);
               let embed = new Discord.MessageEmbed()
               .setAuthor(message.author.tag, message.author.avatarURL())
               .setColor(0xBF66E3)
