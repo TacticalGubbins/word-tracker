@@ -19,7 +19,9 @@
   "homepage": "https://github.com/TacticalGubbins/n-word-bot#readme",
   "dependencies": {
     "colors": "^1.4.0",
+    "dblapi.js": "^2.4.1",
     "discord.js": "^12.2.0",
+    "math": "^0.0.3",
     "mysql": "^2.18.1"
   }
 }
