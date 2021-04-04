@@ -3,7 +3,7 @@ module.exports = {
   description: 'gets the global leaderboard',
   execute(message, Discord, client, con) {
 
-      con.query("SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
+      con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
         let embed = new Discord.MessageEmbed()
         .setColor(0xBF66E3)
         .setTitle('Global Leaderboard')
@@ -22,7 +22,7 @@ module.exports = {
               let user = client.users.cache.get(response[i].id.toString());
               //get user and server
               i = parseInt(i);
-
+              filler = user.username
               o++;
               //add user positions, max of 10, from json object
               if(user.id === message.author.id) {
