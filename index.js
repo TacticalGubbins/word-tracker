@@ -302,7 +302,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "top")):
         //top(message);
-				client.commands.get('top').execute(message, Discord, client, con);
+				client.commands.get('top').execute(message, Discord, client, con, data);
         break;
       case (message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')):
         //leaderboard(message);
