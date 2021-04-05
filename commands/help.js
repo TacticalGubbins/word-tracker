@@ -16,6 +16,7 @@ module.exports = {
       .setColor(0xBF66E3)
       .setDescription('')
       .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+      .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
       .addField(prefix + 'help', 'Gives you this message', true)
       .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
       .addField('Commands', '----')
