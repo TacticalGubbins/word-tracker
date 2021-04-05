@@ -28,7 +28,7 @@ const invLink = 'https://discordapp.com/oauth2/authorize?client_id=7301998391991
 const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
-const version = '3.8.1';
+const version = '3.9.0';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -261,7 +261,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")):
         //global(message);
-				client.commands.get('global').execute(message, Discord, client, con);
+				client.commands.get('global').execute(message, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "settings")):
         //settings(message);
