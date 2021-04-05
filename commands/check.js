@@ -20,6 +20,9 @@ module.exports = {
         user = message.author.id;
       } else {
         user = args[1].replace(/D/g,'');
+        user = user.replace("<@!","");
+        user = user.replace(">","");
+
       }
 
       if(user == client.user.id) {
@@ -36,14 +39,17 @@ module.exports = {
         return;
       }
 
+      console.log(user);
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
           con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
             con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
+              user = client.users.cache.get(user);
+              avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
               console.log(user);
               let embed = new Discord.MessageEmbed()
-              .setAuthor(message.author.tag, message.author.avatarURL())
+              .setAuthor(user.username + "#" + user.discriminator, avatarURL)
               .setColor(0xBF66E3)
 
               //checks to see if the user is in the database
@@ -65,17 +71,17 @@ module.exports = {
                 ogs.add(data.ogs[i]);
               }
 
-              if(ogs.has(client.users.cache.get(user).id)) {
+              if(ogs.has(user.id)) {
                 embed.setColor(0xFFA417);
               }
               //custom colors for pog people
-              if(client.users.cache.get(user).id === '445668261338677248') {
+              if(user.id === '445668261338677248') {
                 embed.setColor(0xFF1CC5);
               }
-              if(client.users.cache.get(user).id === '448269007800238080') {
+              if(user.id === '448269007800238080') {
                 embed.setColor(0x17FF1B);
               }
-              if(client.users.cache.get(user).id === '656755471847260170') {
+              if(user.id === '656755471847260170') {
                 embed.setColor(0x17D1FF);
               }
 
