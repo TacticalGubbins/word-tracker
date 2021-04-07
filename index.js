@@ -240,7 +240,7 @@ client.on("message", (message) => {
 			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, (err, idResponse) => {
 				console.log(idResponse[0]);
 				if(idResponse[0] === undefined) {
-					con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
+					con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
 				}
 			});
 
@@ -395,7 +395,7 @@ client.on("message", (message) => {
 	        catch(err) {
 	          wordArgs = ['bruh','nice','bots','cow'];
 	          try {
-							con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
+							con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
 						}
 						catch(err){};
 	        }
@@ -444,7 +444,7 @@ client.on("message", (message) => {
 	          {
 	            cooldownTime = 5;
 	            try {
-								con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', "n!", 5, "bruh, nice, bots, cow")');
+								con.query('INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', "n!", 5, "bruh, nice, bots, cow")');
 							}
 							catch(err){};
 	          }
