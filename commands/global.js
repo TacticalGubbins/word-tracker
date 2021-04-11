@@ -3,12 +3,20 @@ module.exports = {
   description: 'gets the global leaderboard',
   execute(message, args, Discord, client, con) {
 
+    let embed = new Discord.MessageEmbed()
+    .setColor(0xBF66E3)
+    .setTitle('Global Leaderboard')
+    .setDescription('Loading leaderboard')
+    .setFooter('Requested by ' + message.author.tag);
+    async function loading(message, embed) {
+      let msg = await message.channel.send(embed);
+      setTimeout(() => {
+        msg.edit(embed);
+      }, 1);
+    }
+    loading(message, embed);
+
       con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
-        let embed = new Discord.MessageEmbed()
-        .setColor(0xBF66E3)
-        .setTitle('Global Leaderboard')
-        .setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
-        .setFooter('Requested by ' + message.author.tag);
 
         //getTop(message, response, embed);
 
@@ -57,7 +65,8 @@ module.exports = {
             }
 
           }
-          message.channel.send(embed);
+          embed.setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
+          //msg.edit(embed);
 
       });
       //getGlobalTop(message);
