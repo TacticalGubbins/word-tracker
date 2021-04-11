@@ -74,7 +74,7 @@
           "Giving the global command a argument, for example 2, will now show places 11 through 20",
           "Bot will no longer crash upon setting a bad prefix",
           "Fixed a but where if you used n!check in a server where you had not said anywords but had said words elsewhere it would say that you have sent no words",
-          ""
+          "Added new extra help! If you run n!help (command), the bot will give you extra info on that specific command"
         ]
       }
     }
