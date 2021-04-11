@@ -404,8 +404,12 @@ client.on("message", (message) => {
 	          trackedWords.add(i);
 	        }
 
-
-
+					try {
+						if(user[0].cooldown < Date.now()) {
+							con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
+						}
+					}
+					catch (err){}
 	        for(let j in words) {
 	          curr = words[j];
 
@@ -414,10 +418,6 @@ client.on("message", (message) => {
 		          if(trackedWords.has(curr.toLowerCase())) {
 
 								checkIfShouldWrite = true;
-
-			            if(user[0].cooldown < Date.now()) {
-			              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
-			            }
 
 		              if (user[0].cooldown > 0) {
 		                break;
