@@ -72,7 +72,9 @@
           "Fixed a bug that would cause n!check to not work with arguments",
           "You now only have to have the manage channels or the manage server permissions to change server settings",
           "Giving the global command a argument, for example 2, will now show places 11 through 20",
-          "Bot will no longer crash upon setting a bad prefix"
+          "Bot will no longer crash upon setting a bad prefix",
+          "Fixed a but where if you used n!check in a server where you had not said anywords but had said words elsewhere it would say that you have sent no words",
+          ""
         ]
       }
     }

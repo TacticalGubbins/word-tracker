@@ -39,7 +39,6 @@ module.exports = {
         return;
       }
 
-      console.log(user);
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
@@ -47,18 +46,26 @@ module.exports = {
             con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
               user = client.users.cache.get(user);
               avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
-              console.log(user);
               let embed = new Discord.MessageEmbed()
               .setAuthor(user.username + "#" + user.discriminator, avatarURL)
               .setColor(0xBF66E3)
 
               //checks to see if the user is in the database
-              if(localwords[0] === undefined || localwords[0].words === 0){
+              if(!(globalwords[0].words > 0)){
                 embed.setDescription("That user hasn't sent any countable words!")
                 .setTitle('')
               }
               else {
-                embed.addField("Words Tracked (this server)", localwords[0].words, true)
+                let words;
+
+                if(localwords[0] === undefined)
+                {
+                  words = 0;
+                }
+                else {
+                  words = localwords[0].words;
+                }
+                embed.addField("Words Tracked (this server)", words, true)
                 .addField("Words Tracked (all servers)", globalwords[0].words, true)
                 //.addField("​","`Cooldown:` " + parseInt(date) - parseInt(globalwords[0].cooldown))
                 //console.log(globalwords[0].cooldown);
