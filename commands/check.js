@@ -22,7 +22,6 @@ module.exports = {
         user = args[1].replace(/D/g,'');
         user = user.replace("<@!","");
         user = user.replace(">","");
-console.log(user);
       }
 
       if(user == client.user.id) {
