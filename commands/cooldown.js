@@ -3,7 +3,7 @@ module.exports = {
   description: 'Allows the Administrators set up the cooldown time for the server',
   execute(message, args, Discord, client, con) {
 
-      if(message.member.hasPermission('ADMINISTRATOR')) {
+      if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
         if(args[1] <= 1000) {
           if(args[1] === undefined) {
             let embed = new Discord.MessageEmbed()

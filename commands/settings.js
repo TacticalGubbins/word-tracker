@@ -4,8 +4,17 @@ module.exports = {
   execute(message, Discord, client, con) {
 
       con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , (err, response) => {
-        let cooldown = response[0].cooldown;
-        let strings = response[0].strings;
+        let cooldown;
+        let strings;
+        if(response[0] != undefined) {
+          cooldown = response[0].cooldown;
+          strings = response[0].strings;
+        }
+        else {
+          cooldown = 5;
+          strings = 'bruh, nice, bots, cow';
+        }
+
 
         if(strings === undefined || strings === "") {
           strings = 'bruh, nice, bots, cow';

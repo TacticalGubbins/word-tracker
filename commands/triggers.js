@@ -3,7 +3,8 @@ module.exports = {
   description: 'allows the admin to change the triggers for the server',
   execute(message, Discord, client, con) {
 
-      if(message.member.hasPermission('ADMINISTRATOR')) {
+      //the if statement checks if the user has the manage server or manage channels permissions
+      if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
         let embed = new Discord.MessageEmbed()
         .setTitle('Trigger Setup')
         .setColor(0xBF66E3)

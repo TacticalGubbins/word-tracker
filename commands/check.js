@@ -20,6 +20,8 @@ module.exports = {
         user = message.author.id;
       } else {
         user = args[1].replace(/D/g,'');
+        user = user.replace("<@!","");
+        user = user.replace(">","");
       }
 
       if(user == client.user.id) {
@@ -41,18 +43,28 @@ module.exports = {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
           con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
             con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
-              console.log(user);
+              user = client.users.cache.get(user);
+              avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
               let embed = new Discord.MessageEmbed()
-              .setAuthor(message.author.tag, message.author.avatarURL())
+              .setAuthor(user.username + "#" + user.discriminator, avatarURL)
               .setColor(0xBF66E3)
 
               //checks to see if the user is in the database
-              if(localwords[0] === undefined || localwords[0].words === 0){
+              if(!(globalwords[0].words > 0)){
                 embed.setDescription("That user hasn't sent any countable words!")
                 .setTitle('')
               }
               else {
-                embed.addField("Words Tracked (this server)", localwords[0].words, true)
+                let words;
+
+                if(localwords[0] === undefined)
+                {
+                  words = 0;
+                }
+                else {
+                  words = localwords[0].words;
+                }
+                embed.addField("Words Tracked (this server)", words, true)
                 .addField("Words Tracked (all servers)", globalwords[0].words, true)
                 //.addField("​","`Cooldown:` " + parseInt(date) - parseInt(globalwords[0].cooldown))
                 //console.log(globalwords[0].cooldown);
@@ -65,17 +77,17 @@ module.exports = {
                 ogs.add(data.ogs[i]);
               }
 
-              if(ogs.has(client.users.cache.get(user).id)) {
+              if(ogs.has(user.id)) {
                 embed.setColor(0xFFA417);
               }
               //custom colors for pog people
-              if(client.users.cache.get(user).id === '445668261338677248') {
+              if(user.id === '445668261338677248') {
                 embed.setColor(0xFF1CC5);
               }
-              if(client.users.cache.get(user).id === '448269007800238080') {
+              if(user.id === '448269007800238080') {
                 embed.setColor(0x17FF1B);
               }
-              if(client.users.cache.get(user).id === '656755471847260170') {
+              if(user.id === '656755471847260170') {
                 embed.setColor(0x17D1FF);
               }
 

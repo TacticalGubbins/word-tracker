@@ -1,14 +1,22 @@
 module.exports = {
   name: 'global',
   description: 'gets the global leaderboard',
-  execute(message, Discord, client, con) {
+  execute(message, args, Discord, client, con) {
+
+    let embed = new Discord.MessageEmbed()
+    .setColor(0xBF66E3)
+    .setTitle('Global Leaderboard')
+    .setDescription('Loading leaderboard')
+    .setFooter('Requested by ' + message.author.tag);
+    async function loading(message, embed) {
+      let msg = await message.channel.send(embed);
+      setTimeout(() => {
+        msg.edit(embed);
+      }, 1);
+    }
+    loading(message, embed);
 
       con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
-        let embed = new Discord.MessageEmbed()
-        .setColor(0xBF66E3)
-        .setTitle('Global Leaderboard')
-        .setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
-        .setFooter('Requested by ' + message.author.tag);
 
         //getTop(message, response, embed);
 
@@ -16,6 +24,16 @@ module.exports = {
           let inTop = false;
           let pos = 1;
           let o = 0;
+          let set = args[1];
+          if(set === undefined) {
+            set = 0;
+          }
+          set = (set * 10) - 10;
+          if (set < 0) {
+            set = 0;
+          }
+          setpos = set/10;
+
 
           for(let i = 0; i < response.length; i++) {
             try{
@@ -29,7 +47,7 @@ module.exports = {
                 embed.addField('#' + (o) + ' `' + message.author.username + '`', response[i].words);
                 inTop = true;
               } else {
-                if(o < 11) {
+                if(o < 11+set & o > 0+set) {
                   embed.addField('#' + (o) + ' ' + user.username, response[i].words);
                 }
               }
@@ -37,7 +55,7 @@ module.exports = {
               if(inTop === false && user.id === message.author.id) {
                 embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words, true);
                 break;
-              } else if(inTop === true && pos === 10) {
+              } else if(pos === 10+setpos) {
                 break;
               }
               pos++;
@@ -47,7 +65,8 @@ module.exports = {
             }
 
           }
-          message.channel.send(embed);
+          embed.setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
+          //msg.edit(embed);
 
       });
       //getGlobalTop(message);

@@ -28,7 +28,7 @@ const invLink = 'https://discordapp.com/oauth2/authorize?client_id=7301998391991
 const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
-const version = '3.8.1';
+const version = '3.9.0';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -174,13 +174,17 @@ client.on("message", (message) => {
     giveAchievements(message.author, data, "template", template1, false);
   }
 
+	//splits the sentence into an array, splitting at spaces
+	let args = message.content.split(" ");
+	args = args.filter(item => !!item);
   //ignore messages sent in dms
-  if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help"))) {
+  if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help")) && args[1] === undefined) {
     let embed = new MessageEmbed()
     .setTitle('Bot Help')
     .setColor(0xBF66E3)
     .setDescription('')
-    .setFooter('For private server:nngetverify: retrieves current verify code')
+    .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+		.addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
     .addField('n!' + 'help', 'Gives you this message', true)
     .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
     .addField('Commands', '----')
@@ -217,7 +221,7 @@ client.on("message", (message) => {
     giveAchievements(message.author, data, "roots");
     return;
   }
-  else if(message.channel.type === 'dm'){
+  else if(message.channel.type === 'dm' && (args[1] == undefined)){
     message.channel.send("Shut up retard go talk in a server");
     try {
       client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
@@ -228,6 +232,64 @@ client.on("message", (message) => {
     }
     return;
   }
+	else if (message.channel.type === 'dm' && args[1] != undefined){
+		let infoEmbed = new Discord.MessageEmbed()
+		.setTitle('More Info')
+		.setColor(0xBF66E3)
+		.setDescription('')
+		switch (args[1]) {
+			case 'triggers':
+					infoEmbed.addField('n!triggers', 'You can change the tracked words by running this command. The default tracked words are \'bruh, nice, bots, cow\'. This command can only be run by those with the ManageChannels or ManageServer perms.');
+				break;
+			case ('check' || 'count'):
+				infoEmbed.addField('n!check/count', 'This command allows you to see how many words you or someone else has sent. You can see how many words someone else has sent by sending n!check @Cyakat');
+				break;
+			case 'total':
+				infoEmbed.addField('n!total', 'This command will show the total amount of words sent by everyone. This can also be seen in the bot\'s status sometimes and also with n!check @Word Tracker');
+				break;
+			case 'top':
+				infoEmbed.addField('n!top', 'This command will show the top user aka the user who has sent the most tracked words');
+				break;
+			case ('leaderboard' || 'lead'):
+				infoEmbed.addField('n!leaderboard/lead', 'This command will display a leaderboard ranking each user based on how many words were sent in the server. This leaderboard is local and will only show a list containing people in the server the command was used in');
+				break;
+			case ('globalLeaderboard' || 'global'):
+				infoEmbed.addField('n!globalLeaderboard/global', 'This command will display a leaderboard ranking everyone based on how many words they have sent overall');
+				break;
+			case 'delete':
+				infoEmbed.addField('n!delete', 'This command will delete all of your data from every server the bot permanently.');
+				break;
+			case 'info':
+				infoEmbed.addField('n!info', 'This command will show some information about the bot');
+				break;
+			case 'invite':
+				infoEmbed.addField('n!info', 'This command will give an invite code to the support server and also a link to invite the bot to your own server.');
+				break;
+			case 'changelog':
+				infoEmbed.addField('n!changelog', 'This command will show the most recent changes made to the bot or you can specify a version. n!changelog 3.9.0');
+				break;
+			case ('ach' || 'achievements'):
+				infoEmbed.addField('n!ach/achievements', 'This command will dm you your own achievements. If you specify a user, the bot will show their achievements. n!ach @Cyakat');
+				break;
+			case 'settings':
+				infoEmbed.addField('n!settings', 'This command will show the current server\'s settings including the current triggers, cooldown, and prefix. This command can be run by anyone.');
+				break;
+			case 'cooldown':
+				infoEmbed.addField('n!cooldown', 'This command allows you to change the cooldown for the server. The cooldown will activate after 5 or more tracked words were sent. While cooldown is applied, any tracked words sent by a user will not be tracked. This settings can only be changed by those with the ManageServer or ManageChannels perms. n!cooldown 5');
+				break;
+			case ('setPrefix' || 'prefix'):
+				infoEmbed.addField('n!setPrefix/prefix', 'This command allows you to change the prefix for the server. This setting can only be changed by those with ManageServer or ManageChannels perms.');
+				break;
+			case 'help':
+				infoEmbed.addField('n!help', 'This command will dm you the help file giving you all of the commands.');
+				break;
+			default:
+				infoEmbed.setColor(0xFF0000)
+				.setDescription('Command not found');
+		}
+		message.channel.send(infoEmbed);
+		return;
+	}
 
   //query retrieves the prefix from the server that the message was sent in
   con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
@@ -237,18 +299,12 @@ client.on("message", (message) => {
     catch(err) {
       prefix = 'n!';
 			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, (err, idResponse) => {
-				console.log(idResponse[0]);
 				if(idResponse[0] === undefined) {
-					con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
+					con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
 				}
 			});
 
     }
-
-    //splits the sentence into an array, splitting at spaces
-    let args = message.content.split(" ");
-    args = args.filter(item => !!item);
-
     //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
     switch(true) {
       case (message.content === "🥚"):
@@ -260,7 +316,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")):
         //global(message);
-				client.commands.get('global').execute(message, Discord, client, con);
+				client.commands.get('global').execute(message, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "settings")):
         //settings(message);
@@ -301,7 +357,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "top")):
         //top(message);
-				client.commands.get('top').execute(message, Discord, client, con);
+				client.commands.get('top').execute(message, Discord, client, con, data);
         break;
       case (message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')):
         //leaderboard(message);
@@ -317,7 +373,7 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "help")):
         //help(message, prefix);
-				client.commands.get('help').execute(message, prefix, discordLink, invLink, Discord, client, con);
+				client.commands.get('help').execute(message, prefix, discordLink, invLink, args, Discord, client, con);
         break;
       case (message.content.toLowerCase().startsWith(prefix + "changelog")):
         //changelogFunction(message, args);
@@ -353,6 +409,9 @@ client.on("message", (message) => {
 			case (message.content.toLowerCase().startsWith(prefix + "vote")):
 				client.commands.get('vote').execute(message, voteLink, Discord, client, con);
 				return;
+				break;
+			case (message.content.toLowerCase().startsWith(prefix + "rank")):
+				client.commands.get('rank').execute(message, data, args, Discord, client, con);
 				break;
       default:
 
@@ -394,7 +453,7 @@ client.on("message", (message) => {
 	        catch(err) {
 	          wordArgs = ['bruh','nice','bots','cow'];
 	          try {
-							con.query("INSERT INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
+							con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
 						}
 						catch(err){};
 	        }
@@ -403,8 +462,15 @@ client.on("message", (message) => {
 	          trackedWords.add(i);
 	        }
 
-
-
+					try {
+						if(user[0].cooldown < Date.now()) {
+							con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
+						}
+					}
+					catch (err){}
+					if (user[0] === undefined) {
+						con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
+					}
 	        for(let j in words) {
 	          curr = words[j];
 
@@ -413,10 +479,6 @@ client.on("message", (message) => {
 		          if(trackedWords.has(curr.toLowerCase())) {
 
 								checkIfShouldWrite = true;
-
-			            if(user[0].cooldown < Date.now()) {
-			              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
-			            }
 
 		              if (user[0].cooldown > 0) {
 		                break;
@@ -427,12 +489,7 @@ client.on("message", (message) => {
 		          }
 						}
 						catch(err) {
-							doesNotExist = true;
 						}
-						if(doesNotExist) {
-		          con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
-		          doesNotExist = false;
-		        }
 	        }
 	        if(checkIfShouldWrite) {
 	          let cooldownTime
@@ -443,7 +500,7 @@ client.on("message", (message) => {
 	          {
 	            cooldownTime = 5;
 	            try {
-								con.query('INSERT INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', "n!", 5, "bruh, nice, bots, cow")');
+								con.query('INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', "n!", 5, "bruh, nice, bots, cow")');
 							}
 							catch(err){};
 	          }
