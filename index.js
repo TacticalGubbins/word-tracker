@@ -468,6 +468,9 @@ client.on("message", (message) => {
 						}
 					}
 					catch (err){}
+					if (user[0] === undefined) {
+						con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
+					}
 	        for(let j in words) {
 	          curr = words[j];
 
@@ -486,12 +489,7 @@ client.on("message", (message) => {
 		          }
 						}
 						catch(err) {
-							doesNotExist = true;
 						}
-						if(doesNotExist) {
-		          con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
-		          doesNotExist = false;
-		        }
 	        }
 	        if(checkIfShouldWrite) {
 	          let cooldownTime
