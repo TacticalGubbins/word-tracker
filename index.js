@@ -301,7 +301,6 @@ client.on("message", (message) => {
     catch(err) {
       prefix = 'n!';
 			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, (err, idResponse) => {
-				console.log(idResponse[0]);
 				if(idResponse[0] === undefined) {
 					con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
 				}
@@ -412,6 +411,9 @@ client.on("message", (message) => {
 			case (message.content.toLowerCase().startsWith(prefix + "vote")):
 				client.commands.get('vote').execute(message, voteLink, Discord, client, con);
 				return;
+				break;
+			case (message.content.toLowerCase().startsWith(prefix + "rank")):
+				client.commands.get('rank').execute(message, data, args, Discord, client, con);
 				break;
       default:
 
