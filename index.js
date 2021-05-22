@@ -47,10 +47,11 @@ const defaultStrings = ["bruh", "nice", "bots", "cow"];
 //stores the date at start up for the uptime measurements later
 const uptime = Date.now();
 
-//data.json stores the "ogs" and the current pp length
+//data.json stores the "ogs" and the current pp length and the total words sent ever
 var data = require("./data.json");
 //Old data from a previous major version of the bot
 var oldData = require("./oldData.json");
+//the total amount of words sent across all servers ever
 var totalN = data.totalSent;
 
 /*NOTES********************************************************
@@ -60,21 +61,27 @@ NEW CONSOLE.LOG MESSAGES:
   Information: console.log("INFO".bgGreen.black + " " + "(insert the info message here)");
 */
 
-//variables relating to users
+//variables relating to users-------------------------------------
+
+//initializing the variable that flags if the user sent and trackable words
 var checkIfShouldWrite = false;
 
-//changing status
+//for changing status
 var stat = 0;
 
-//cooldown vars
-var watching = new Array();
+//cooldown vars-----------------------------------------------
 
+//number of words the user has sent
 var nword = 0;
+//creates a set that will store the cooldown of the server later
 let cooldown = new Set();
+//creates a variable that will be used to determine the length of the cooldown later
 let cdseconds = 0;
 
+//stores the date in a variable
 var d = new Date();
 
+//stores the databases connection information
 const con = mysql.createConnection({
   host: '127.0.0.1',
   user: config.databaseUser,
@@ -83,6 +90,7 @@ const con = mysql.createConnection({
   supportBigNumbers: true
 });
 
+//bot will attempt to connect to the database with the provided information
 con.connect(function (err) {
   if(err) {
     return console.log('error: ' + err.message);
@@ -109,18 +117,22 @@ const logging = {
 }
 //***************************
 
+//this will give a user the support achievement for joinin the server
 client.on('guildMemberAdd', (member) => {
   if(client.guilds.cache.get('708421545005023232').member(member) != undefined) {
     giveAchievements(member, data, 'joinServer', 0, false);
   }
 })
 
+//runs with the bot starts up
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
+	//states version upon startup in the bot's status
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
+	//will try to upload the bot's server count to Discord Bot List every 1800 seconds
   setInterval(() => {
         try {
           dbl.postStats(client.guilds.size);
@@ -132,6 +144,8 @@ client.on('ready', () => {
         }
     }, 1800000);
 
+	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
+	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
   setInterval(() => {
       if(stat === 0) {
         client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
@@ -157,7 +171,7 @@ client.on('ready', () => {
 });
 
 
-
+//if the bot successfully uploads the server count it will log it in the console. and display an error if it failed
 dbl.on('posted', () => {
   logging.info('Server count posted!')
 });
@@ -172,7 +186,7 @@ dbl.on('error', e => {
 });*/
 
 
-
+//runs everytime a message is sent
 client.on("message", (message) => {
 
   //ignore messages sent by bots
@@ -221,16 +235,6 @@ client.on("message", (message) => {
 
     message.channel.send(embed)
 
-    return;
-  }
-  else if(message.channel.type === 'dm' && (message.content.toLowerCase() === 'nigga' || message.content.toLowerCase() === 'nigger')) {
-    try {
-      client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
-    }
-    catch(err) {
-      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running n');
-    }
-    giveAchievements(message.author, data, "roots");
     return;
   }
   else if(message.channel.type === 'dm' && (args[1] == undefined)){
