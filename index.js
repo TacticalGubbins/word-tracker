@@ -1,15 +1,17 @@
 //hmmmmm
 
+//Discord.js Library initialization
 const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+//extra libraries
 const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
 
-//command handler ecks dee
+//Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -17,27 +19,37 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
+//config.json has the bot's key and the key for DBLapi
 const config = require("../config.json");
+//changelog.json stores the changes made in a json format for easy of use with the n!changelog command
 const changelog = require("./changelog.json");
+//achievements.json stores the achievements and their properties as json objects
 const achievements = require('./achievements.json');
 
+//DBLapi initialization
 const DBL = require("dblapi.js");
 const dbl = new DBL(config.topToken, client);
 
+//invite code for inviting the bot to your discord server. Stored in a variable for more readable code
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
+//server invite code for joining the bot's support server. Stored in a varible for the same reason as the last one.
 const discordLink = 'https://discord.gg/Z6rYnpy';
+//A link to the Discord Bot List website so people can vote for the bot if they like it. Stored in a varible for the same reason as the last one.
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
+//Stores the version number for the changelog function and info function
 const version = '3.9.0';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
-//const prefix = "n!";
+//default strings that a new server automatically gets when the bot joins a new server
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
+//stores the date at start up for the uptime measurements later
 const uptime = Date.now();
 
-//read in data from data.json
+//data.json stores the "ogs" and the current pp length
 var data = require("./data.json");
+//Old data from a previous major version of the bot
 var oldData = require("./oldData.json");
 var totalN = data.totalSent;
 
