@@ -1,17 +1,15 @@
 //hmmmmm
 
-//Discord.js Library initialization
 const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-//extra libraries
 const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
 
-//Command handler. This goes through the command folder and stores the commands in json objects which can be called later
+//command handler ecks dee
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -19,39 +17,28 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-//config.json has the bot's key and the key for DBLapi
 const config = require("../config.json");
-//changelog.json stores the changes made in a json format for easy of use with the n!changelog command
 const changelog = require("./changelog.json");
-//achievements.json stores the achievements and their properties as json objects
 const achievements = require('./achievements.json');
 
-//DBLapi initialization
 const DBL = require("dblapi.js");
 const dbl = new DBL(config.topToken, client);
 
-//invite code for inviting the bot to your discord server. Stored in a variable for more readable code
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
-//server invite code for joining the bot's support server. Stored in a varible for the same reason as the last one.
 const discordLink = 'https://discord.gg/Z6rYnpy';
-//A link to the Discord Bot List website so people can vote for the bot if they like it. Stored in a varible for the same reason as the last one.
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
-//Stores the version number for the changelog function and info function
 const version = '3.9.0';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
-//default strings that a new server automatically gets when the bot joins a new server
+//const prefix = "n!";
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
-//stores the date at start up for the uptime measurements later
 const uptime = Date.now();
 
-//data.json stores the "ogs" and the current pp length and the total words sent ever
+//read in data from data.json
 var data = require("./data.json");
-//Old data from a previous major version of the bot
 var oldData = require("./oldData.json");
-//the total amount of words sent across all servers ever
 var totalN = data.totalSent;
 
 /*NOTES********************************************************
@@ -61,27 +48,21 @@ NEW CONSOLE.LOG MESSAGES:
   Information: console.log("INFO".bgGreen.black + " " + "(insert the info message here)");
 */
 
-//variables relating to users-------------------------------------
-
-//initializing the variable that flags if the user sent and trackable words
+//variables relating to users
 var checkIfShouldWrite = false;
 
-//for changing status
+//changing status
 var stat = 0;
 
-//cooldown vars-----------------------------------------------
+//cooldown vars
+var watching = new Array();
 
-//number of words the user has sent
 var nword = 0;
-//creates a set that will store the cooldown of the server later
 let cooldown = new Set();
-//creates a variable that will be used to determine the length of the cooldown later
 let cdseconds = 0;
 
-//stores the date in a variable
 var d = new Date();
 
-//stores the databases connection information
 const con = mysql.createConnection({
   host: '127.0.0.1',
   user: config.databaseUser,
@@ -90,7 +71,6 @@ const con = mysql.createConnection({
   supportBigNumbers: true
 });
 
-//bot will attempt to connect to the database with the provided information
 con.connect(function (err) {
   if(err) {
     return console.log('error: ' + err.message);
@@ -117,22 +97,18 @@ const logging = {
 }
 //***************************
 
-//this will give a user the support achievement for joinin the server
 client.on('guildMemberAdd', (member) => {
   if(client.guilds.cache.get('708421545005023232').member(member) != undefined) {
     giveAchievements(member, data, 'joinServer', 0, false);
   }
 })
 
-//runs with the bot starts up
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
-	//states version upon startup in the bot's status
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
-	//will try to upload the bot's server count to Discord Bot List every 1800 seconds
   setInterval(() => {
         try {
           dbl.postStats(client.guilds.size);
@@ -144,8 +120,6 @@ client.on('ready', () => {
         }
     }, 1800000);
 
-	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
-	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
   setInterval(() => {
       if(stat === 0) {
         client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
@@ -171,7 +145,7 @@ client.on('ready', () => {
 });
 
 
-//if the bot successfully uploads the server count it will log it in the console. and display an error if it failed
+
 dbl.on('posted', () => {
   logging.info('Server count posted!')
 });
@@ -186,7 +160,7 @@ dbl.on('error', e => {
 });*/
 
 
-//runs everytime a message is sent
+
 client.on("message", (message) => {
 
   //ignore messages sent by bots
@@ -237,8 +211,16 @@ client.on("message", (message) => {
 
     return;
   }
-	//If a user tries to dm the bot it will turn them away and send what ever the user sent to louie aka TacticalGubbins
-	//will also return an error if it failed
+  else if(message.channel.type === 'dm' && (message.content.toLowerCase() === 'nigga' || message.content.toLowerCase() === 'nigger')) {
+    try {
+      client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
+    }
+    catch(err) {
+      logging.warn('Could not send dm to louie. This should only happen if the testing bot is running n');
+    }
+    giveAchievements(message.author, data, "roots");
+    return;
+  }
   else if(message.channel.type === 'dm' && (args[1] == undefined)){
     message.channel.send("Shut up retard go talk in a server");
     try {
@@ -250,7 +232,6 @@ client.on("message", (message) => {
     }
     return;
   }
-	//if the sends n!help followed by a command it will reply with additional help. this isn't working properly right now.
 	else if (message.channel.type === 'dm' && args[1] != undefined){
 		let infoEmbed = new Discord.MessageEmbed()
 		.setTitle('More Info')
@@ -436,7 +417,6 @@ client.on("message", (message) => {
 
         break;
     }
-		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
     let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
     /*for(var j = 0; j < wordArgs.length; j++) {
@@ -444,14 +424,11 @@ client.on("message", (message) => {
       curr = wordArgs[j];
 
       let trackedWords = getTrackWords(message, data);*/
-
-		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
 				con.query('SELECT words FROM users WHERE id = ' + message.author.id + ' GROUP BY id', (err3	, totalWords) => {
 					try {
 						totalWords = totalWords[0].words;
-						//will give users achievements depending on how many words they have sent
 						switch(true) {
 							case (totalWords >= 10000):
 								giveAchievements(message.author, data, "10000");
@@ -466,16 +443,10 @@ client.on("message", (message) => {
 					}
 					catch(err){}
 
-					//redefines the number of words variable
 	        let nword = 0;
-					//a flag for seeing if the users if the user exists in the database
 	        let doesNotExist = false;
-					//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
 	        let trackedWords = new Set();
-					//creates word args which is a string that eventually gets put into trackedWords
 	        let wordArgs
-
-					//tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
 	        try {
 	          wordArgs = server[0].strings.split(/[s ,]/);
 	        }
@@ -486,14 +457,11 @@ client.on("message", (message) => {
 						}
 						catch(err){};
 	        }
-					//filters out empty strings in the array
 	        wordArgs = wordArgs.filter(item => !!item);
-
-					//puts the strings in the wordArgs variable into the trackedWords set for speed
 	        for(let i of wordArgs) {
 	          trackedWords.add(i);
 	        }
-					//if the users cooldown epoch time is less than than the current time then the bot will count the users words and update the cooldown in the database
+
 					try {
 						if(user[0].cooldown < Date.now()) {
 							con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
@@ -503,7 +471,6 @@ client.on("message", (message) => {
 					if (user[0] === undefined) {
 						con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
 					}
-					//this for loop goes through all of the words and counts how many times a tracked word has been said
 	        for(let j in words) {
 	          curr = words[j];
 
@@ -524,10 +491,8 @@ client.on("message", (message) => {
 						catch(err) {
 						}
 	        }
-					//this if statement checks to see if a tracked word has been sent at all. If it has it will run this code
 	        if(checkIfShouldWrite) {
 	          let cooldownTime
-						//if the server does not have a cooldown time i.e. the server is not in the database it will try to create an entry
 	          try {
 	            cooldownTime = server[0].cooldown;
 	          }
@@ -540,15 +505,12 @@ client.on("message", (message) => {
 							catch(err){};
 	          }
 	          checkIfShouldWrite = false;
-						//if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
-						//if the users exists in the database it will add the number of words sent in the message to the users current amount
 						if(user[0] === undefined) {
 							con.query('UPDATE users SET words = ' + (0 + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 						}
 						else {
 	          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 						}
-						//if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
 	          if(nword >= 5) {
 	            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 	            setTimeout(() => {
@@ -562,7 +524,730 @@ client.on("message", (message) => {
   });
 });
 
-//writes the data in memory to data.json so it can be saved across restarts
+//this function checks to see if the message sent in louie's server's verify channel contains the verify code
+function checkVerify(message) {
+  message.guild.member(message.author).roles.add('694263460355244074');
+  message.guild.member(message.author).roles.remove('694264932706943096');
+  //console.log(`\n\n` + message.author.username + ` just verified`);
+
+  password = newPASSWORD();
+
+  message.guild.member('250408653830619137').send(message.author.username + " Just verfied\n\n**NEW PASSWORD:**\n`" + password + "`");
+  return;
+}
+
+//this function is called when n!pp is sent. it will change the pp length in the data file. the pp length will occasionally be shown in the bot's status
+function pp(message, data, args) {
+  if(args[1] != undefined ) {
+    args.shift();
+    args = args.toString();
+    data.ppLength = args.replace(/,/g, " ");
+    let embed = new MessageEmbed()
+    .setTitle('UwU')
+    .setColor(0xBF66E3)
+    .setDescription("pp length set to **" + data.ppLength + "**");
+    message.author.send(embed);
+  }
+  else {
+    let embed = new MessageEmbed()
+    .setTitle('Really dude')
+    .setColor(0xB4DA55)
+    .setDescription('Come on man, give me at least a little something to work with');
+    message.channel.send(embed);
+  }
+  giveAchievements(message.author, data, "pp");
+  return;
+}
+
+//this function is used to change the prefix for the server that the command was issued in
+function prefixFunction(message, prefix, args) {
+  if(message.member.hasPermission('ADMINISTRATOR')) {
+    if(args[1] === undefined) {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xFF0000)
+      .setDescription('Please include a prefix after the command!');
+      message.channel.send(embed);
+      return;
+    }
+    if(args[1].length <= 5) {
+      //data.servers[server].prefix = args[1].toLowerCase();
+      con.query("UPDATE servers SET prefix = '" + args[1].toLowerCase() + "' WHERE id = " + message.guild.id);
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription("Prefix has been changed to **" + args[1] + "**")
+      .setFooter('Requested by ' + message.author.tag);
+      message.channel.send(embed);
+    } else {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xFF0000)
+      .setDescription('Please make the prefix less than 5 characters!');
+      message.channel.send(embed);
+      return;
+    }
+  } else {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('You must be an Administrator to use this command!');
+    message.channel.send(embed);
+    return;
+  }
+  return;
+}
+
+//this function will show the changelog of the version specified
+function changelogFunction(message, args) {
+  if(args[1] === undefined) {
+    args[1] = version;
+  }
+  let versionNumbers = args[1].split(".");
+  //console.log(JSON.stringify(changelog, 2, null));
+  try {
+    let changes = changelog.versions[versionNumbers[0]][versionNumbers[1]][versionNumbers[2]];
+    let embed = new MessageEmbed()
+    .setTitle(args[1] + " Changelog")
+    .setColor(0xBF66E3)
+    .setDescription('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
+    ;
+
+    for(var i = 0; i < changes.length; i++) {
+      embed.addField(i+1, changes[i]);
+    }
+    message.channel.send(embed);
+  }
+  catch(err) {
+    if(args[1] === "stupid" || args[1] === "idiot" || args[1] === "dumb") {
+      let embed = new MessageEmbed()
+      .setTitle("jesus christ your dumn")
+      .setColor(0xFF7777)
+      .setDescription("stupid idiot")
+      .setFooter("try " + prefix + "changelog 3.6.4");
+
+      message.channel.send(embed);
+
+      giveAchievements(message.author, data, "changelog");
+    }
+    else {
+      let embed = new MessageEmbed()
+      .setTitle("Version not found")
+      .setColor(0xFF0000)
+      .addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)')
+      .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)\n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
+      .setFooter("try " + prefix + "changelog 3.6.4");
+
+      message.channel.send(embed);
+    }
+  }
+  return;
+}
+
+//this function will dm the message author the help embed
+function help(message, prefix) {
+  let dmEmbed = new MessageEmbed()
+  .setTitle('')
+  .setColor(0xBF66E3)
+  .setDescription("Check your dms :>")
+  ;
+  message.channel.send(dmEmbed);
+
+  //let help = fs.readFileSync('help.txt')
+  let helpEmbed = new MessageEmbed()
+  .setTitle('All Commands')
+  .setColor(0xBF66E3)
+  .setDescription('')
+  .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+  .addField(prefix + 'help', 'Gives you this message', true)
+  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+  .addField('Commands', '----')
+  .addField(prefix + 'check', 'Checks the # of words sent by a user', true)
+  .addField(prefix + 'count', 'Same as **ncheck**', true)
+  .addField(prefix + 'total', 'Retrieves the total amount of words recorded', true)
+  .addField(prefix + 'top', 'Gives info about top-sending user', true)
+  .addField(prefix + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+  .addField(prefix + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
+  .addField(prefix + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+  .addField(prefix + 'info', 'Gives info about the bot', true)
+  .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
+  //.addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+  .addField(prefix + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+  .addField(prefix + 'achievements', 'Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself')
+  .addField("Server Setup", "----")
+  .addField(prefix + "settings", "View all current server settings", true)
+  .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
+  .addField(prefix + 'cooldown', 'Change the server cooldown for counted words', true)
+  .addField(prefix + 'setPrefix', '(prefix) Changes the prefix for the server', true)
+  ;
+  //message.author.send(`${help}`);
+  message.author.send(helpEmbed);
+  return;
+}
+
+function userInfo(message) {
+  if(args[1] === undefined) {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('You must include an @!');
+    message.channel.send(embed);
+    return;
+  }
+  else if(client.users.cache.get(args[1].toString()) !== undefined) {
+    userInf = client.users.cache.get(args[1].toString());
+    let embed = new MessageEmbed()
+    .setTitle(userInf.tag)
+    .setColor(0x00FF00)
+    .setDescription('<@!' + userInf.id + '>')
+    .setThumbnail(userInf.avatarURL())
+    .setTimestamp()
+    .addField('Registered', userInf.createdAt)
+    ;
+
+    message.channel.send(embed);
+  } else {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription("That's not a person!");
+    message.channel.send(embed);
+  }
+  return;
+}
+
+function deleteInfo(message) {
+  let deleteEmbed = new MessageEmbed()
+  .setTitle('Data Deletion')
+  .setColor(0xBF66E3)
+  .setDescription('Are you sure all of your data on this server? *this is non-recoverable*\n\n Type:')
+  .addField('**' + message.author.username + '** (your username)', 'to delete your data')
+  .addField("**Cancel**", 'to cancel')
+  .setFooter('Requested by ' + message.author.tag)
+  ;
+  message.channel.send(deleteEmbed);
+
+  //create a message collector that checks for cancel or username
+  let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
+  collector.on('collect', message => {
+
+    //delete user info
+    if (message.content === message.author.username) {
+      //deleteUserInfo(data, message);
+      con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
+      con.query('DELETE FROM achievements WHERE id = ' + message.author.id);
+      let deleteEmbed2 = new MessageEmbed()
+      .setTitle('')
+      .setColor()
+      .setColor(0xFF0000)
+      .setDescription('Your data has been deleted, sorry to see you go :<')
+      ;
+      message.channel.send(deleteEmbed2);
+      collector.stop();
+
+      //cancel the collector, do not delete
+    } else if (message.content.toLowerCase() === "cancel") {
+      let saveEmbed = new MessageEmbed()
+      .setTitle('')
+      .setColor()
+      .setColor(0x00FF00)
+      .setDescription('Glad to see you made the right choice :)')
+      ;
+      message.channel.send(saveEmbed);
+      collector.stop();
+
+      //stop multiple instances from running
+    } else if(message.content.toLowerCase().startsWith('ndelete')) {
+      collector.stop();
+
+      //check for incorrect responses
+    } else {
+      let wrongEmbed = new MessageEmbed()
+      .setTitle('')
+      .setColor()
+      .setColor(0xFF0000)
+      .setDescription('Not an input')
+      ;
+      message.channel.send(wrongEmbed);
+    }
+  });
+  return;
+}
+
+function leaderboard(message) {
+  //quieres stuff
+  con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
+    let embed = new MessageEmbed()
+    .setColor(0xBF66E3)
+    .setTitle(message.guild.name + ' Leaderboard')
+    .setDescription("This is the server's local leaderboard")
+    .setFooter('Requested by ' + message.author.tag);
+
+    getTop(message, response, embed);
+  });
+  return;
+}
+
+function top(message) {
+  con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
+    for(let i in rows) {
+      try {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription('Top User')
+        .setFooter('Requested by ' + message.author.tag)
+        .setThumbnail('https://cdn.discordapp.com/avatars/' + rows[i].id + '/' + client.users.cache.get(rows[i].id).avatar + '.png')
+        .addField(client.users.cache.get(rows[i].id).username, '__**' + rows[i].words + '**__ sent');
+
+        message.channel.send(embed);
+        break;
+      }
+      catch(err) {
+
+      }
+    }
+
+  });
+  return;
+}
+
+function archive(message) {
+  let archiveEmbed = new MessageEmbed()
+  .setTitle('')
+  .setColor(0xFF0000)
+  .setDescription('Sorry, this feature is currently disabled :(');
+  //message.channel.send("sorry, this feature is disabled for the time being");
+  message.channel.send(archiveEmbed);
+
+  //message.react('&#10060;')
+  //.catch(console.error);
+
+  //console.log(`n` + message.author.username + `(` + message.author.id + `) requested the archive in ` + message.channel.guild.name);
+  return;
+}
+
+function invite(message) {
+  let inviteEmbed = new MessageEmbed()
+  .setTitle('')
+  .setColor(0xBF66E3)
+  .setDescription("[[Click here to invite me]](" + invLink + ")" + "n[[Click here to join the bot's server]](" + discordLink + ")")
+  .setFooter('Requested by ' + message.author.tag)
+  ;
+
+  message.channel.send(inviteEmbed);
+  return;
+}
+
+function total(message) {
+  con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xBF66E3)
+    .setDescription("There have been a total of **__" + total[0].words + "__** countable words sent!")
+    .setFooter('Requested by ' + message.author.tag);
+    //message.channel.send("There have been a total of **__" + totalN + "__** n-words sent!");
+    message.channel.send(embed);
+  });
+  return;
+}
+
+function check(message, args) {
+  let user;
+
+  //check to see if the value inputted is a user
+  if(args[1] === undefined) {
+    /*let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('You must include an @!');
+    //message.channel.send("You must include an @!")
+    message.channel.send(embed);
+
+    return;*/
+    user = message.author.id;
+  } else {
+    user = args[1].replace(/D/g,'');
+  }
+
+  if(user == client.user.id) {
+    con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
+      .setFooter('Requested by ' + message.author.tag);
+      //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
+      message.channel.send(embed);
+    });
+
+    return;
+  }
+
+  //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
+  if(client.users.cache.get(user.toString()) !== undefined) {
+    con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, rows) => {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setFooter('Requested by ' + message.author.tag);
+
+      //checks to see if the user is in the database
+      if(rows[0] === undefined || rows[0].words === 0){
+        embed.setDescription("That user hasn't sent any countable words!")
+      }
+      else {
+        embed.setDescription(client.users.cache.get(user).tag + " has sent **__" + rows[0].words + "__** countable words!");
+      }
+
+      let ogs = getOGS(data);
+      if(ogs.has(client.users.cache.get(user).id)) {
+        embed.setColor(0xFFA417);
+      }
+      //custom colors for pog people
+      if(client.users.cache.get(user).id === '445668261338677248') {
+        embed.setColor(0xFF1CC5);
+      }
+      if(client.users.cache.get(user).id === '448269007800238080') {
+        embed.setColor(0x17FF1B);
+      }
+      if(client.users.cache.get(user).id === '656755471847260170') {
+        embed.setColor(0x17D1FF);
+      }
+
+
+      message.channel.send(embed);
+    });
+
+
+    //say that the argument is not a user
+  } else {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription("That's not a person!");
+    //message.channel.send("That's not a person!")
+    message.channel.send(embed);
+
+  }
+  return;
+}
+
+function invitenow(message) {
+  message.channel.createInvite({maxAge: 0})
+  .then(invite => message.channel.send("*FUCK YOU SEB :)* https://discord.gg/" + invite.code))
+  .catch(console.error);
+
+  //console.log(`nCreated an invite in: ` + message.channel.guild.name + `, ` + message.channel.name);
+  giveAchievements(message.author, data, "inviteNow");
+  return;
+}
+
+function triggers(message) {
+  if(message.member.hasPermission('ADMINISTRATOR')) {
+    let embed = new MessageEmbed()
+    .setTitle('Trigger Setup')
+    .setColor(0xBF66E3)
+    .setDescription('Please type out any words you would like to be counted. Seperate each word by a space. All punctuation will be ignored')
+    .addField('Example', 'bots nice!', true)
+    .addField('Cancel', 'Type "CANCEL" to cancel', true)
+    .setFooter('Requested by ' + message.author.tag);
+    message.channel.send(embed);
+
+    let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 20000 });
+    collector.on('collect', message => {
+      if(message.content === "CANCEL") {
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription('Trigger Setup Canceled');
+        message.channel.send(embed);
+        collector.stop();
+
+      } else {
+        let strings = message.content.toLowerCase().split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+        strings = strings.filter(item => !!item);
+        strings = strings.filter((item, index) => strings.indexOf(item) === index);
+        strings = strings.join(', ');
+        //data.servers[server].strings = strings;
+        con.query("UPDATE servers SET strings = '" + strings + "' WHERE id = " + message.guild.id);
+
+        let embed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription('**Trigger Setup Complete**nn Triggers added:n' + strings);
+        message.channel.send(embed);
+
+        collector.stop();
+      }
+    });
+  } else {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('You must be an Administrator to use this command!');
+    message.channel.send(embed);
+    return;
+  }
+}
+
+function cooldownFunction(message, args) {
+  if(message.member.hasPermission('ADMINISTRATOR')) {
+    if(args[1] === undefined) {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xFF0000)
+      .setDescription('Please include a time (in seconds) after the command!');
+      message.channel.send(embed);
+      return;
+    }
+    if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
+      con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id);
+      //data.servers[server].cooldown = 0;
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription('**Removed cooldown time!**nn*active cooldowns will not be cleared*')
+      .setFooter('Requested by ' + message.author.tag);
+      message.channel.send(embed);
+      return;
+    }
+    if(isNaN(args[1])) {
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xFF0000)
+      .setDescription('Please include a time (in seconds) after the command!');
+      message.channel.send(embed);
+      return;
+    }
+    if(!isNaN(args[1])) {
+      con.query("UPDATE servers SET cooldown = " + args[1] + " WHERE id = " + message.guild.id);
+      //data.servers[server].cooldown = parseInt(args[1]);
+      let embed = new MessageEmbed()
+      .setTitle('')
+      .setColor(0xBF66E3)
+      .setDescription('Changed cooldown time to **__' + args[1] + '__** secondsnn*active cooldowns will not be cleared*')
+      .setFooter('Requested by ' + message.author.tag);
+      message.channel.send(embed);
+      return;
+    }
+  } else {
+    let embed = new MessageEmbed()
+    .setTitle('')
+    .setColor(0xFF0000)
+    .setDescription('You must be an Administrator to use this command!');
+    message.channel.send(embed);
+    return;
+  }
+}
+
+function info(message) {
+  con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+    //let timer = startTimer();
+    let embed = new MessageEmbed()
+    .setTitle(client.user.tag)
+    .setColor(0xBF66E3)
+    .setDescription('Counting Words... *please help me*')
+    .setThumbnail(client.user.avatarURL())
+    .addField('Authors', '`TacticalGubbins#0900`n`Cyakat#5061`', true)
+    .addField('Version', version, true)
+    .addField('Uptime', getUptime(), true)
+    .addField('Total Words Tracked', total[0].words, true)
+    .addField('Server Count', client.guilds.cache.size, true)
+    .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
+    .setFooter('Requested by ' + message.author.tag);
+    message.channel.send(embed);
+    //stopTimer(timer);
+  });
+  return;
+}
+
+function settings(message) {
+  con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , (err, response) => {
+    let cooldown = response[0].cooldown;
+    let strings = response[0].strings;
+
+    let embed = new MessageEmbed()
+    .setTitle(message.guild.name + " Settings")
+    .setColor(0xBF66E3)
+    .setDescription("Use:n**" + prefix + "cooldown** to change the cooldownn**" + prefix + "triggers** to change the trigger wordsn**" + prefix + "setPrefix** to change the server prefix")
+    .setThumbnail(message.guild.iconURL())
+    .addField('Prefix', prefix, true)
+    .addField('Cooldown Time', + cooldown + " seconds", true)
+    .addField('Trigger Words', strings)
+    .setFooter('Requested by ' + message.author.tag);
+    message.channel.send(embed);
+
+  });
+
+  return;
+}
+
+function global(message) {
+  con.query("SELECT server_id, id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
+    let embed = new MessageEmbed()
+    .setColor(0xBF66E3)
+    .setTitle('Global Leaderboard')
+    .setDescription('The top-sending users world-widenThis uses a collection of all messages these users have sent')
+    .setFooter('Requested by ' + message.author.tag);
+
+    getTop(message, response, embed);
+  });
+  //getGlobalTop(message);
+  return;
+}
+
+function bottom(message) {
+  let bottomEmbed = new MessageEmbed()
+  .setTitle('')
+  .setColor(0xBF66E3)
+  .setDescription("Bottom User")
+  .setFooter('Requested by ' + message.author.tag)
+  .setThumbnail('https://cdn.discordapp.com/avatars/445668261338677248/' + client.users.cache.get('445668261338677248').avatar + '.png?size=128')
+  .addField('Darwen', '__**-69420**__ sent')
+  message.channel.send(bottomEmbed);
+  return;
+}
+
+function achievementsCheck(message, data, args) {
+  let user;
+  let achievementCounter = 0;
+  let showHidden;
+  let keys = Object.keys(achievements);
+  let embed = new MessageEmbed();
+  let newField = false;
+
+  //check to see if the value inputted is a user
+  if(args[1] === undefined) {
+    user = message.author.id;
+    showHidden = true;
+  } else {
+    user = args[1].replace(/D/g,'');
+    showHidden = false;
+  }
+  if(client.users.cache.get(args[1].toString()) !== undefined) {
+    con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
+
+      if(rows[0] === undefined) {
+        con.query('INSERT INTO achievements (id) VALUE (' + user + ')', (err, res) => {
+        });
+        newField = true;
+      }
+
+      if(!newField) {
+        for(let i in keys) {
+          achievementCode = keys[i];
+          let description = 'This achievement is hidden';
+
+          if(user !== client.user.id) {
+            if(rows[0][achievementCode] != 0) {
+              if(achievements[achievementCode].hidden && showHidden || achievements[achievementCode].hidden === false) {
+                description = achievements[achievementCode].description
+              }
+              embed.addField(achievements[achievementCode].title, description, true);
+              achievementCounter += 1;
+            }
+          }
+          else {
+            embed.setColor(0xFF0000)
+            .addField("Bots can't earn achivements", "They just can't. It says it right here in the code")
+            .setFooter('Requested by ' + message.author.tag);
+
+            message.channel.send(embed);
+            return;
+          }
+        }
+      }
+
+      if(achievementCounter === 0) {
+        if(user === message.author.id){
+          embed.addField('No achievements','You have not earned any achievements');
+        }
+        else {
+          embed.addField('No achievements','They have not earned any achievements');
+        }
+      }
+      embed.setTitle('Achievements')
+      .setColor('0xBF66E3')
+      .setFooter('Requested by ' + message.author.tag );
+
+      if(showHidden) {
+        let helpEmbed = new MessageEmbed()
+        .setTitle('')
+        .setColor(0xBF66E3)
+        .setDescription("Check your dms :>")
+        ;
+        message.channel.send(helpEmbed);
+        message.author.send(embed);
+      } else {
+        message.channel.send(embed);
+      }
+      });
+    } else {
+      embed.setTitle('')
+      embed.setColor(0xFF0000)
+      embed.setDescription("That's not a person!");
+      //message.channel.send("That's not a person!")
+      message.channel.send(embed);
+    }
+    return;
+}
+
+function giveAchievements(user, data, achievementCode, specialData) {
+
+	notification = achievements[achievementCode].notification;
+
+  let newField  = false;
+  con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows) => {
+    if(rows[0] === undefined) {
+			let myDate = new Date(Date.now());
+			let timestamp = myDate.toGMTString() + myDate.toLocaleString();
+			timestamp = timestamp.substr(0,16);
+			//console.log(timestamp);
+
+      con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', () => {
+        con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows2) => {
+          if(rows2[0][achievementCode] === 0) {
+            if(notification) {
+              let embed = new MessageEmbed()
+              .setTitle('Achievement Earned:')
+              .setColor(0xBF66E3)
+              .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+              .setThumbnail(achievements[achievementCode].image)
+              .setDescription("Earned at " + timestamp)
+
+							if(achievements[achievementCode].notification) {
+								user.send(embed);
+							}
+            }
+
+            con.query('UPDATE achievements SET \`' + achievementCode + '\` = ' + Date.now() + ' WHERE id = ' + user.id);
+          }
+        });
+      });
+      newField = true;
+    }
+
+    if(!newField){
+      if(rows[0][achievementCode] === 0) {
+        let embed = new MessageEmbed()
+        .setTitle('Achievement Earned:')
+        .setColor(0xBF66E3)
+        .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+        .setThumbnail(achievements[achievementCode].image)
+        .setTimestamp();
+
+				if(achievements[achievementCode].notification) {
+        	user.send(embed);
+				}
+
+        con.query('UPDATE achievements SET \`' + achievementCode + '\` = ' + Date.now() + ' WHERE id = ' + user.id);
+      }
+    }
+  });
+}
+
+//fucntion to write in the array to the data file
 function write (data) {
 
   //Save file
@@ -572,7 +1257,7 @@ function write (data) {
 }
 
 
-//generate a new password for louie personal server
+//generate a new password
 function newPASSWORD() {
    var result           = '';
    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -592,7 +1277,32 @@ function newPASSWORD() {
    return result;
 }
 
-//gets the "ogs" from data.json
+
+function getUptime() {
+  let seconds = parseInt(client.uptime/1000);
+  let minutes = 0;
+  let hours = 0;
+  let days = 0;
+
+  while(seconds >= 60) {
+    minutes++;
+    seconds -= 60;
+  }
+
+  while(minutes >= 60) {
+    hours++;
+    minutes -= 60;
+  }
+
+  while(hours >= 24) {
+    days++;
+    hours -= 24;
+  }
+
+  return days + 'd ' + hours + 'hr ' + minutes + 'm ' + seconds + 's';
+
+}
+
 function getOGS(data) {
   let ogs = new Set();
   for(var i = 0; i < data.ogs.length; i++) {
@@ -601,17 +1311,54 @@ function getOGS(data) {
   return ogs;
 }
 
-//timer for debugging
 function startTimer() {
   let timer = Date.now();
   return timer;
 }
 
-//same for this one
 function stopTimer(timer) {
   let timer2 = Date.now();
   logging.debug((timer2 - timer)/1000);
 }
 
+function getTop(message, response, embed) {
+  let inTop = false;
+  let pos = 1;
+
+  for(let i = 0; i < response.length; i++) {
+    try{
+      let user = client.users.cache.get(response[i].id.toString());
+      //get user and server
+      i = parseInt(i);
+
+      //add user positions, max of 10, from json object
+      if(user.id === message.author.id) {
+        embed.addField('#' + (pos) + ' `' + message.author.username + '`', response[i].words);
+        inTop = true;
+      } else {
+        if(i < 11) {
+          embed.addField('#' + (pos) + ' ' + user.username, response[i].words);
+        }
+      }
+
+      if(inTop === false && user.id === message.author.id) {
+        embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words, true);
+        break;
+      } else if(inTop === true && pos === 10) {
+        break;
+      }
+      pos++;
+    }
+    catch(err) {}
+
+  }
+  message.channel.send(embed);
+}
+
+function getTotal() {
+  con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+    return total;
+  });
+}
 
 client.login(config.token);
