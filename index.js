@@ -237,6 +237,8 @@ client.on("message", (message) => {
 
     return;
   }
+	//If a user tries to dm the bot it will turn them away and send what ever the user sent to louie aka TacticalGubbins
+	//will also return an error if it failed
   else if(message.channel.type === 'dm' && (args[1] == undefined)){
     message.channel.send("Shut up retard go talk in a server");
     try {
@@ -248,6 +250,7 @@ client.on("message", (message) => {
     }
     return;
   }
+	//if the sends n!help followed by a command it will reply with additional help. this isn't working properly right now.
 	else if (message.channel.type === 'dm' && args[1] != undefined){
 		let infoEmbed = new Discord.MessageEmbed()
 		.setTitle('More Info')
@@ -433,6 +436,7 @@ client.on("message", (message) => {
 
         break;
     }
+		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
     let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
     /*for(var j = 0; j < wordArgs.length; j++) {
@@ -440,11 +444,14 @@ client.on("message", (message) => {
       curr = wordArgs[j];
 
       let trackedWords = getTrackWords(message, data);*/
+
+		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
 				con.query('SELECT words FROM users WHERE id = ' + message.author.id + ' GROUP BY id', (err3	, totalWords) => {
 					try {
 						totalWords = totalWords[0].words;
+						//will give users achievements depending on how many words they have sent
 						switch(true) {
 							case (totalWords >= 10000):
 								giveAchievements(message.author, data, "10000");
@@ -459,10 +466,16 @@ client.on("message", (message) => {
 					}
 					catch(err){}
 
+					//redefines the number of words variable
 	        let nword = 0;
+					//a flag for seeing if the users if the user exists in the database
 	        let doesNotExist = false;
+					//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
 	        let trackedWords = new Set();
+					//creates word args which is a string that eventually gets put into trackedWords
 	        let wordArgs
+
+					//tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
 	        try {
 	          wordArgs = server[0].strings.split(/[s ,]/);
 	        }
@@ -473,7 +486,10 @@ client.on("message", (message) => {
 						}
 						catch(err){};
 	        }
+					//filters out empty strings in the array
 	        wordArgs = wordArgs.filter(item => !!item);
+
+					//puts the strings in the wordArgs variable into the trackedWords set for speed
 	        for(let i of wordArgs) {
 	          trackedWords.add(i);
 	        }
