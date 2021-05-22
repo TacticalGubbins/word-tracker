@@ -3,6 +3,7 @@ module.exports = {
   description: 'Gets the bottom',
   execute(message, Discord, client, con) {
     let bottomEmbed = new Discord.MessageEmbed()
+    //this function is broken and useless I do not feel like fixing it
     .setTitle('')
     .setColor(0xBF66E3)
     .setDescription("Bottom User")

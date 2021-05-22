@@ -7,16 +7,9 @@ module.exports = {
 
       let user;
 
-      //check to see if the value inputted is a user
+      //check to see if the value inputted is a user and then filters it and gets just the id
       if(args[1] === undefined) {
-        /*let embed = new Discord.MessageEmbed()
-        .setTitle('')
-        .setColor(0xFF0000)
-        .setDescription('You must include an @!');
-        //message.channel.send("You must include an @!")
-        message.channel.send(embed);
 
-        return;*/
         user = message.author.id;
       } else {
         user = args[1].replace(/D/g,'');
@@ -24,6 +17,7 @@ module.exports = {
         user = user.replace(">","");
       }
 
+      //if the user mentioned is the bot it will display the total words counted
       if(user == client.user.id) {
         con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
           let embed = new Discord.MessageEmbed()
@@ -31,14 +25,13 @@ module.exports = {
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
           .setFooter('Requested by ' + message.author.tag);
-          //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
           message.channel.send(embed);
         });
 
         return;
       }
 
-      //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
+      //checks the database for the users total tracked words and local tracked words then it wil display them in a message
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
           con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
@@ -66,12 +59,11 @@ module.exports = {
                 }
                 embed.addField("Words Tracked (this server)", words, true)
                 .addField("Words Tracked (all servers)", globalwords[0].words, true)
-                //.addField("​","`Cooldown:` " + parseInt(date) - parseInt(globalwords[0].cooldown))
-                //console.log(globalwords[0].cooldown);
-                //.setTitle("Achievements: " + emoji("760541771632738345"))
+
 
               }
 
+              //the "ogs" get special colors. These people helped come up with the idea for the bot and also helped with he bot in the beginning
               let ogs = new Set();
               for(var i = 0; i < data.ogs.length; i++) {
                 ogs.add(data.ogs[i]);
@@ -98,13 +90,12 @@ module.exports = {
         });
 
 
-        //say that the argument is not a user
+        //say that the user mentioned is not a user in case they are a robot
       } else {
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
-        //message.channel.send("That's not a person!")
         message.channel.send(embed);
 
       }

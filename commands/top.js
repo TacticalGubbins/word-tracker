@@ -2,6 +2,7 @@ module.exports = {
   name: 'top',
   description: 'gets top sending user',
   execute(message, Discord, client, con, data) {
+    //query gets the person with the most words sent
     con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
       for(let i in rows) {
         try {
@@ -13,6 +14,7 @@ module.exports = {
           .setThumbnail('https://cdn.discordapp.com/avatars/' + rows[i].id + '/' + client.users.cache.get(rows[i].id).avatar + '.png')
           .addField(client.users.cache.get(rows[i].id).username, '__**' + rows[i].words + '**__ sent');
 
+          //if the top users is an "og" it will get them a different color for the embed
           let ogs = new Set();
           for(var o = 0; o < data.ogs.length; o++) {
             ogs.add(data.ogs[o]);

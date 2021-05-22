@@ -14,6 +14,8 @@ module.exports = {
         .setFooter('Requested by ' + message.author.tag);
         message.channel.send(embed);
 
+        //message collector listens for a message sent by the users who called the command.
+        //once the collector has recieved a message it will parse it and create a string of the tracked words that will be stored in the database
         let collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 20000 });
         collector.on('collect', message => {
           if(message.content === "CANCEL") {

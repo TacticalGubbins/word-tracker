@@ -78,6 +78,9 @@
           "When calling the global command, a little message will pop up saying that the bot is loading",
           "Fixed a bug that would cause the first word said to be tracked and put into the database imediately",
           "Fixed a bug where deleting your data and then sending a bunch of tracked words would cause the bot to add multiple entries to the database cause a sort of multiplication when sending more tracked words"
+        ],
+        "1":[
+          "Removed a bunch of extra code and added coments"
         ]
       }
     }

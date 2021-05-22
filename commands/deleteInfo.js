@@ -3,6 +3,7 @@ module.exports = {
   description: 'prompts the user to confirm that they would indeed like to remove their data from the bot',
   execute(message, Discord, client, con) {
 
+      //tells the user they are about to delete all of their data
       let deleteEmbed = new Discord.MessageEmbed()
       .setTitle('Data Deletion')
       .setColor(0xBF66E3)
@@ -19,7 +20,6 @@ module.exports = {
 
         //delete user info
         if (message.content === message.author.username) {
-          //deleteUserInfo(data, message);
           con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
           con.query('DELETE FROM achievements WHERE id = ' + message.author.id);
           let deleteEmbed2 = new Discord.MessageEmbed()

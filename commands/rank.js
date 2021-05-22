@@ -3,6 +3,7 @@ module.exports = {
   description: 'shows the rank of the user or specified user',
   execute(message, data, args, Discord, client, con) {
 
+    //this command was ment to display your global ranking but i never finished it
     let embed = new Discord.MessageEmbed()
     .setColor(0xBF66E3)
     .setTitle('User Global Rank')
@@ -20,14 +21,7 @@ module.exports = {
 
     //check to see if the value inputted is a user
     if(args[1] === undefined) {
-      /*let embed = new Discord.MessageEmbed()
-      .setTitle('')
-      .setColor(0xFF0000)
-      .setDescription('You must include an @!');
-      //message.channel.send("You must include an @!")
-      message.channel.send(embed);
 
-      return;*/
       user = message.author.id;
     } else {
       user = args[1].replace(/D/g,'');

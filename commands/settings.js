@@ -2,10 +2,11 @@ module.exports = {
   name: 'settings',
   description: 'displays the current settings for the server',
   execute(message, Discord, client, con) {
-
+      //this will get the current setting for the server and display it in a message
       con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , (err, response) => {
         let cooldown;
         let strings;
+        //if there is no entry for the server it will just dispaly the default settings
         if(response[0] != undefined) {
           cooldown = response[0].cooldown;
           strings = response[0].strings;

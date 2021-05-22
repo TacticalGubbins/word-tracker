@@ -11,7 +11,7 @@ module.exports = {
       ;
       message.channel.send(dmEmbed);
 
-      //let help = fs.readFileSync('help.txt')
+      //creates the help embed
       let helpEmbed = new Discord.MessageEmbed()
       .setTitle('All Commands')
       .setColor(0xBF66E3)
@@ -39,7 +39,6 @@ module.exports = {
       .addField(prefix + 'cooldown', 'Change the server cooldown for counted words', true)
       .addField(prefix + 'setPrefix', '(prefix) Changes the prefix for the server', true)
       ;
-      //message.author.send(`${help}`);
       message.author.send(helpEmbed);
       return;
     }

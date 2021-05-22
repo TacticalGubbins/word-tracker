@@ -2,6 +2,7 @@ module.exports = {
   name: 'prefix',
   description: 'sets server prefix',
   execute(message, prefix, args, Discord, client, con) {
+    //checks if the user has suffcient permissions
     if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
       if(args[1] === undefined) {
         let embed = new Discord.MessageEmbed()
@@ -11,6 +12,7 @@ module.exports = {
         message.channel.send(embed);
         return;
       }
+      //checks to see if the prefix specified is less than 5 characters
       if(args[1].length <= 5) {
         //data.servers[server].prefix = args[1].toLowerCase();
         let embed = new Discord.MessageEmbed()

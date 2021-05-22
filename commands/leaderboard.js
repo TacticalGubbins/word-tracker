@@ -2,7 +2,7 @@ module.exports = {
   name: 'leaderboard',
   description: 'gets leaderboard stuffs',
   execute(message, Discord, client, con) {
-    //quieres stuff
+    //query gets the leaderboard for the current server
     con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
       let embed = new Discord.MessageEmbed()
       .setColor(0xBF66E3)
@@ -10,9 +10,7 @@ module.exports = {
       .setDescription("This is the server's local leaderboard")
       .setFooter('Requested by ' + message.author.tag);
 
-      //getTop(message, response, embed);
-
-
+        //this part formats the information
         let inTop = false;
         let pos = 1;
         let o = 0;

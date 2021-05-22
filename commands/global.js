@@ -3,6 +3,7 @@ module.exports = {
   description: 'gets the global leaderboard',
   execute(message, args, Discord, client, con) {
 
+    //displays that the leaderboard is loading because sometimes the query can take a bit
     let embed = new Discord.MessageEmbed()
     .setColor(0xBF66E3)
     .setTitle('Global Leaderboard')
@@ -16,11 +17,11 @@ module.exports = {
     }
     loading(message, embed);
 
+      //gets the entire users database and sorts through it
       con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
 
-        //getTop(message, response, embed);
 
-
+          //this is for changing the pages in the global leaderboard. this broke i don't know why
           let inTop = false;
           let pos = 1;
           let o = 0;
@@ -34,7 +35,7 @@ module.exports = {
           }
           setpos = set/10;
 
-
+          //formats the embed with the data given by the query
           for(let i = 0; i < response.length; i++) {
             try{
               let user = client.users.cache.get(response[i].id.toString());

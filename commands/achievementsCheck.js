@@ -3,6 +3,7 @@ module.exports = {
   description: 'shows the achievements of the specified person',
   execute(message, data, args, achievements, Discord, client, con) {
 
+      //defines the variables needed for the command
       let user;
       let achievementCounter = 0;
       let showHidden;
@@ -20,6 +21,7 @@ module.exports = {
         user = user.replace(/>/, '');
         showHidden = false;
       }
+      //query gets the achievments that the user has obtained from the database
       if(client.users.cache.get(user) !== undefined) {
         con.query('SELECT * FROM achievements WHERE id = ' + user, (err, rows) => {
 
@@ -29,7 +31,7 @@ module.exports = {
             });
             newField = true;
           }
-
+          //this bit determine whether a achievement's description should be shown publicly
           if(!newField) {
             for(let i in keys) {
               achievementCode = keys[i];
@@ -58,7 +60,7 @@ module.exports = {
               }
             }
           }
-
+          //if the user has not earned any achievements it will specify so in a message
           if(achievementCounter === 0) {
             if(user === message.author.id){
               embed.addField('No achievements','You have not earned any achievements');

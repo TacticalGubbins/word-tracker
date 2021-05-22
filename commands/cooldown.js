@@ -3,7 +3,9 @@ module.exports = {
   description: 'Allows the Administrators set up the cooldown time for the server',
   execute(message, args, Discord, client, con) {
 
+      //checks to see if the user has suffcient permissions
       if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
+        //checks to see if there even is a number provided
         if(args[1] <= 1000) {
           if(args[1] === undefined) {
             let embed = new Discord.MessageEmbed()
@@ -13,9 +15,9 @@ module.exports = {
             message.channel.send(embed);
             return;
           }
+          //if the user provides none, off, or 0 as an argument it will remove the cooldown
           if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
             con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id);
-            //data.servers[server].cooldown = 0;
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
@@ -24,6 +26,7 @@ module.exports = {
             message.channel.send(embed);
             return;
           }
+          //if the argument is not a number it will tell them to provide a number next time
           if(isNaN(args[1])) {
             let embed = new Discord.MessageEmbed()
             .setTitle('')
@@ -32,6 +35,7 @@ module.exports = {
             message.channel.send(embed);
             return;
           }
+          //if the user provides a correct number it will update the database with that number
           if(!isNaN(args[1])) {
             con.query("UPDATE servers SET cooldown = " + args[1] + " WHERE id = " + message.guild.id);
             //data.servers[server].cooldown = parseInt(args[1]);
@@ -43,6 +47,7 @@ module.exports = {
             message.channel.send(embed);
             return;
           }
+          //if the user sets a number above 1000 it will stop them from doing so
         } else {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
@@ -51,6 +56,7 @@ module.exports = {
           message.channel.send(embed);
           return;
         }
+        //if the user doesn't have suffcient permissions it will inform them so
       } else {
         let embed = new Discord.MessageEmbed()
         .setTitle('')

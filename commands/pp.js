@@ -2,6 +2,7 @@ module.exports = {
   name: 'pp',
   description: 'changes pp length',
   execute(message, data, args, Discord, client, con) {
+    //this is a silly little bit of code. the pp length will be displayed every so often in the bot's status
     if(args[1] != undefined ) {
       args.shift();
       args = args.toString();
