@@ -613,5 +613,59 @@ function stopTimer(timer) {
   logging.debug((timer2 - timer)/1000);
 }
 
+//gives a user a certain achievement based on the arguments given
+function giveAchievements(user, data, achievementCode, specialData) {
+
+	notification = achievements[achievementCode].notification;
+
+  let newField  = false;
+  con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows) => {
+    if(rows[0] === undefined) {
+			let myDate = new Date(Date.now());
+			let timestamp = myDate.toGMTString() + myDate.toLocaleString();
+			timestamp = timestamp.substr(0,16);
+			//console.log(timestamp);
+
+      con.query('INSERT INTO achievements (id) VALUE (' + user.id + ')', () => {
+        con.query('SELECT * FROM achievements WHERE id = ' + user.id, (err, rows2) => {
+          if(rows2[0][achievementCode] === 0) {
+            if(notification) {
+              let embed = new MessageEmbed()
+              .setTitle('Achievement Earned:')
+              .setColor(0xBF66E3)
+              .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+              .setThumbnail(achievements[achievementCode].image)
+              .setDescription("Earned at " + timestamp)
+
+							if(achievements[achievementCode].notification) {
+								user.send(embed);
+							}
+            }
+
+            con.query('UPDATE achievements SET \`' + achievementCode + '\` = ' + Date.now() + ' WHERE id = ' + user.id);
+          }
+        });
+      });
+      newField = true;
+    }
+
+    if(!newField){
+      if(rows[0][achievementCode] === 0) {
+        let embed = new MessageEmbed()
+        .setTitle('Achievement Earned:')
+        .setColor(0xBF66E3)
+        .addField(achievements[achievementCode].title, achievements[achievementCode].description)
+        .setThumbnail(achievements[achievementCode].image)
+        .setTimestamp();
+
+				if(achievements[achievementCode].notification) {
+        	user.send(embed);
+				}
+
+        con.query('UPDATE achievements SET \`' + achievementCode + '\` = ' + Date.now() + ' WHERE id = ' + user.id);
+      }
+    }
+  });
+}
 
 client.login(config.token);
