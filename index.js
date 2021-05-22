@@ -493,7 +493,7 @@ client.on("message", (message) => {
 	        for(let i of wordArgs) {
 	          trackedWords.add(i);
 	        }
-
+					//if the users cooldown epoch time is less than than the current time then the bot will count the users words and update the cooldown in the database
 					try {
 						if(user[0].cooldown < Date.now()) {
 							con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND  server_id = ' + message.guild.id);
@@ -503,6 +503,7 @@ client.on("message", (message) => {
 					if (user[0] === undefined) {
 						con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
 					}
+					//this for loop goes through all of the words and counts how many times a tracked word has been said
 	        for(let j in words) {
 	          curr = words[j];
 
@@ -523,8 +524,10 @@ client.on("message", (message) => {
 						catch(err) {
 						}
 	        }
+					//this if statement checks to see if a tracked word has been sent at all. If it has it will run this code
 	        if(checkIfShouldWrite) {
 	          let cooldownTime
+						//if the server does not have a cooldown time i.e. the server is not in the database it will try to create an entry
 	          try {
 	            cooldownTime = server[0].cooldown;
 	          }
@@ -537,12 +540,15 @@ client.on("message", (message) => {
 							catch(err){};
 	          }
 	          checkIfShouldWrite = false;
+						//if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
+						//if the users exists in the database it will add the number of words sent in the message to the users current amount
 						if(user[0] === undefined) {
 							con.query('UPDATE users SET words = ' + (0 + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 						}
 						else {
 	          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 						}
+						//if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
 	          if(nword >= 5) {
 	            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 	            setTimeout(() => {
