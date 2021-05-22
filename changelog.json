@@ -82,6 +82,11 @@
         "1":[
           "Removed a bunch of extra code and added coments"
         ]
+      },
+      "10": {
+        "0": [
+          "Global Leaderboard will now be cached so it will not be real time but the response time for the bot will be better"
+        ]
       }
     }
   }
