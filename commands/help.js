@@ -52,7 +52,7 @@ module.exports = {
         case 'triggers':
             infoEmbed.addField(prefix + 'triggers', 'You can change the tracked words by running this command. The default tracked words are \'bruh, nice, bots, cow\'. This command can only be run by those with the ManageChannels or ManageServer perms.');
           break;
-        case 'check' || 'count':
+        case ('check' || 'count'):
           infoEmbed.addField(prefix + 'check/count', 'This command allows you to see how many words you or someone else has sent. You can see how many words someone else has sent by sending n!check @Cyakat');
           break;
         case 'total':
@@ -61,10 +61,10 @@ module.exports = {
         case 'top':
           infoEmbed.addField(prefix + 'top', 'This command will show the top user aka the user who has sent the most tracked words');
           break;
-        case 'leaderboard' || 'lead':
+        case ('leaderboard' || 'lead'):
           infoEmbed.addField(prefix + 'leaderboard/lead', 'This command will display a leaderboard ranking each user based on how many words were sent in the server. This leaderboard is local and will only show a list containing people in the server the command was used in');
           break;
-        case 'globalLeaderboard' || 'global':
+        case ('globalLeaderboard' || 'global'):
           infoEmbed.addField(prefix + 'globalLeaderboard/global', 'This command will display a leaderboard ranking everyone based on how many words they have sent overall');
           break;
         case 'delete':
@@ -79,7 +79,7 @@ module.exports = {
         case 'changelog':
           infoEmbed.addField(prefix + 'changelog', 'This command will show the most recent changes made to the bot or you can specify a version. n!changelog 3.9.0');
           break;
-        case 'ach' || 'achievements':
+        case ('ach' || 'achievements'):
           infoEmbed.addField(prefix + 'ach/achievements', 'This command will dm you your own achievements. If you specify a user, the bot will show their achievements. n!ach @Cyakat');
           break;
         case 'settings':
@@ -88,7 +88,7 @@ module.exports = {
         case 'cooldown':
           infoEmbed.addField(prefix + 'cooldown', 'This command allows you to change the cooldown for the server. The cooldown will activate after 5 or more tracked words were sent. While cooldown is applied, any tracked words sent by a user will not be tracked. This settings can only be changed by those with the ManageServer or ManageChannels perms. n!cooldown 5');
           break;
-        case 'setPrefix' || 'prefix':
+        case ('setPrefix' || 'prefix'):
           infoEmbed.addField(prefix + 'setPrefix/prefix', 'This command allows you to change the prefix for the server. This setting can only be changed by those with ManageServer or ManageChannels perms.');
           break;
         case 'help':
