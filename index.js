@@ -24,7 +24,7 @@ const config = require("../config.json");
 //changelog.json stores the changes made in a json format for easy of use with the n!changelog command
 const changelog = require("./changelog.json");
 //achievements.json stores the achievements and their properties as json objects
-const achievements = require('./achievements.json');
+//const achievements = require('./achievements.json');
 
 //DBLapi initialization
 const DBL = require("dblapi.js");
@@ -38,7 +38,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.1';
+const version = 'no achievements';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -118,11 +118,11 @@ const logging = {
 //***************************
 
 //this will give a user the support achievement for joinin the server
-client.on('guildMemberAdd', (member) => {
+/*client.on('guildMemberAdd', (member) => {
   if(client.guilds.cache.get('708421545005023232').member(member) != undefined) {
     giveAchievements(member, data, 'joinServer', 0, false);
   }
-})
+})*/
 
 //runs with the bot starts up
 client.on('ready', () => {
@@ -194,11 +194,11 @@ client.on("message", (message) => {
 
 
   //provides a random chance to get the template achievement
-  let template1 = (math.random() * (31622 - 1) + 1).toFixed(0);
+/*  let template1 = (math.random() * (31622 - 1) + 1).toFixed(0);
   let template2 = (math.random() * (31622 - 1) + 1).toFixed(0);
   if(template1 === template2) {
     giveAchievements(message.author, data, "template", template1, false);
-  }
+  }*/
 
 	//splits the sentence into an array, splitting at spaces
 	let args = message.content.split(" ");
@@ -287,9 +287,9 @@ client.on("message", (message) => {
 			case 'changelog':
 				infoEmbed.addField('n!changelog', 'This command will show the most recent changes made to the bot or you can specify a version. n!changelog 3.9.0');
 				break;
-			case ('ach' || 'achievements'):
+			/*case ('ach' || 'achievements'):
 				infoEmbed.addField('n!ach/achievements', 'This command will dm you your own achievements. If you specify a user, the bot will show their achievements. n!ach @Cyakat');
-				break;
+				break;*/
 			case 'settings':
 				infoEmbed.addField('n!settings', 'This command will show the current server\'s settings including the current triggers, cooldown, and prefix. This command can be run by anyone.');
 				break;
@@ -326,9 +326,9 @@ client.on("message", (message) => {
     }
     //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
     switch(true) {
-      case (message.content === "🥚"):
-        giveAchievements(message.author, data, "egg");
-        break;
+    //  case (message.content === "🥚"):
+      //  giveAchievements(message.author, data, "egg");
+      //  break;
       case (message.content.toLowerCase().startsWith(prefix + "bottom")):
         //bottom(message);
 				client.commands.get('bottom').execute(message, Discord, client, con);
@@ -356,7 +356,7 @@ client.on("message", (message) => {
       case (message.content.toLowerCase().startsWith("invitenow")):
         //invitenow(message);
 				client.commands.get('invitenow').execute(message, Discord, client, con);
-				giveAchievements(message.author, data, "inviteNow");
+				//giveAchievements(message.author, data, "inviteNow");
         break;
       case (message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")):
         //check(message, args);
@@ -396,11 +396,11 @@ client.on("message", (message) => {
         break;
       case (message.content.toLowerCase().startsWith(prefix + "changelog")):
         //changelogFunction(message, args);
-				let achievement = false;
-				achievement = client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
+				/*let achievement = false;
+				//achievement = client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
 				if(achievement) {
 					giveAchievements(message.author, data, "changelog");
-				}
+				}*/
         break;
       case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
         //prefixFunction(message, prefix, args);
@@ -409,14 +409,14 @@ client.on("message", (message) => {
       case (message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")):
         //pp(message, data, args);
 				client.commands.get('pp').execute(message, data, args, Discord, client, con);
-				giveAchievements(message.author, data, "pp");
+				//giveAchievements(message.author, data, "pp");
 
         break;
-      case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement") || message.content.toLowerCase().startsWith(prefix + "ach")):
+      /*case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement") || message.content.toLowerCase().startsWith(prefix + "ach")):
         //achievementsCheck(message, data, args);
 				client.commands.get('achievementsCheck').execute(message, data, args, achievements, Discord, client, con);
         return;
-        break;
+        break;*/
       case (message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')):
         //checkVerify(message);
 				client.commands.get('checkVerify').execute(message, Discord, client, con);
@@ -452,7 +452,7 @@ client.on("message", (message) => {
 					try {
 						totalWords = totalWords[0].words;
 						//will give users achievements depending on how many words they have sent
-						switch(true) {
+/*						switch(true) {
 							case (totalWords >= 10000):
 								giveAchievements(message.author, data, "10000");
 							case (totalWords >= 1000):
@@ -462,7 +462,7 @@ client.on("message", (message) => {
 								break;
 							default:
 							break;
-						}
+						}*/
 					}
 					catch(err){}
 
@@ -614,7 +614,7 @@ function stopTimer(timer) {
 }
 
 //gives a user a certain achievement based on the arguments given
-function giveAchievements(user, data, achievementCode, specialData) {
+/* function giveAchievements(user, data, achievementCode, specialData) {
 
 	notification = achievements[achievementCode].notification;
 
@@ -666,6 +666,6 @@ function giveAchievements(user, data, achievementCode, specialData) {
       }
     }
   });
-}
+} */
 
 client.login(config.token);
