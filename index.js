@@ -3,21 +3,15 @@
 //Discord.js Library initialization
 const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
 
 //extra libraries
 const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
-
-//Command handler. This goes through the command folder and stores the commands in json objects which can be called later
-client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
-}
+const {REST} = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 
 //config.json has the bot's key and the key for DBLapi
 const config = require("../config.json");
@@ -53,6 +47,75 @@ var data = require("./data.json");
 var oldData = require("./oldData.json");
 //the total amount of words sent across all servers ever
 var totalN = data.totalSent;
+
+//helpEmbed stores the Embed message that helps the user to know the commands so I don't ahve to copy this everywhere T_+
+const helpEmbed = new MessageEmbed()
+.setTitle('Bot Help')
+.setColor(0xBF66E3)
+.setDescription('')
+.setFooter('For private server:\n\ngetverify: retrieves current verify code')
+.addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
+.addField('n!' + 'help', 'Gives you this message', true)
+.addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+.addField('Commands', '----')
+.addField('n!' + 'check', 'Checks the # of words sent by a user', true)
+.addField('n!' + 'count', 'Same as **n!check**', true)
+.addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
+.addField('n!' + 'top', 'Gives info about top-sending user', true)
+.addField('n!' + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+.addField('n!' + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
+.addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+.addField('n!' + 'info', 'Gives info about the bot', true)
+.addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+//.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+.addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+.addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
+.addField("Server Setup", "----")
+.addField('n!' + "settings", "View all current server settings", true)
+.addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
+.addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
+.addField('n!' + 'setPrefix', '(prefix) Changes the prefix for the server', true)
+;
+
+//Command handler. This goes through the command folder and stores the commands in json objects which can be called later
+/*client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
+}*/
+
+const commands = [];
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+
+
+// Place your client and guild ids here
+const clientId = '664652964962631680';
+const guildId = '637740070648021000';
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	commands.push(command.data.toJSON());
+}
+
+const rest = new REST({ version: '9' }).setToken(config.token);
+
+(async () => {
+	try {
+		console.log('Started refreshing application (/) commands.');
+
+		await rest.put(
+			Routes.applicationGuildCommands(clientId, guildId),
+			{ body: commands },
+		);
+
+		console.log('Successfully reloaded application (/) commands.');
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
 
 /*NOTES********************************************************
 NEW CONSOLE.LOG MESSAGES:
@@ -118,19 +181,19 @@ const logging = {
 //***************************
 
 //this will give a user the support achievement for joinin the server
-client.on('guildMemberAdd', (member) => {
+/*client.on('guildMemberAdd', (member) => {
   if(client.guilds.cache.get('708421545005023232').member(member) != undefined) {
     giveAchievements(member, data, 'joinServer', 0, false);
   }
-})
+})*/
 
 //runs with the bot starts up
 client.on('ready', () => {
   console.log("BOT ONLINE");
 
 	//states version upon startup in the bot's status
-  client.user.setActivity(`v${version}`, {type : 'STREAMING'})
-  .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
+  client.user.setActivity(`v${version}`, {type : 'STREAMING'});
+  console.log(`Activity set to v${version}`);
 
 	//will try to upload the bot's server count to Discord Bot List every 1800 seconds
   setInterval(() => {
@@ -185,13 +248,31 @@ dbl.on('error', e => {
   storeServerName(guild, data);
 });*/
 
+client.commands = new Discord.Collection();
+
+const commandFilesHandler = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFilesHandler) {
+	const commandHandler = require(`./commands/${file}`);
+	// set a new item in the Collection
+	// with the key as the command name and the value as the exported module
+	client.commands.set(commandHandler.data.name, commandHandler);
+}
+
 
 //runs everytime a message is sent
-client.on("message", (message) => {
+client.on("interactionCreate", async message => {
 
-  //ignore messages sent by bots
-  if(message.author.bot ) return;
+	const { commandName } = message;
 
+		if (!client.commands.has(commandName)) return;
+
+		try {
+			await client.commands.get(commandName).execute(message, Discord, client, con, version, voteLink, achievements, data);
+		} catch (error) {
+			console.error(error);
+			await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
 
   //provides a random chance to get the template achievement
   let template1 = (math.random() * (31622 - 1) + 1).toFixed(0);
@@ -201,39 +282,12 @@ client.on("message", (message) => {
   }
 
 	//splits the sentence into an array, splitting at spaces
-	let args = message.content.split(" ");
-	args = args.filter(item => !!item);
+	//let args = message.content.split(" ");
+//	args = args.filter(item => !!item);
   //ignore messages sent in dms
   if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help")) && args[1] === undefined) {
-    let embed = new MessageEmbed()
-    .setTitle('Bot Help')
-    .setColor(0xBF66E3)
-    .setDescription('')
-    .setFooter('For private server:\n\ngetverify: retrieves current verify code')
-		.addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
-    .addField('n!' + 'help', 'Gives you this message', true)
-    .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
-    .addField('Commands', '----')
-    .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
-    .addField('n!' + 'count', 'Same as **n!check**', true)
-    .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
-    .addField('n!' + 'top', 'Gives info about top-sending user', true)
-    .addField('n!' + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
-    .addField('n!' + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
-    .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
-    .addField('n!' + 'info', 'Gives info about the bot', true)
-    .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
-    //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
-    .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
-    .addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
-    .addField("Server Setup", "----")
-    .addField('n!' + "settings", "View all current server settings", true)
-    .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
-    .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
-    .addField('n!' + 'setPrefix', '(prefix) Changes the prefix for the server', true)
-    ;
 
-    message.channel.send(embed)
+    message.channel.send(helpEmbed)
 
     return;
   }
@@ -251,7 +305,7 @@ client.on("message", (message) => {
     return;
   }
 	//if the sends n!help followed by a command it will reply with additional help. this isn't working properly right now.
-	else if (message.channel.type === 'dm' && args[1] != undefined){
+/*	else if (message.channel.type === 'dm' && args[1] != undefined){
 		let infoEmbed = new Discord.MessageEmbed()
 		.setTitle('More Info')
 		.setColor(0xBF66E3)
@@ -308,7 +362,7 @@ client.on("message", (message) => {
 		}
 		message.channel.send(infoEmbed);
 		return;
-	}
+	}*/
 
   //query retrieves the prefix from the server that the message was sent in
   con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
@@ -324,8 +378,9 @@ client.on("message", (message) => {
 			});
 
     }
+
     //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
-    switch(true) {
+    /*switch(true) {
       case (message.content === "🥚"):
         giveAchievements(message.author, data, "egg");
         break;
@@ -435,9 +490,9 @@ client.on("message", (message) => {
       default:
 
         break;
-    }
+    }*/
 		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
-    let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+/*    let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
     /*for(var j = 0; j < wordArgs.length; j++) {
 
@@ -446,7 +501,7 @@ client.on("message", (message) => {
       let trackedWords = getTrackWords(message, data);*/
 
 		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
-    con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
+  /*  con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
 				con.query('SELECT words FROM users WHERE id = ' + message.author.id + ' GROUP BY id', (err3	, totalWords) => {
 					try {
@@ -558,7 +613,7 @@ client.on("message", (message) => {
 	        }
 				});
       });
-    });
+    });*/
   });
 });
 

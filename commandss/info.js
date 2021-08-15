@@ -5,7 +5,7 @@ module.exports = {
   .setName('info')
   .setDescription('gets the info of the bot')
   .addStringOption(option => option.setName('input').setDescription('Enter a string')),
-  async execute(interaction, version, voteLink, Discord, client, con) {
+  async execute(interaction, Discord, client, con, version, voteLink) {
 
     var v = interaction.options.getString('input');
     if(v == null) {v = 'please help me';}
