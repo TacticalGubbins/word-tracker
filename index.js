@@ -268,7 +268,7 @@ client.on("interactionCreate", async message => {
 		if (!client.commands.has(commandName)) return;
 
 		try {
-			await client.commands.get(commandName).execute(message, Discord, client, con, version, voteLink, achievements, data);
+			await client.commands.get(commandName).execute(message, Discord, client, con, version, voteLink, achievements, data, changelog);
 		} catch (error) {
 			console.error(error);
 			await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
