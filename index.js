@@ -1,5 +1,14 @@
 //hmmmmm
 
+
+//update the inv link to allow slash commands
+//and attach a message to each command saying that they can use the inv link to get slash commands as text commands will be deprecated in a few
+
+//also make version that supports text and slash commands 😩
+
+
+
+
 //Discord.js Library initialization
 const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const Discord = require('discord.js');
