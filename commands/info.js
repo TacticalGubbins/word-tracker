@@ -3,9 +3,12 @@ const {SlashCommandBuilder} = require('@discordjs/builders');
 module.exports = {
   data: new SlashCommandBuilder()
   .setName('info')
-  .setDescription('gets the info of the bot')
+  .setDescription('Gets the info of the bot')
   .addStringOption(option => option.setName('input').setDescription('Enter a string')),
-  async execute(interaction, version, voteLink, Discord, client, con) {
+  async execute(interaction, Discord, client, con, arguments) {
+
+    version = arguments.version;
+    voteLink = arguments.voteLink;
 
     var v = interaction.options.getString('input');
     if(v == null) {v = 'please help me';}

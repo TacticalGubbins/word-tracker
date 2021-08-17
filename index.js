@@ -3,7 +3,7 @@
 //Discord.js Library initialization
 const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const Discord = require('discord.js');
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
+const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS"]});
 
 //extra libraries
 const fs = require('fs');
@@ -32,7 +32,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.1';
+const version = '3.10.0';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -55,26 +55,24 @@ const helpEmbed = new MessageEmbed()
 .setDescription('')
 .setFooter('For private server:\n\ngetverify: retrieves current verify code')
 .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
-.addField('n!' + 'help', 'Gives you this message', true)
+.addField('/' + 'help', 'Gives you this message', true)
 .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
 .addField('Commands', '----')
-.addField('n!' + 'check', 'Checks the # of words sent by a user', true)
-.addField('n!' + 'count', 'Same as **n!check**', true)
-.addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
-.addField('n!' + 'top', 'Gives info about top-sending user', true)
-.addField('n!' + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
-.addField('n!' + 'globalLeaderboard', '(global) Retrieves the top 10 sending users world-wide', true)
-.addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
-.addField('n!' + 'info', 'Gives info about the bot', true)
-.addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+.addField('/' + 'check', 'Checks the # of words sent by a user', true)
+.addField('/' + 'total', 'Retrieves the total amount of words recorded', true)
+.addField('/' + 'top', 'Gives info about top-sending user', true)
+.addField('/' + 'leaderboard', '(lead) Retrieves the top 10 users in a server', true)
+.addField('/' + 'global', '(global) Retrieves the top 10 sending users world-wide', true)
+.addField('/' + 'delete-info', '**Permanently** deletes all data regarding words counted in a server', true)
+.addField('/' + 'info', 'Gives info about the bot', true)
+.addField('/' + 'invite', 'Gives you [this link](' + invLink + ')', true)
 //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
-.addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
-.addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
+.addField('/' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+//.addField('/' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
 .addField("Server Setup", "----")
-.addField('n!' + "settings", "View all current server settings", true)
-.addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
-.addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
-.addField('n!' + 'setPrefix', '(prefix) Changes the prefix for the server', true)
+.addField('/' + "settings", "View all current server settings", true)
+.addField('/' + 'triggers', 'Starts setup in order to change countable words', true)
+.addField('/' + 'cooldown', 'Change the server cooldown for counted words', true)
 ;
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
@@ -263,12 +261,15 @@ for (const file of commandFilesHandler) {
 //runs everytime a message is sent
 client.on("interactionCreate", async message => {
 
+	client.users.cache.set(message.guild.members.fetch());
+
 	const { commandName } = message;
 
 		if (!client.commands.has(commandName)) return;
 
 		try {
-			await client.commands.get(commandName).execute(message, Discord, client, con, version, voteLink, achievements, data, changelog);
+			let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, helpEmbed};
+			await client.commands.get(commandName).execute(message, Discord, client, con, arguments);
 		} catch (error) {
 			console.error(error);
 			await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
@@ -365,7 +366,8 @@ client.on("interactionCreate", async message => {
 	}*/
 
   //query retrieves the prefix from the server that the message was sent in
-  con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
+	// don't need this cuz slash comands :P
+  /*con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
     try {
       prefix = prefixResponse[0].prefix;
     }
@@ -613,8 +615,8 @@ client.on("interactionCreate", async message => {
 	        }
 				});
       });
-    });*/
-  });
+    });
+  }); */
 });
 
 //writes the data in memory to data.json so it can be saved across restarts

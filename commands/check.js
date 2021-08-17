@@ -4,9 +4,12 @@ module.exports = {
 
   data: new SlashCommandBuilder()
   .setName('check')
-  .setDescription('checks the amount of words the specified user sent')
+  .setDescription('Checks the amount of words the specified user sent')
   .addMentionableOption(option => option.setName('user').setDescription('Check a user\'s word count on this server and all servers combined')),
-  async execute(interaction, Discord, client, con, _, __, ___, data) {
+  async execute(interaction, Discord, client, con, arguments) {
+
+    data = arguments.data;
+
     date = new Date();
     date = Date.now();
 

@@ -4,9 +4,13 @@ module.exports = {
 
   data: new SlashCommandBuilder()
   .setName('changelog')
-  .setDescription('gets the changelog specified')
+  .setDescription('Gets the changelog specified')
   .addStringOption(option => option.setName('version').setDescription('Specify the version you would like to know the changelog for')),
-  async execute(interaction, Discord, client, con, version, _, __, ___, changelog) {
+  async execute(interaction, Discord, client, con, arguments) {
+
+    version = arguments.version;
+    changelog = arguments.changelog;
+
     let achievement = false;
 
       //if the user specified a version number it will use that if it is good. otherwise it will use the current version's changelog

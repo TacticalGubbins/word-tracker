@@ -1,7 +1,15 @@
+const {SlashCommandBuilder} = require('@discordjs/builders');
+
 module.exports = {
-  name: 'top',
-  description: 'gets top sending user',
-  execute(message, Discord, client, con, data) {
+
+  data: new SlashCommandBuilder()
+  .setName('top')
+  .setDescription('gets top sending user'),
+  async execute(interaction, Discord, client, con, arguments) {
+
+    data = arguments.data;
+
+
     //query gets the person with the most words sent
     con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
       for(let i in rows) {
@@ -10,7 +18,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription('Top User')
-          .setFooter('Requested by ' + message.author.tag)
+          .setFooter('Requested by ' + interaction.user.tag)
           .setThumbnail('https://cdn.discordapp.com/avatars/' + rows[i].id + '/' + client.users.cache.get(rows[i].id).avatar + '.png')
           .addField(client.users.cache.get(rows[i].id).username, '__**' + rows[i].words + '**__ sent');
 
@@ -34,7 +42,7 @@ module.exports = {
             embed.setColor(0x17D1FF);
           }
 
-          message.channel.send(embed);
+          interaction.reply({embeds: [embed]});
           break;
         }
         catch(err) {
