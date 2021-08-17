@@ -96,7 +96,6 @@ const commands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 
-
 // Place your client and guild ids here
 const clientId = '664652964962631680';
 const guildId = '708421545005023232';
@@ -283,6 +282,17 @@ for (const file of commandFilesHandler) {
 	client.commands.set(commandHandler.data.name, commandHandler);
 }
 
+client.commandsText = new Discord.Collection();
+
+const commandFilesHandlerText = fs.readdirSync('./textCommands').filter(fileText => fileText.endsWith('.js'));
+
+for (const fileText of commandFilesHandlerText) {
+	const commandHandlerText = require(`./textCommands/${fileText}`);
+	// set a new item in the Collection
+	// with the key as the command name and the value as the exported module
+	client.commandsText.set(commandHandlerText.data.name, commandHandlerText);
+}
+
 //runs everytime a message is sent
 client.on("interactionCreate", async interaction => {
 
@@ -303,6 +313,45 @@ client.on("interactionCreate", async interaction => {
 });
 
 client.on('messageCreate', async message => {
+
+	let args = message.content.split(" ");
+	args = args.filter(item => !!item);
+
+
+	if(message.author.bot) return;
+
+	con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, async (err, prefixResponse) => {
+    try {
+      prefix = prefixResponse[0].prefix;
+    }
+    catch(err) {
+      prefix = 'n!';
+			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, (err, idResponse) => {
+				if(idResponse[0] === undefined) {
+					con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
+				}
+			});
+
+    }
+
+		var ret = args[0].replace(prefix,'');
+		commandNameText = ret;
+
+		console.log(commandNameText);
+		console.log(client.commandsText.get(commandNameText));
+
+		if(message.content.startsWith(prefix))
+		{
+			try {
+				let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, helpEmbed, args};
+				await client.commandsText.get(commandNameText).execute(message, Discord, client, con, arguments);
+			} catch (error) {
+				console.error(error);
+				await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			}
+		}
+
+
 
 		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
   let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
@@ -411,6 +460,7 @@ client.on('messageCreate', async message => {
       });
     });
   });
+});
 
 //writes the data in memory to data.json so it can be saved across restarts
 function write (data) {
