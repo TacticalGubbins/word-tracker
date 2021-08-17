@@ -17,9 +17,9 @@ module.exports = {
     .setDescription("Check your dms :>")
     ;
 
-    interaction.reply({embeds: [dmEmbed]});
+    //interaction.reply({embeds: [dmEmbed]});
 
-    interaction.user.send({embeds: [helpEmbed]});
+    interaction.reply({embeds: [helpEmbed], ephemeral: true});
     return;
   }
 };

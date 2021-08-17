@@ -90,7 +90,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 
 // Place your client and guild ids here
 const clientId = '664652964962631680';
-const guildId = '637740070648021000';
+const guildId = '708421545005023232';
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -114,6 +114,23 @@ const rest = new REST({ version: '9' }).setToken(config.token);
 	}
 })();
 
+client.on('guildCreate', guild => {
+
+	(async () => {
+		try {
+			console.log('Started refreshing application (/) commands.');
+
+			await rest.put(
+				Routes.applicationGuildCommands(clientId, guild.id),
+				{ body: commands },
+			);
+
+			console.log('Successfully reloaded application (/) commands.');
+		} catch (error) {
+			console.error(error);
+		}
+	})();
+});
 
 /*NOTES********************************************************
 NEW CONSOLE.LOG MESSAGES:
@@ -133,7 +150,7 @@ var stat = 0;
 //cooldown vars-----------------------------------------------
 
 //number of words the user has sent
-var nword = 0;
+var numWords = 0;
 //creates a set that will store the cooldown of the server later
 let cooldown = new Set();
 //creates a variable that will be used to determine the length of the cooldown later
@@ -257,244 +274,29 @@ for (const file of commandFilesHandler) {
 	client.commands.set(commandHandler.data.name, commandHandler);
 }
 
-
 //runs everytime a message is sent
-client.on("interactionCreate", async message => {
+client.on("interactionCreate", async interaction => {
 
-	client.users.cache.set(message.guild.members.fetch());
+	client.users.cache.set(interaction.guild.members.fetch());
 
-	const { commandName } = message;
+	const { commandName } = interaction;
 
 		if (!client.commands.has(commandName)) return;
 
 		try {
 			let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, helpEmbed};
-			await client.commands.get(commandName).execute(message, Discord, client, con, arguments);
+			await client.commands.get(commandName).execute(interaction, Discord, client, con, arguments);
 		} catch (error) {
 			console.error(error);
-			await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 
-  //provides a random chance to get the template achievement
-  let template1 = (math.random() * (31622 - 1) + 1).toFixed(0);
-  let template2 = (math.random() * (31622 - 1) + 1).toFixed(0);
-  if(template1 === template2) {
-    giveAchievements(message.author, data, "template", template1, false);
-  }
+});
 
-	//splits the sentence into an array, splitting at spaces
-	//let args = message.content.split(" ");
-//	args = args.filter(item => !!item);
-  //ignore messages sent in dms
-  if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help")) && args[1] === undefined) {
+client.on('messageCreate', async message => {
 
-    message.channel.send(helpEmbed)
-
-    return;
-  }
-	//If a user tries to dm the bot it will turn them away and send what ever the user sent to louie aka TacticalGubbins
-	//will also return an error if it failed
-  else if(message.channel.type === 'dm' && (args[1] == undefined)){
-    message.channel.send("Shut up retard go talk in a server");
-    try {
-      client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
-    }
-    catch(err) {
-     logging.warn('\nCould not send dm to louie. This should only happen if the testing bot is running \n');
-     console.log(err)
-    }
-    return;
-  }
-	//if the sends n!help followed by a command it will reply with additional help. this isn't working properly right now.
-/*	else if (message.channel.type === 'dm' && args[1] != undefined){
-		let infoEmbed = new Discord.MessageEmbed()
-		.setTitle('More Info')
-		.setColor(0xBF66E3)
-		.setDescription('')
-		switch (args[1]) {
-			case 'triggers':
-					infoEmbed.addField('n!triggers', 'You can change the tracked words by running this command. The default tracked words are \'bruh, nice, bots, cow\'. This command can only be run by those with the ManageChannels or ManageServer perms.');
-				break;
-			case ('check' || 'count'):
-				infoEmbed.addField('n!check/count', 'This command allows you to see how many words you or someone else has sent. You can see how many words someone else has sent by sending n!check @Cyakat');
-				break;
-			case 'total':
-				infoEmbed.addField('n!total', 'This command will show the total amount of words sent by everyone. This can also be seen in the bot\'s status sometimes and also with n!check @Word Tracker');
-				break;
-			case 'top':
-				infoEmbed.addField('n!top', 'This command will show the top user aka the user who has sent the most tracked words');
-				break;
-			case ('leaderboard' || 'lead'):
-				infoEmbed.addField('n!leaderboard/lead', 'This command will display a leaderboard ranking each user based on how many words were sent in the server. This leaderboard is local and will only show a list containing people in the server the command was used in');
-				break;
-			case ('globalLeaderboard' || 'global'):
-				infoEmbed.addField('n!globalLeaderboard/global', 'This command will display a leaderboard ranking everyone based on how many words they have sent overall');
-				break;
-			case 'delete':
-				infoEmbed.addField('n!delete', 'This command will delete all of your data from every server the bot permanently.');
-				break;
-			case 'info':
-				infoEmbed.addField('n!info', 'This command will show some information about the bot');
-				break;
-			case 'invite':
-				infoEmbed.addField('n!info', 'This command will give an invite code to the support server and also a link to invite the bot to your own server.');
-				break;
-			case 'changelog':
-				infoEmbed.addField('n!changelog', 'This command will show the most recent changes made to the bot or you can specify a version. n!changelog 3.9.0');
-				break;
-			case ('ach' || 'achievements'):
-				infoEmbed.addField('n!ach/achievements', 'This command will dm you your own achievements. If you specify a user, the bot will show their achievements. n!ach @Cyakat');
-				break;
-			case 'settings':
-				infoEmbed.addField('n!settings', 'This command will show the current server\'s settings including the current triggers, cooldown, and prefix. This command can be run by anyone.');
-				break;
-			case 'cooldown':
-				infoEmbed.addField('n!cooldown', 'This command allows you to change the cooldown for the server. The cooldown will activate after 5 or more tracked words were sent. While cooldown is applied, any tracked words sent by a user will not be tracked. This settings can only be changed by those with the ManageServer or ManageChannels perms. n!cooldown 5');
-				break;
-			case ('setPrefix' || 'prefix'):
-				infoEmbed.addField('n!setPrefix/prefix', 'This command allows you to change the prefix for the server. This setting can only be changed by those with ManageServer or ManageChannels perms.');
-				break;
-			case 'help':
-				infoEmbed.addField('n!help', 'This command will dm you the help file giving you all of the commands.');
-				break;
-			default:
-				infoEmbed.setColor(0xFF0000)
-				.setDescription('Command not found');
-		}
-		message.channel.send(infoEmbed);
-		return;
-	}*/
-
-  //query retrieves the prefix from the server that the message was sent in
-	// don't need this cuz slash comands :P
-  /*con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, (err, prefixResponse) => {
-    try {
-      prefix = prefixResponse[0].prefix;
-    }
-    catch(err) {
-      prefix = 'n!';
-			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, (err, idResponse) => {
-				if(idResponse[0] === undefined) {
-					con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", 'n!', 5, 'bruh, nice, bots, cow')");
-				}
-			});
-
-    }
-
-    //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
-    /*switch(true) {
-      case (message.content === "🥚"):
-        giveAchievements(message.author, data, "egg");
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "bottom")):
-        //bottom(message);
-				client.commands.get('bottom').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")):
-        //global(message);
-				client.commands.get('global').execute(message, args, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "settings")):
-        //settings(message);
-				client.commands.get('settings').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")):
-        //info(message);
-				client.commands.get('info').execute(message, version, voteLink, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "cooldown")):
-        //cooldownFunction(message, args);
-				client.commands.get('cooldown').execute(message, args, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "triggers")):
-        //triggers(message);
-				client.commands.get('triggers').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith("invitenow")):
-        //invitenow(message);
-				client.commands.get('invitenow').execute(message, Discord, client, con);
-				giveAchievements(message.author, data, "inviteNow");
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")):
-        //check(message, args);
-				client.commands.get('check').execute(message, args, Discord, client, con, data);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "total")):
-        //total(message);
-				client.commands.get('total').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "invite")):
-        //invite(message);
-				client.commands.get('invite').execute(message, discordLink, invLink, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "archive")):
-        //archive(message);
-				client.commands.get('archive').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "top")):
-        //top(message);
-				client.commands.get('top').execute(message, Discord, client, con, data);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')):
-        //leaderboard(message);
-				client.commands.get('leaderboard').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + 'deleteinfo') || message.content.toLowerCase().startsWith(prefix + 'delete')):
-        //deleteInfo(message);
-				client.commands.get('deleteInfo').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + 'userinfo')):
-        //userinfo(message);
-				client.commands.get('userinfo').execute(message, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "help")):
-        //help(message, prefix);
-				client.commands.get('help').execute(message, prefix, discordLink, invLink, args, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "changelog")):
-        //changelogFunction(message, args);
-				let achievement = false;
-				achievement = client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
-				if(achievement) {
-					giveAchievements(message.author, data, "changelog");
-				}
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
-        //prefixFunction(message, prefix, args);
-				client.commands.get('prefix').execute(message, prefix, args, Discord, client, con);
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")):
-        //pp(message, data, args);
-				client.commands.get('pp').execute(message, data, args, Discord, client, con);
-				giveAchievements(message.author, data, "pp");
-
-        break;
-      case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement") || message.content.toLowerCase().startsWith(prefix + "ach")):
-        //achievementsCheck(message, data, args);
-				client.commands.get('achievementsCheck').execute(message, data, args, achievements, Discord, client, con);
-        return;
-        break;
-      case (message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')):
-        //checkVerify(message);
-				client.commands.get('checkVerify').execute(message, Discord, client, con);
-        break;
-      case (message.guild.id == 694263395884728412 && message.channel.id != 694265200454402108 && message.content.toLowerCase().startsWith("getverify")):
-        message.channel.send("Current verify message: **" + fs.readFileSync('PASSWORD.txt').toString() + "**");
-        return;
-        break;
-			case (message.content.toLowerCase().startsWith(prefix + "vote")):
-				client.commands.get('vote').execute(message, voteLink, Discord, client, con);
-				return;
-				break;
-			case (message.content.toLowerCase().startsWith(prefix + "rank")):
-				client.commands.get('rank').execute(message, data, args, Discord, client, con);
-				break;
-      default:
-
-        break;
-    }*/
 		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
-/*    let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+  let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
     /*for(var j = 0; j < wordArgs.length; j++) {
 
@@ -503,28 +305,11 @@ client.on("interactionCreate", async message => {
       let trackedWords = getTrackWords(message, data);*/
 
 		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
-  /*  con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
+    con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
 				con.query('SELECT words FROM users WHERE id = ' + message.author.id + ' GROUP BY id', (err3	, totalWords) => {
-					try {
-						totalWords = totalWords[0].words;
-						//will give users achievements depending on how many words they have sent
-						switch(true) {
-							case (totalWords >= 10000):
-								giveAchievements(message.author, data, "10000");
-							case (totalWords >= 1000):
-								giveAchievements(message.author, data, "1000");
-							case (totalWords >= 100):
-								giveAchievements(message.author, data, "100");
-								break;
-							default:
-							break;
-						}
-					}
-					catch(err){}
-
 					//redefines the number of words variable
-	        let nword = 0;
+	        let numWords = 0;
 					//a flag for seeing if the users if the user exists in the database
 	        let doesNotExist = false;
 					//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
@@ -558,7 +343,7 @@ client.on("interactionCreate", async message => {
 					}
 					catch (err){}
 					if (user[0] === undefined) {
-						con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + nword + ')' );
+						con.query('INSERT INTO users (id, server_id, cooldown, words) VALUE (' + message.author.id + ', ' + message.guild.id + ', 0, ' + numWords + ')' );
 					}
 					//this for loop goes through all of the words and counts how many times a tracked word has been said
 	        for(let j in words) {
@@ -575,7 +360,7 @@ client.on("interactionCreate", async message => {
 		              }
 
 
-								nword++;
+								numWords++;
 		          }
 						}
 						catch(err) {
@@ -600,13 +385,13 @@ client.on("interactionCreate", async message => {
 						//if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
 						//if the users exists in the database it will add the number of words sent in the message to the users current amount
 						if(user[0] === undefined) {
-							con.query('UPDATE users SET words = ' + (0 + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+							con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 						}
 						else {
-	          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + nword) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+	          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 						}
 						//if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
-	          if(nword >= 5) {
+	          if(numWords >= 5) {
 	            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
 	            setTimeout(() => {
 	              con.query('UPDATE users SET cooldown = 0 WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
@@ -616,8 +401,7 @@ client.on("interactionCreate", async message => {
 				});
       });
     });
-  }); */
-});
+  });
 
 //writes the data in memory to data.json so it can be saved across restarts
 function write (data) {
