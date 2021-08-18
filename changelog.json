@@ -85,7 +85,9 @@
       },
       "10": {
         "0": [
-          "Global Leaderboard will now be cached so it will not be real time but the response time for the bot will be better"
+          "Added slash commands along side the normal text commands",
+          "Changed how the commands work but idk if the bot will be any faster",
+
         ]
       }
     }
