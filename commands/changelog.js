@@ -33,7 +33,7 @@ module.exports = {
         for(var i = 0; i < changes.length; i++) {
           embed.addField((i+1).toString(), changes[i]);
         }
-        interaction.reply({embeds: [embed]});
+        await interaction.reply({embeds: [embed]});
       }
       //this little bit is for an achievement just a bit of fun that we had
       catch(err) {
@@ -44,7 +44,7 @@ module.exports = {
           .setDescription("stupid idiot")
           .setFooter("try /changelog 3.6.4");
 
-          interaction.reply({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
 
           achievement = true;
           //giveAchievements(message.author, data, "changelog");
@@ -57,7 +57,7 @@ module.exports = {
           .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A) \n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
           .setFooter("try /changelog 3.6.4");
 
-          interaction.reply({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
         }
       }
       return achievement;

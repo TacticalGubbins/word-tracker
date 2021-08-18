@@ -55,7 +55,7 @@ module.exports = {
       .setDescription('Are you sure all of your data ever? *this is non-recoverable*')
       .setFooter('Requested by ' + interaction.user.tag)
       ;
-      interaction.reply({embeds: [deleteEmbed], components: [row]});
+      await interaction.reply({embeds: [deleteEmbed], components: [row]});
 
       const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === interaction.user.id;
       const filter2 = o => (o.customId === 'sure' || o.customId === 'no2') && o.user.id === interaction.user.id;
@@ -81,7 +81,7 @@ module.exports = {
               .setColor(0xFF0000)
               .setDescription('Your data has been deleted, sorry to see you go :<')
               ;
-              o.update({embeds: [deleteEmbed2], components: [rowDeleteSuccess]})
+              await o.update({embeds: [deleteEmbed2], components: [rowDeleteSuccess]})
               collector2.stop();
               collector.stop();
 
@@ -94,7 +94,7 @@ module.exports = {
               .setColor(0x00FF00)
               .setDescription('Glad to see you made the right choice :)')
               ;
-              o.update({embeds: [saveEmbed], components: [rowSaveSuccess]})
+              await o.update({embeds: [saveEmbed], components: [rowSaveSuccess]})
               collector2.stop();
               collector.stop();
             }
@@ -108,7 +108,7 @@ module.exports = {
           .setColor(0x00FF00)
           .setDescription('Glad to see you made the right choice :)')
           ;
-          i.update({embeds: [saveEmbed], components: [rowSaveSuccess]})
+          await i.update({embeds: [saveEmbed], components: [rowSaveSuccess]})
           collector.stop();
         }
       });

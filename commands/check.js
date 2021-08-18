@@ -25,13 +25,13 @@ module.exports = {
 
       //if the user mentioned is the bot it will display the total words counted
       if(user == client.user.id) {
-        con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+        con.query('SELECT SUM(words) AS words FROM users', async (err, total) => {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
           .setFooter('Requested by ' + interaction.user.tag);
-          interaction.reply({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
         });
 
         return;
@@ -39,9 +39,9 @@ module.exports = {
 
       //checks the database for the users total tracked words and local tracked words then it wil display them in a message
       if(client.users.cache.get(user.toString()) !== undefined) {
-        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + interaction.guild.id, (err, localwords) => {
-          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
-            con.query("SELECT * from achievements WHERE id = " + interaction.user.id, (err, achievements) => {
+        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + interaction.guild.id, async (err, localwords) => {
+          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, async (err, globalwords) => {
+            con.query("SELECT * from achievements WHERE id = " + interaction.user.id, async (err, achievements) => {
               user = client.users.cache.get(user);
               avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
               let embed = new Discord.MessageEmbed()
@@ -90,7 +90,7 @@ module.exports = {
               }
 
 
-              interaction.reply({embeds: [embed]})
+              await interaction.reply({embeds: [embed]})
             });
           });
         });
@@ -102,7 +102,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
-        interaction.reply({embeds: [embed]});
+        await interaction.reply({embeds: [embed]});
 
       }
       return;

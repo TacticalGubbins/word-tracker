@@ -1,10 +1,9 @@
 //hmmmmm
 
-
-//update the inv link to allow slash commands
 //and attach a message to each command saying that they can use the inv link to get slash commands as text commands will be deprecated in a few
 
-//also make version that supports text and slash commands 😩
+//make it so that the bot doesn't crash when too many commands are send;
+//make as much as you can async so that multiple cores can be used and the bot will be faster hopefully??
 
 
 
@@ -56,6 +55,9 @@ var data = require("./data.json");
 var oldData = require("./oldData.json");
 //the total amount of words sent across all servers ever
 var totalN = data.totalSent;
+//begins the tracking of messages per hour
+let lastHour = Date.now() + 3600000;
+let messagesCounted = 0;
 
 //helpEmbed stores the Embed message that helps the user to know the commands so I don't ahve to copy this everywhere T_+
 const helpEmbed = new MessageEmbed()
@@ -314,11 +316,9 @@ client.on("interactionCreate", async interaction => {
 
 client.on('messageCreate', async message => {
 
-	d = new Date;
-
 	let timestamp = "[" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + "] ";
 
-	console.log(timestamp + 'message recieved');
+	messageCount(timestamp);
 
 	let args = message.content.split(" ");
 	args = args.filter(item => !!item);
@@ -469,6 +469,18 @@ client.on('messageCreate', async message => {
     });
   });
 });
+
+//tracks the amount of words sent in an hour
+function messageCount(timestamp){
+	if(lastHour < Date.now()){
+		console.log(timestamp + "Counted " + messagesCounted + " messages in the last hour");
+	}
+	else {
+		messagesCounted ++;
+		lastHour = Date.now() + 3600000;
+	}
+
+}
 
 //writes the data in memory to data.json so it can be saved across restarts
 function write (data) {

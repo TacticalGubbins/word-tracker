@@ -7,7 +7,10 @@ module.exports = {
   .setDescription('Gets the leaderboard for this server'),
   async execute(interaction, Discord, client, con) {
     //query gets the leaderboard for the current server
-    con.query("SELECT * FROM users WHERE server_id =  '" + interaction.guild.id + "' ORDER BY words DESC", (err, response) => {
+    con.query("SELECT * FROM users WHERE server_id =  '" + interaction.guild.id + "' ORDER BY words DESC", async (err, response) => {
+
+      await interaction.deferReply();
+
       let embed = new Discord.MessageEmbed()
       .setColor(0xBF66E3)
       .setTitle(interaction.guild.name + ' Leaderboard')
@@ -52,7 +55,7 @@ module.exports = {
         }
       }
 
-      interaction.reply({embeds: [embed]});
+      await interaction.followUp({embeds: [embed]});
 
     });
     return;

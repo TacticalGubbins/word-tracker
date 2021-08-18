@@ -33,7 +33,7 @@ module.exports = {
     .setFooter('Requested by ' + interaction.user.tag)
     ;
 
-    interaction.reply({embeds: [inviteEmbed], components: [row]});
+    await interaction.reply({embeds: [inviteEmbed], components: [row]});
     return;
   }
 };

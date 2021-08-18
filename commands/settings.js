@@ -7,7 +7,7 @@ module.exports = {
   .setDescription('Displays the current settings for the server'),
   async execute(interaction, Discord, client, con) {
       //this will get the current setting for the server and display it in a message
-      con.query('SELECT cooldown, strings FROM servers WHERE id = ' + interaction.guild.id , (err, response) => {
+      con.query('SELECT cooldown, strings FROM servers WHERE id = ' + interaction.guild.id , async (err, response) => {
         let cooldown;
         let strings;
         //if there is no entry for the server it will just dispaly the default settings
@@ -33,7 +33,7 @@ module.exports = {
         .addField('Cooldown Time', + cooldown + " seconds", true)
         .addField('Trigger Words', strings)
         .setFooter('Requested by ' + interaction.user.tag);
-        interaction.reply({embeds: [embed]});
+        await interaction.reply({embeds: [embed]});
 
       });
 

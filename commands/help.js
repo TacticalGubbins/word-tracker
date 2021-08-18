@@ -19,7 +19,7 @@ module.exports = {
 
     //interaction.reply({embeds: [dmEmbed]});
 
-    interaction.reply({embeds: [helpEmbed], ephemeral: true});
+    await interaction.reply({embeds: [helpEmbed], ephemeral: true});
     return;
   }
 };

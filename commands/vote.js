@@ -22,6 +22,6 @@ module.exports = {
     .setColor(0xBF66E3)
     .addField('Vote for the bot', 'You can vote for the bot [here](' + voteLink + ')');
 
-    interaction.reply({embeds: [embed], components: [row]});
+    await interaction.reply({embeds: [embed], components: [row]});
   }
 };

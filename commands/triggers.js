@@ -53,7 +53,7 @@ module.exports = {
         .setColor(0xFF0000)
         .setDescription('You must specify which words you want!')
         .addField('Example','Try doing /tiggers bots nice!',true);
-        interaction.reply({embeds: [embed]});
+        await interaction.reply({embeds: [embed]});
         return;
     }
 
@@ -65,7 +65,7 @@ module.exports = {
         .setDescription('Would you like these to be your triggers: ' + strings + ' ?')
         .addField('Example', 'bots nice!', true)
         .setFooter('Requested by ' + interaction.user.tag);
-        interaction.reply({embeds: [embed], components: [row]})
+        await interaction.reply({embeds: [embed], components: [row]})
 
         //message collector listens for a message sent by the users who called the command.
         //once the collector has recieved a message it will parse it and create a string of the tracked words that will be stored in the database
@@ -75,13 +75,13 @@ module.exports = {
 
 
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
-        collector.on('collect', i => {
+        collector.on('collect', async i => {
           if(i.customId === 'cancel') {
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('Trigger Setup Canceled');
-            i.update({embeds: [embed], components: [rowCancelled]});
+            await i.update({embeds: [embed], components: [rowCancelled]});
             collector.stop();
 
           } else if(i.customId === 'yes'){
@@ -96,7 +96,7 @@ module.exports = {
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('**Trigger Setup Complete**\n\n Triggers added:\n' + strings);
-            i.update({embeds: [embed], components: [rowAdded]});
+            await i.update({embeds: [embed], components: [rowAdded]});
 
             collector.stop();
           }
@@ -106,7 +106,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
-        interaction.reply({embeds: [embed], components: [rowPerms]});
+        await interaction.reply({embeds: [embed], components: [rowPerms]});
         return;
       }
 
