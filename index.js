@@ -34,7 +34,7 @@ const DBL = require("dblapi.js");
 const dbl = new DBL(config.topToken, client);
 
 //invite code for inviting the bot to your discord server. Stored in a variable for more readable code
-const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
+const invLink = 'https://discord.com/api/oauth2/authorize?client_id=730199839199199315&permissions=36507569152&scope=bot%20applications.commands';
 //server invite code for joining the bot's support server. Stored in a varible for the same reason as the last one.
 const discordLink = 'https://discord.gg/Z6rYnpy';
 //A link to the Discord Bot List website so people can vote for the bot if they like it. Stored in a varible for the same reason as the last one.
@@ -313,6 +313,12 @@ client.on("interactionCreate", async interaction => {
 });
 
 client.on('messageCreate', async message => {
+
+	d = new Date;
+
+	let timestamp = "[" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + "] ";
+
+	console.log(timestamp + 'message recieved');
 
 	let args = message.content.split(" ");
 	args = args.filter(item => !!item);

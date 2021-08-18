@@ -39,7 +39,7 @@ module.exports = {
 
 
         //gets the entire users database and sorts through it
-        con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
+        con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", async (err, response) => {
 
           let inTop = false;
           let pos = 1;
@@ -80,7 +80,7 @@ module.exports = {
             }
           }
 
-          interaction.reply({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
 
 
 
