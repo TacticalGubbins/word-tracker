@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('global')
   .setDescription('Gets the global leaderboard'),
-  async execute(interaction, Discord, client, con) {
+  async execute(message, Discord, client, con) {
 
     const buttonRow = new MessageActionRow()
     .addComponents(
@@ -31,7 +31,7 @@ module.exports = {
       .setColor(0xBF66E3)
       .setTitle('Global Leaderboard')
       //.setDescription('Loading leaderboard')
-      .setFooter('Requested by ' + interaction.user.tag);
+      .setFooter('Requested by ' + message.author.tag);
       //let reply = interaction.reply({embeds: [embed]})
 
 
@@ -59,8 +59,8 @@ module.exports = {
               {
                 o++;
               }
-              if(user.id === interaction.user.id) {
-                embed.addField ('#' + o.toString() + '`' + interaction.user.username + '`', row.words.toString());
+              if(user.id === message.author.id) {
+                embed.addField ('#' + o.toString() + '`' + message.author.username + '`', row.words.toString());
                 inTop = true;
               }
               else {
@@ -70,7 +70,7 @@ module.exports = {
               }
 
               if(inTop == false && user.id === interaction.user.id){
-                embed.addField ('#' + o.toString() + '`' + interaction.user.username + '`', row.words.toString(), true);
+                embed.addField ('#' + o.toString() + '`' + message.author.username + '`', row.words.toString(), true);
                 break;
               }
 
@@ -80,7 +80,7 @@ module.exports = {
             }
           }
 
-          interaction.reply({embeds: [embed]});
+          message.channel.send({embeds: [embed]});
 
 
 

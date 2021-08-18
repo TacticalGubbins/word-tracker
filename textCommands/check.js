@@ -6,21 +6,25 @@ module.exports = {
   .setName('check')
   .setDescription('Checks the amount of words the specified user sent')
   .addMentionableOption(option => option.setName('user').setDescription('Check a user\'s word count on this server and all servers combined')),
-  async execute(interaction, Discord, client, con, arguments) {
+  async execute(message, Discord, client, con, arguments) {
 
     data = arguments.data;
+    args = arguments.args;
 
     date = new Date();
     date = Date.now();
 
       //check to see if the value inputted is a user and then filters it and gets just the id
-      let user = interaction.options.getMentionable('user');
+      let user = args[1];
+
       if(user == null)
       {
-        user = interaction.user.id;
+        user = message.author.id;
       }
       else {
-        user = user.id;
+        user = args[1].replace(/D/g,'');
+        user = user.replace("<@!","");
+        user = user.replace(">","");
       }
 
       //if the user mentioned is the bot it will display the total words counted
@@ -30,7 +34,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
-          .setFooter('Requested by ' + interaction.user.tag);
+          .setFooter('Requested by ' + message.author.tag);
           interaction.reply({embeds: [embed]});
         });
 
@@ -39,9 +43,9 @@ module.exports = {
 
       //checks the database for the users total tracked words and local tracked words then it wil display them in a message
       if(client.users.cache.get(user.toString()) !== undefined) {
-        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + interaction.guild.id, (err, localwords) => {
+        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
           con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
-            con.query("SELECT * from achievements WHERE id = " + interaction.user.id, (err, achievements) => {
+            con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
               user = client.users.cache.get(user);
               avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
               let embed = new Discord.MessageEmbed()
@@ -90,7 +94,7 @@ module.exports = {
               }
 
 
-              interaction.reply({embeds: [embed]})
+              message.channel.send({embeds: [embed]})
             });
           });
         });
@@ -102,7 +106,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
-        interaction.reply({embeds: [embed]});
+        message.channel.send({embeds: [embed]});
 
       }
       return;

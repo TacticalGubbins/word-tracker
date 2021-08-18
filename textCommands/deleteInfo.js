@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('delete-info')
   .setDescription('Prompts the user to confirm that they would indeed like to remove their data from the bot'),
-  async execute(interaction, Discord, client, con) {
+  async execute(message, Discord, client, con) {
 
     //different buttons for each outcome
     const row = new MessageActionRow()
@@ -53,28 +53,28 @@ module.exports = {
       .setTitle('Data Deletion')
       .setColor(0xBF66E3)
       .setDescription('Are you sure all of your data ever? *this is non-recoverable*')
-      .setFooter('Requested by ' + interaction.user.tag)
+      .setFooter('Requested by ' + message.author.tag)
       ;
-      interaction.reply({embeds: [deleteEmbed], components: [row]});
+      message.channel.send({embeds: [deleteEmbed], components: [row]});
 
-      const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === interaction.user.id;
-      const filter2 = o => (o.customId === 'sure' || o.customId === 'no2') && o.user.id === interaction.user.id;
+      const filter = i => (i.customId === 'yes' || i.customId === 'no') && i.user.id === message.author.id;
+      const filter2 = o => (o.customId === 'sure' || o.customId === 'no2') && o.user.id === message.author.id;
 
-      const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
+      const collector = message.channel.createMessageComponentCollector({ filter, time: 15000 });
 
       collector.on('collect', async i => {
         //if the yes button is pressed it will transform it into the "are you sure?" button
       	if (i.customId === 'yes') {
       		await i.update({components: [row2] });
 
-          const collector2 = interaction.channel.createMessageComponentCollector({filter2, time: 15000});
+          const collector2 = message.channel.createMessageComponentCollector({filter2, time: 15000});
 
           collector2.on('collect', async o => {
             //deletes the data if the "are you sure?" button is pressed
             if(o.customId === 'sure') {
 
-              con.query('DELETE FROM users WHERE id = ' + interaction.user.id, (err) => {});
-              con.query('DELETE FROM achievements WHERE id = ' + interaction.user.id);
+              con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
+              con.query('DELETE FROM achievements WHERE id = ' + message.author.id);
               let deleteEmbed2 = new Discord.MessageEmbed()
               .setTitle('')
               .setColor()

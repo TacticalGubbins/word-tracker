@@ -7,9 +7,16 @@ module.exports = {
   .setName('triggers')
   .setDescription('Allows the admin to change the triggers for the server')
   .addStringOption(option => option.setName('triggers').setDescription('Enter your words seperated by spaces')),
-  async execute(interaction, Discord, client, con) {
+  async execute(message, Discord, client, con, arguments) {
 
-    let strings = interaction.options.getString('triggers');
+    let strings = "";
+
+    args = arguments.args;
+    args = args.splice(1);
+
+    for(var i = 0; i < args.length; i++){
+      strings = strings + args[i] + " "
+    }
 
     let row = new MessageActionRow()
     .addComponents(
@@ -47,34 +54,34 @@ module.exports = {
       .setDisabled(true)
     )
 
-    if(strings === null){
+    if(strings === undefined){
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must specify which words you want!')
         .addField('Example','Try doing /tiggers bots nice!',true);
-        interaction.reply({embeds: [embed]});
+        message.channel.send({embeds: [embed]});
         return;
     }
 
       //the if statement checks if the user has the manage server or manage channels permissions
-      if(interaction.member.permissions.has(16) || interaction.member.permissions.has(32)) {
+      if(message.member.permissions.has(16) || message.member.permissions.has(32)) {
         let embed = new Discord.MessageEmbed()
         .setTitle('Trigger Setup')
         .setColor(0xBF66E3)
         .setDescription('Would you like these to be your triggers: ' + strings + ' ?')
         .addField('Example', 'bots nice!', true)
-        .setFooter('Requested by ' + interaction.user.tag);
-        interaction.reply({embeds: [embed], components: [row]})
+        .setFooter('Requested by ' + message.author.tag);
+        message.channel.send({embeds: [embed], components: [row]})
 
         //message collector listens for a message sent by the users who called the command.
         //once the collector has recieved a message it will parse it and create a string of the tracked words that will be stored in the database
 
-        let filter = i => (i.user.id === interaction.user.id);
+        let filter = i => (i.user.id === message.author.id);
 
 
 
-        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
+        const collector = message.channel.createMessageComponentCollector({ filter, time: 15000 });
         collector.on('collect', i => {
           if(i.customId === 'cancel') {
             let embed = new Discord.MessageEmbed()
@@ -90,7 +97,7 @@ module.exports = {
             strings = strings.filter((item, index) => strings.indexOf(item) === index);
             strings = strings.join(', ');
             //data.servers[server].strings = strings;
-            con.query("UPDATE servers SET strings = '" + strings + "' WHERE id = " + interaction.guild.id);
+            con.query("UPDATE servers SET strings = '" + strings + "' WHERE id = " + message.guild.id);
 
             let embed = new Discord.MessageEmbed()
             .setTitle('')
@@ -106,7 +113,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
-        interaction.reply({embeds: [embed], components: [rowPerms]});
+        message.channel.send({embeds: [embed], components: [rowPerms]});
         return;
       }
 

@@ -6,15 +6,16 @@ module.exports = {
   .setName('changelog')
   .setDescription('Gets the changelog specified')
   .addStringOption(option => option.setName('version').setDescription('Specify the version you would like to know the changelog for')),
-  async execute(interaction, Discord, client, con, arguments) {
+  async execute(message, Discord, client, con, arguments) {
 
     version = arguments.version;
     changelog = arguments.changelog;
+    args = arguments.args;
 
     let achievement = false;
 
       //if the user specified a version number it will use that if it is good. otherwise it will use the current version's changelog
-      let versionString = interaction.options.getString('version');
+      let versionString = args[1];
 
       if(versionString == null)
       {
@@ -33,7 +34,7 @@ module.exports = {
         for(var i = 0; i < changes.length; i++) {
           embed.addField((i+1).toString(), changes[i]);
         }
-        interaction.reply({embeds: [embed]});
+        message.channel.send({embeds: [embed]});
       }
       //this little bit is for an achievement just a bit of fun that we had
       catch(err) {
@@ -44,7 +45,7 @@ module.exports = {
           .setDescription("stupid idiot")
           .setFooter("try /changelog 3.6.4");
 
-          interaction.reply({embeds: [embed]});
+          message.channel.send({embeds: [embed]});
 
           achievement = true;
           //giveAchievements(message.author, data, "changelog");
@@ -57,7 +58,7 @@ module.exports = {
           .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A) \n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
           .setFooter("try /changelog 3.6.4");
 
-          interaction.reply({embeds: [embed]});
+          message.channel.send({embeds: [embed]});
         }
       }
       return achievement;

@@ -27,7 +27,7 @@ module.exports = {
             .setTitle('')
             .setColor(0xFF0000)
             .setDescription('Please include a time (in seconds) after the command!');
-            interaction.reply({embeds: [embed], components: [row]});
+            interaction.reply({embeds: [embed]});
 
             client.on('interactionCreate', interaction => {
             	if (!interaction.isButton()) return;

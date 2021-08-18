@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('total')
   .setDescription('Gets the total amount of words counted ever'),
-  async execute(interaction, Discord, client, con) {
+  async execute(message, Discord, client, con) {
 
       //query gets the total words sent by everyone
       con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
@@ -13,8 +13,8 @@ module.exports = {
         .setTitle('')
         .setColor(0xBF66E3)
         .setDescription("There have been a total of **__" + total[0].words + "__** countable words sent!")
-        .setFooter('Requested by ' + interaction.user.tag);
-        interaction.reply({embeds: [embed]});
+        .setFooter('Requested by ' + message.author.tag);
+        message.channel.send({embeds: [embed]});
       });
       return;
 

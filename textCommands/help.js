@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('help')
   .setDescription('DMs the user the help file'),
-  async execute(interaction, Discord, client, con, arguments) {
+  async execute(message, Discord, client, con, arguments) {
 
     discordLink = arguments.discordLink;
     invLink = arguments.invLink;
@@ -17,9 +17,9 @@ module.exports = {
     .setDescription("Check your dms :>")
     ;
 
-    //interaction.reply({embeds: [dmEmbed]});
+    message.channel.send({embeds: [dmEmbed]});
 
-    interaction.reply({embeds: [helpEmbed], ephemeral: true});
+    message.author.send({embeds: [helpEmbed], ephemeral: true});
     return;
   }
 };

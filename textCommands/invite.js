@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('invite')
   .setDescription('Responds with invite to bot and support server'),
-  async execute(interaction, Discord, client, con, arguments) {
+  async execute(message, Discord, client, con, arguments) {
 
 
         discordLink = arguments.discordLink;
@@ -30,10 +30,10 @@ module.exports = {
     .setTitle('')
     .setColor(0xBF66E3)
     .setDescription("[[Click here to invite me]](" + invLink + ")" + "\n[[Click here to join the bot's server]](" + discordLink + ")")
-    .setFooter('Requested by ' + interaction.user.tag)
+    .setFooter('Requested by ' + message.author.tag)
     ;
 
-    interaction.reply({embeds: [inviteEmbed], components: [row]});
+    message.channel.send({embeds: [inviteEmbed], components: [row]});
     return;
   }
 };

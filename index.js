@@ -334,16 +334,18 @@ client.on('messageCreate', async message => {
 
     }
 
-		var ret = args[0].replace(prefix,'');
+		try{
+			var ret = args[0].replace(prefix,'');
 		commandNameText = ret;
+	}
+	catch (err) {
 
-		console.log(commandNameText);
-		console.log(client.commandsText.get(commandNameText));
+	}
 
 		if(message.content.startsWith(prefix))
 		{
 			try {
-				let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, helpEmbed, args};
+				let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, helpEmbed, args, prefix};
 				await client.commandsText.get(commandNameText).execute(message, Discord, client, con, arguments);
 			} catch (error) {
 				console.error(error);

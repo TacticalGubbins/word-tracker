@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName("vote")
   .setDescription("Gives the user the link for voting the bot on top.gg"),
-  async execute(interaction, Discord, client, con, arguments) {
+  async execute(message, Discord, client, con, arguments) {
 
     voteLink = arguments.voteLink;
 
@@ -22,6 +22,6 @@ module.exports = {
     .setColor(0xBF66E3)
     .addField('Vote for the bot', 'You can vote for the bot [here](' + voteLink + ')');
 
-    interaction.reply({embeds: [embed], components: [row]});
+    message.channel.send({embeds: [embed], components: [row]});
   }
 };

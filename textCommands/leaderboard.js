@@ -5,14 +5,14 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('leaderboard')
   .setDescription('Gets the leaderboard for this server'),
-  async execute(interaction, Discord, client, con) {
+  async execute(message, Discord, client, con) {
     //query gets the leaderboard for the current server
-    con.query("SELECT * FROM users WHERE server_id =  '" + interaction.guild.id + "' ORDER BY words DESC", (err, response) => {
+    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
       let embed = new Discord.MessageEmbed()
       .setColor(0xBF66E3)
-      .setTitle(interaction.guild.name + ' Leaderboard')
+      .setTitle(message.guild.name + ' Leaderboard')
       .setDescription("This is the server's local leaderboard")
-      .setFooter('Requested by ' + interaction.user.tag);
+      .setFooter('Requested by ' + message.author.tag);
 
 
       let inTop = false;
@@ -31,8 +31,8 @@ module.exports = {
           {
             o++;
           }
-          if(user.id === interaction.user.id) {
-            embed.addField ('#' + o.toString() + '`' + interaction.user.username + '`', row.words.toString());
+          if(user.id === message.author.id) {
+            embed.addField ('#' + o.toString() + '`' + message.author.username + '`', row.words.toString());
             inTop = true;
           }
           else {
@@ -41,8 +41,8 @@ module.exports = {
             }
           }
 
-          if(inTop == false && user.id === interaction.user.id){
-            embed.addField ('#' + o.toString() + '`' + interaction.user.username + '`', row.words.toString(), true);
+          if(inTop == false && user.id === message.author.id){
+            embed.addField ('#' + o.toString() + '`' + message.author.username + '`', row.words.toString(), true);
             break;
           }
 
@@ -52,7 +52,7 @@ module.exports = {
         }
       }
 
-      interaction.reply({embeds: [embed]});
+      message.channel.send({embeds: [embed]});
 
     });
     return;
