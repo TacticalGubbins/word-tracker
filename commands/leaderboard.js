@@ -1,16 +1,18 @@
 module.exports = {
   name: 'leaderboard',
   description: 'gets leaderboard stuffs',
-  execute(message, Discord, client, con) {
-    //query gets the leaderboard for the current server
-    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
+  async execute(message, Discord, client, con) {
+    //quieres stuff
+    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", async (err, response) => {
       let embed = new Discord.MessageEmbed()
       .setColor(0xBF66E3)
       .setTitle(message.guild.name + ' Leaderboard')
       .setDescription("This is the server's local leaderboard")
       .setFooter('Requested by ' + message.author.tag);
 
-        //this part formats the information
+      //getTop(message, response, embed);
+
+
         let inTop = false;
         let pos = 1;
         let o = 0;
@@ -43,7 +45,7 @@ module.exports = {
           catch(err) {}
 
         }
-        message.channel.send(embed);
+        await message.channel.send(embed);
 
     });
     return;

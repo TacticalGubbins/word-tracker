@@ -80,7 +80,9 @@
           "Fixed a bug where deleting your data and then sending a bunch of tracked words would cause the bot to add multiple entries to the database cause a sort of multiplication when sending more tracked words"
         ],
         "1":[
-          "Removed a bunch of extra code and added coments"
+          "Added sharding",
+          "Bot is now on a VPS which means its not hosted on my computer and we are gonna see if that makes the bot any faster",
+          "Command structure has been redone"
         ]
       }
     }

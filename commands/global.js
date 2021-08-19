@@ -1,27 +1,23 @@
 module.exports = {
   name: 'global',
   description: 'gets the global leaderboard',
-  execute(message, args, Discord, client, con) {
+  async execute(message, Discord, client, con, arguments) {
 
-    //displays that the leaderboard is loading because sometimes the query can take a bit
+    args = arguments.args;
+
     let embed = new Discord.MessageEmbed()
     .setColor(0xBF66E3)
     .setTitle('Global Leaderboard')
     .setDescription('Loading leaderboard')
     .setFooter('Requested by ' + message.author.tag);
-    async function loading(message, embed) {
-      let msg = await message.channel.send(embed);
-      setTimeout(() => {
-        msg.edit(embed);
-      }, 1);
-    }
-    loading(message, embed);
 
-      //gets the entire users database and sorts through it
-      con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
+      con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", async (err, response) => {
+
+        const m = await message.channel.send(embed);
+
+        //getTop(message, response, embed);
 
 
-          //this is for changing the pages in the global leaderboard. this broke i don't know why
           let inTop = false;
           let pos = 1;
           let o = 0;
@@ -35,7 +31,7 @@ module.exports = {
           }
           setpos = set/10;
 
-          //formats the embed with the data given by the query
+
           for(let i = 0; i < response.length; i++) {
             try{
               let user = client.users.cache.get(response[i].id.toString());
@@ -67,7 +63,7 @@ module.exports = {
 
           }
           embed.setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
-          //msg.edit(embed);
+          m.edit(embed);
 
       });
       //getGlobalTop(message);
