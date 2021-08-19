@@ -9,6 +9,7 @@ module.exports = {
 
     let achievement = false;
 
+      //if the user specified a version number it will use that if it is good. otherwise it will use the current version's changelog
       if(args[1] === undefined) {
         args[1] = version;
       }
@@ -27,6 +28,7 @@ module.exports = {
         }
         await message.channel.send(embed);
       }
+      //this little bit is for an achievement just a bit of fun that we had
       catch(err) {
         if(args[1] === "stupid" || args[1] === "idiot" || args[1] === "dumb") {
           let embed = new Discord.MessageEmbed()

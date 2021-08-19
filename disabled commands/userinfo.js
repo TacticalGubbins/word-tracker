@@ -2,6 +2,7 @@ module.exports = {
   name: 'userInfo',
   description: 'retrieves basic info on a user',
   execute(message, Discord, client, con) {
+    //this command is not being used but gets the info of a user. DynoBot already does this
     if(args[1] === undefined) {
       let embed = new Discord.MessageEmbed()
       .setTitle('')

@@ -1,6 +1,6 @@
 module.exports = {
   name: 'archive',
-  description: 'doesn\'t work bad ufncntion',
+  description: 'doesn\'t work bad funcntion',
   execute(message, Discord, client, con) {
 
       let archiveEmbed = new Discord.MessageEmbed()
