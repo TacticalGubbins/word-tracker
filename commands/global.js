@@ -8,15 +8,10 @@ module.exports = {
     .setTitle('Global Leaderboard')
     .setDescription('Loading leaderboard')
     .setFooter('Requested by ' + message.author.tag);
-    async function loading(message, embed) {
-      let msg = await message.channel.send(embed);
-      setTimeout(() => {
-        msg.edit(embed);
-      }, 1);
-    }
-    loading(message, embed);
 
       con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
+
+        message.channel.send(embed);
 
         //getTop(message, response, embed);
 

@@ -187,7 +187,8 @@ dbl.on('error', e => {
 
 
 //runs everytime a message is sent
-client.on("message", (message) => {
+client.on("message", async (message) => {
+
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
@@ -432,6 +433,8 @@ client.on("message", (message) => {
 			case (message.content.toLowerCase().startsWith(prefix + "rank")):
 				client.commands.get('rank').execute(message, data, args, Discord, client, con);
 				break;
+			case (message.content.toLowerCase().startsWith(prefix + "ping")):
+				client.commands.get('ping').execute(message, client);
       default:
 
         break;
