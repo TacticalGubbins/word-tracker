@@ -33,6 +33,8 @@ module.exports = {
       hours -= 24;
     }
 
+    interaction.deferReply();
+
     uptime = days + 'd ' + hours + 'hr ' + minutes + 'm ' + seconds + 's';
       //query gets the total tracked words and the rest of the embed has more info about the bot
       con.query("SELECT SUM(words) AS words FROM users", async (err, total) => {
@@ -49,7 +51,7 @@ module.exports = {
         .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
         .addField('Vote for the bot', 'Vote for the bot [here](' + voteLink + ')', true)
         .setFooter('Requested by ' + interaction.user.tag);
-        await interaction.reply({embeds: [embed]});
+        await interaction.followUp({embeds: [embed]});
         //stopTimer(timer);
       });
       return;

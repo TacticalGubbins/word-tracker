@@ -100,7 +100,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 
 // Place your client and guild ids here
 const clientId = '664652964962631680';
-const guildId = '708421545005023232';
+const guildId = '637740070648021000';
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -298,7 +298,7 @@ for (const fileText of commandFilesHandlerText) {
 //runs everytime a message is sent
 client.on("interactionCreate", async interaction => {
 
-	client.users.cache.set(interaction.guild.members.fetch());
+	// client.users.cache.set(interaction.guild.members.fetch());
 
 	const { commandName } = interaction;
 
@@ -354,8 +354,8 @@ client.on('messageCreate', async message => {
 				let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, helpEmbed, args, prefix};
 				await client.commandsText.get(commandNameText).execute(message, Discord, client, con, arguments);
 			} catch (error) {
-				console.error(error);
-				await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+				// console.error(error);
+				// await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 			}
 		}
 
