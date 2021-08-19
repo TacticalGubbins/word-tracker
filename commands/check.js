@@ -1,7 +1,7 @@
 module.exports = {
   name: 'check',
   description: 'checks the amount of words the specified user sent',
-  async execute(message, args, Discord, client, con, data) {
+  async execute(message, Discord, client, con, arguments) {
 
     args = arguments.args;
     data = arguments.data;

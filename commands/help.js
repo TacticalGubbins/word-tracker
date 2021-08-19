@@ -51,5 +51,4 @@ module.exports = {
     }
       await message.channel.send(infoEmbed);
     }
-  }
-};
+  };

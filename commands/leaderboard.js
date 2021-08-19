@@ -3,7 +3,7 @@ module.exports = {
   description: 'gets leaderboard stuffs',
   async execute(message, Discord, client, con) {
     //quieres stuff
-    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", (err, response) => {
+    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", async (err, response) => {
       let embed = new Discord.MessageEmbed()
       .setColor(0xBF66E3)
       .setTitle(message.guild.name + ' Leaderboard')

@@ -363,6 +363,7 @@ catch(err) {
 				await client.commands.get(commandName).execute(message, Discord, client, con, arguments);
 			} catch (error) {
 				logging.error(error);
+				console.error(error);
 				// console.error(error);
 				// await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 			}
