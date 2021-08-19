@@ -35,7 +35,7 @@ module.exports = {
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
           .setFooter('Requested by ' + message.author.tag);
-          interaction.reply({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
         });
 
         return;
@@ -43,9 +43,9 @@ module.exports = {
 
       //checks the database for the users total tracked words and local tracked words then it wil display them in a message
       if(client.users.cache.get(user.toString()) !== undefined) {
-        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
-          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
-            con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
+        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, async (err, localwords) => {
+          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, async (err, globalwords) => {
+            con.query("SELECT * from achievements WHERE id = " + message.author.id, async (err, achievements) => {
               user = client.users.cache.get(user);
               avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
               let embed = new Discord.MessageEmbed()
@@ -94,7 +94,7 @@ module.exports = {
               }
 
 
-              message.channel.send({embeds: [embed]})
+              await message.channel.send({embeds: [embed]})
             });
           });
         });
@@ -106,7 +106,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
-        message.channel.send({embeds: [embed]});
+        await message.channel.send({embeds: [embed]});
 
       }
       return;

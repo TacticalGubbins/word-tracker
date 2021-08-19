@@ -32,7 +32,7 @@ module.exports = {
             .setColor(0xBF66E3)
             .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
             .setFooter('Requested by ' + message.author.tag);
-            message.channel.send({embeds: [embed]});
+            await message.channel.send({embeds: [embed]});
             return;
           }
           //if the user provides a correct number it will update the database with that number
@@ -44,7 +44,7 @@ module.exports = {
             .setColor(0xBF66E3)
             .setDescription('Changed cooldown time to **__' + cooldownTime.toString() + '__** seconds\n\n*active cooldowns will not be cleared*')
             .setFooter('Requested by ' + message.author.tag);
-            message.channel.send({embeds: [embed]});
+            await message.channel.send({embeds: [embed]});
             return;
           }
           //if the user sets a number above 1000 it will stop them from doing so
@@ -53,7 +53,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('Please include a time (in seconds) after the command!');
-          message.channel.send({embeds: [embed]});
+          await message.channel.send({embeds: [embed]});
 
           client.on('interactionCreate', interaction => {
             if (!interaction.isButton()) return;
@@ -66,7 +66,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('The max cooldown time is 1000!')
-          message.channel.send({embeds: [embed]});
+          await message.channel.send({embeds: [embed]});
           return;
         }
         //if the user doesn't have suffcient permissions it will inform them so
@@ -75,7 +75,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must have either ManageServer or ManageChannels permissions to use this command!');
-        message.channel.send({embeds: [embed]});
+        await message.channel.send({embeds: [embed]});
         return;
       }
 

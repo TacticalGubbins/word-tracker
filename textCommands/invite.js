@@ -33,7 +33,7 @@ module.exports = {
     .setFooter('Requested by ' + message.author.tag)
     ;
 
-    message.channel.send({embeds: [inviteEmbed], components: [row]});
+    await message.channel.send({embeds: [inviteEmbed], components: [row]});
     return;
   }
 };

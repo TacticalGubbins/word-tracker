@@ -49,7 +49,7 @@ module.exports = {
         .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
         .addField('Vote for the bot', 'Vote for the bot [here](' + voteLink + ')', true)
         .setFooter('Requested by ' + interaction.author.tag);
-        interaction.channel.send({embeds: [embed]});
+        await interaction.channel.send({embeds: [embed]});
         //stopTimer(timer);
       });
       return;

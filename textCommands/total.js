@@ -14,7 +14,7 @@ module.exports = {
         .setColor(0xBF66E3)
         .setDescription("There have been a total of **__" + total[0].words + "__** countable words sent!")
         .setFooter('Requested by ' + message.author.tag);
-        message.channel.send({embeds: [embed]});
+        await message.channel.send({embeds: [embed]});
       });
       return;
 

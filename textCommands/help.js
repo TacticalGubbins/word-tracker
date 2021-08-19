@@ -17,9 +17,9 @@ module.exports = {
     .setDescription("Check your dms :>")
     ;
 
-    message.channel.send({embeds: [dmEmbed]});
+    await message.channel.send({embeds: [dmEmbed]});
 
-    message.author.send({embeds: [helpEmbed], ephemeral: true});
+    await message.author.send({embeds: [helpEmbed], ephemeral: true});
     return;
   }
 };

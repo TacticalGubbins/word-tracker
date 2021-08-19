@@ -42,7 +42,7 @@ module.exports = {
             embed.setColor(0x17D1FF);
           }
 
-          message.channel.send({embeds: [embed]});
+          await message.channel.send({embeds: [embed]});
           break;
         }
         catch(err) {

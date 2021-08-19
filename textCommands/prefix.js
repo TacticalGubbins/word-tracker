@@ -15,7 +15,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('Please include a prefix after the command!');
-        message.channel.send({embeds: [embed]});
+        await message.channel.send({embeds: [embed]});
         return;
       }
       //checks to see if the prefix specified is less than 5 characters
@@ -32,14 +32,14 @@ module.exports = {
             embed.setColor(0xFF0000)
             .setDescription("Unable to set prefix. Try using a different character.")
           }
-          message.channel.send({embeds: [embed]});
+          await message.channel.send({embeds: [embed]});
         });
       } else {
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('Please make the prefix less than 5 characters!');
-        message.channel.send({embeds: [embed]});
+        await message.channel.send({embeds: [embed]});
         return;
       }
     } else {
@@ -47,7 +47,7 @@ module.exports = {
       .setTitle('')
       .setColor(0xFF0000)
       .setDescription('You must be an Administrator to use this command!');
-      message.channel.send({embeds: [embed]});
+      await message.channel.send({embeds: [embed]});
       return;
     }
     return;

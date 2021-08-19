@@ -52,7 +52,7 @@ module.exports = {
         }
       }
 
-      message.channel.send({embeds: [embed]});
+      await message.channel.send({embeds: [embed]});
 
     });
     return;
