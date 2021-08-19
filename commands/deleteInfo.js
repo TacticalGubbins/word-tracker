@@ -1,7 +1,7 @@
 module.exports = {
   name: 'deleteInfo',
   description: 'prompts the user to confirm that they would indeed like to remove their data from the bot',
-  execute(message, Discord, client, con) {
+  async execute(message, Discord, client, con) {
 
       let deleteEmbed = new Discord.MessageEmbed()
       .setTitle('Data Deletion')
@@ -11,11 +11,11 @@ module.exports = {
       .addField("**Cancel**", 'to cancel')
       .setFooter('Requested by ' + message.author.tag)
       ;
-      message.channel.send(deleteEmbed);
+      await message.channel.send(deleteEmbed);
 
       //create a message collector that checks for cancel or username
       let collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
-      collector.on('collect', message => {
+      collector.on('collect', async message => {
 
         //delete user info
         if (message.content === message.author.username) {
@@ -28,7 +28,7 @@ module.exports = {
           .setColor(0xFF0000)
           .setDescription('Your data has been deleted, sorry to see you go :<')
           ;
-          message.channel.send(deleteEmbed2);
+          await message.channel.send(deleteEmbed2);
           collector.stop();
 
           //cancel the collector, do not delete
@@ -39,7 +39,7 @@ module.exports = {
           .setColor(0x00FF00)
           .setDescription('Glad to see you made the right choice :)')
           ;
-          message.channel.send(saveEmbed);
+          await message.channel.send(saveEmbed);
           collector.stop();
 
           //stop multiple instances from running
@@ -54,7 +54,7 @@ module.exports = {
           .setColor(0xFF0000)
           .setDescription('Not an input')
           ;
-          message.channel.send(wrongEmbed);
+          await message.channel.send(wrongEmbed);
         }
       });
       return;

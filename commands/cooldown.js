@@ -1,7 +1,9 @@
 module.exports = {
   name: 'cooldown',
   description: 'Allows the Administrators set up the cooldown time for the server',
-  execute(message, args, Discord, client, con) {
+  async execute(message, Discord, client, con, arguments) {
+
+    args = arguments.args;
 
       if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
         if(args[1] <= 1000) {
@@ -10,7 +12,7 @@ module.exports = {
             .setTitle('')
             .setColor(0xFF0000)
             .setDescription('Please include a time (in seconds) after the command!');
-            message.channel.send(embed);
+            await message.channel.send(embed);
             return;
           }
           if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
@@ -21,7 +23,7 @@ module.exports = {
             .setColor(0xBF66E3)
             .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
             .setFooter('Requested by ' + message.author.tag);
-            message.channel.send(embed);
+            await message.channel.send(embed);
             return;
           }
           if(isNaN(args[1])) {
@@ -29,7 +31,7 @@ module.exports = {
             .setTitle('')
             .setColor(0xFF0000)
             .setDescription('Please include a time (in seconds) after the command!');
-            message.channel.send(embed);
+            await message.channel.send(embed);
             return;
           }
           if(!isNaN(args[1])) {
@@ -40,7 +42,7 @@ module.exports = {
             .setColor(0xBF66E3)
             .setDescription('Changed cooldown time to **__' + args[1] + '__** seconds\n\n*active cooldowns will not be cleared*')
             .setFooter('Requested by ' + message.author.tag);
-            message.channel.send(embed);
+            await message.channel.send(embed);
             return;
           }
         } else {
@@ -48,7 +50,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('The max cooldown time is 1000!')
-          message.channel.send(embed);
+          await message.channel.send(embed);
           return;
         }
       } else {
@@ -56,7 +58,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
-        message.channel.send(embed);
+        await message.channel.send(embed);
         return;
       }
 

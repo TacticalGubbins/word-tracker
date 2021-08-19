@@ -1,7 +1,12 @@
 module.exports = {
   name: 'changelog',
   description: 'gets the changelog specified',
-  execute(message, args, version, changelog, Discord, client, con) {
+  async execute(message, Discord, client, con, arguments) {
+
+    args = arguments.args;
+    version = arguments.version;
+    changelog = arguments.changelog;
+
     let achievement = false;
 
       if(args[1] === undefined) {
@@ -20,7 +25,7 @@ module.exports = {
         for(var i = 0; i < changes.length; i++) {
           embed.addField(i+1, changes[i]);
         }
-        message.channel.send(embed);
+        await message.channel.send(embed);
       }
       catch(err) {
         if(args[1] === "stupid" || args[1] === "idiot" || args[1] === "dumb") {
@@ -30,7 +35,7 @@ module.exports = {
           .setDescription("stupid idiot")
           .setFooter("try " + prefix + "changelog 3.6.4");
 
-          message.channel.send(embed);
+          await message.channel.send(embed);
 
           achievement = true;
           //giveAchievements(message.author, data, "changelog");
@@ -43,7 +48,7 @@ module.exports = {
           .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A) \n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
           .setFooter("try " + prefix + "changelog 3.6.4");
 
-          message.channel.send(embed);
+          await message.channel.send(embed);
         }
       }
       return achievement;

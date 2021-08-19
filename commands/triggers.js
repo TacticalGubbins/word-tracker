@@ -1,7 +1,7 @@
 module.exports = {
   name: 'triggers',
   description: 'allows the admin to change the triggers for the server',
-  execute(message, Discord, client, con) {
+  async execute(message, Discord, client, con) {
 
       //the if statement checks if the user has the manage server or manage channels permissions
       if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
@@ -12,16 +12,16 @@ module.exports = {
         .addField('Example', 'bots nice!', true)
         .addField('Cancel', 'Type "CANCEL" to cancel', true)
         .setFooter('Requested by ' + message.author.tag);
-        message.channel.send(embed);
+        await message.channel.send(embed);
 
         let collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 20000 });
-        collector.on('collect', message => {
+        collector.on('collect', async message => {
           if(message.content === "CANCEL") {
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('Trigger Setup Canceled');
-            message.channel.send(embed);
+            await message.channel.send(embed);
             collector.stop();
 
           } else {
@@ -36,7 +36,7 @@ module.exports = {
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('**Trigger Setup Complete**\n\n Triggers added:\n' + strings);
-            message.channel.send(embed);
+            await message.channel.send(embed);
 
             collector.stop();
           }
@@ -46,7 +46,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
-        message.channel.send(embed);
+        await message.channel.send(embed);
         return;
       }
 

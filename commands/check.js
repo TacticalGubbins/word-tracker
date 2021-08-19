@@ -1,7 +1,11 @@
 module.exports = {
   name: 'check',
   description: 'checks the amount of words the specified user sent',
-  execute(message, args, Discord, client, con, data) {
+  async execute(message, args, Discord, client, con, data) {
+
+    args = arguments.args;
+    data = arguments.data;
+
     date = new Date();
     date = Date.now();
 
@@ -25,14 +29,14 @@ module.exports = {
       }
 
       if(user == client.user.id) {
-        con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+        con.query('SELECT SUM(words) AS words FROM users', async (err, total) => {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
           .setFooter('Requested by ' + message.author.tag);
           //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
-          message.channel.send(embed);
+          await message.channel.send(embed);
         });
 
         return;
@@ -40,9 +44,9 @@ module.exports = {
 
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
-        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, (err, localwords) => {
-          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, (err, globalwords) => {
-            con.query("SELECT * from achievements WHERE id = " + message.author.id, (err, achievements) => {
+        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, async (err, localwords) => {
+          con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, async (err, globalwords) => {
+            con.query("SELECT * from achievements WHERE id = " + message.author.id, async (err, achievements) => {
               user = client.users.cache.get(user);
               avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
               let embed = new Discord.MessageEmbed()
@@ -92,7 +96,7 @@ module.exports = {
               }
 
 
-              message.channel.send(embed)
+              await message.channel.send(embed)
             });
           });
         });
@@ -105,7 +109,7 @@ module.exports = {
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
         //message.channel.send("That's not a person!")
-        message.channel.send(embed);
+        await message.channel.send(embed);
 
       }
       return;

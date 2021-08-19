@@ -1,7 +1,11 @@
 module.exports = {
   name: 'invite',
   description: 'responds with invite to bot and support server',
-  execute(message, discordLink, invLink, Discord, client, con) {
+  async execute(message, Discord, client, con, arguments) {
+
+    discordLink = arguments.discordLink;
+    invLink = arguments.invLink;
+
     let inviteEmbed = new Discord.MessageEmbed()
     .setTitle('')
     .setColor(0xBF66E3)
@@ -9,7 +13,7 @@ module.exports = {
     .setFooter('Requested by ' + message.author.tag)
     ;
 
-    message.channel.send(inviteEmbed);
+    await message.channel.send(inviteEmbed);
     return;
   }
 };

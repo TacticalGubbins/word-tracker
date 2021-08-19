@@ -1,8 +1,11 @@
 module.exports = {
   name: 'top',
   description: 'gets top sending user',
-  execute(message, Discord, client, con, data) {
-    con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
+  async execute(message, Discord, client, con, arguments) {
+
+    data = arguments.data;
+
+    con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', async (err, rows) => {
       for(let i in rows) {
         try {
           let embed = new Discord.MessageEmbed()
@@ -32,7 +35,7 @@ module.exports = {
             embed.setColor(0x17D1FF);
           }
 
-          message.channel.send(embed);
+          await message.channel.send(embed);
           break;
         }
         catch(err) {

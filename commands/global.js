@@ -1,7 +1,9 @@
 module.exports = {
   name: 'global',
   description: 'gets the global leaderboard',
-  execute(message, args, Discord, client, con) {
+  async execute(message, Discord, client, con, arguments) {
+
+    args = arguments.args;
 
     let embed = new Discord.MessageEmbed()
     .setColor(0xBF66E3)
@@ -9,9 +11,9 @@ module.exports = {
     .setDescription('Loading leaderboard')
     .setFooter('Requested by ' + message.author.tag);
 
-      con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", (err, response) => {
+      con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", async (err, response) => {
 
-        message.channel.send(embed);
+        const m = await message.channel.send(embed);
 
         //getTop(message, response, embed);
 
@@ -61,7 +63,7 @@ module.exports = {
 
           }
           embed.setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
-          //msg.edit(embed);
+          m.edit(embed);
 
       });
       //getGlobalTop(message);
