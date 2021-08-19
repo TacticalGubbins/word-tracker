@@ -82,7 +82,7 @@ module.exports = {
 
 
         const collector = message.channel.createMessageComponentCollector({ filter, time: 15000 });
-        collector.on('collect', i => {
+        collector.on('collect', async i => {
           if(i.customId === 'cancel') {
             let embed = new Discord.MessageEmbed()
             .setTitle('')

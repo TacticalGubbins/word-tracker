@@ -11,7 +11,7 @@
 //Discord.js Library initialization
 const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
 const Discord = require('discord.js');
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS"]});
+const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
 
 //extra libraries
 const fs = require('fs');
@@ -56,7 +56,7 @@ var oldData = require("./oldData.json");
 //the total amount of words sent across all servers ever
 var totalN = data.totalSent;
 //begins the tracking of messages per hour
-let lastHour = Date.now() + 3600000;
+let lastHour = Date.now() + 10000;
 let messagesCounted = 0;
 
 //helpEmbed stores the Embed message that helps the user to know the commands so I don't ahve to copy this everywhere T_+
@@ -261,7 +261,7 @@ client.on('ready', () => {
 
 //if the bot successfully uploads the server count it will log it in the console. and display an error if it failed
 dbl.on('posted', () => {
-  logging.info('Server count posted!')
+  logging.info('Server count posted!');
 });
 
 dbl.on('error', e => {
@@ -474,64 +474,21 @@ client.on('messageCreate', async message => {
 function messageCount(timestamp){
 	if(lastHour < Date.now()){
 		console.log(timestamp + "Counted " + messagesCounted + " messages in the last hour");
+		lastHour = Date.now() + 3600000;
 	}
 	else {
 		messagesCounted ++;
-		lastHour = Date.now() + 3600000;
 	}
 
 }
 
 //writes the data in memory to data.json so it can be saved across restarts
-function write (data) {
+function write(data) {
 
   //Save file
   fs.writeFile('data.json', JSON.stringify(data, null, 2), (err) => {
     if (err) throw err;
   });
 }
-
-
-//generate a new password for louie personal server
-function newPASSWORD() {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   var length = 23;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-
-   result = result.toString();
-
-   fs.writeFile('PASSWORD.txt' , result , (err) => {
-     if (err) throw err;
-   });
-
-   //console.log(`New PASSWORD Generated: ` + result + `nn`);
-   return result;
-}
-
-//gets the "ogs" from data.json
-function getOGS(data) {
-  let ogs = new Set();
-  for(var i = 0; i < data.ogs.length; i++) {
-    ogs.add(data.ogs[i]);
-  }
-  return ogs;
-}
-
-//timer for debugging
-function startTimer() {
-  let timer = Date.now();
-  return timer;
-}
-
-//same for this one
-function stopTimer(timer) {
-  let timer2 = Date.now();
-  logging.debug((timer2 - timer)/1000);
-}
-
 
 client.login(config.token);

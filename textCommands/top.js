@@ -11,7 +11,7 @@ module.exports = {
 
 
     //query gets the person with the most words sent
-    con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', (err, rows) => {
+    con.query('SELECT id, SUM(words) AS words FROM users GROUP BY id ORDER BY words DESC', async (err, rows) => {
       for(let i in rows) {
         try {
           let embed = new Discord.MessageEmbed()

@@ -8,7 +8,7 @@ module.exports = {
   async execute(message, Discord, client, con) {
 
       //query gets the total words sent by everyone
-      con.query('SELECT SUM(words) AS words FROM users', (err, total) => {
+      con.query('SELECT SUM(words) AS words FROM users', async (err, total) => {
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xBF66E3)

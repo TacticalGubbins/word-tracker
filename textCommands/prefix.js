@@ -23,7 +23,7 @@ module.exports = {
         //data.servers[server].prefix = args[1].toLowerCase();
         let embed = new Discord.MessageEmbed()
         .setTitle('')
-        con.query("UPDATE IGNORE servers SET prefix = '" + args[1].toLowerCase() + "' WHERE id = " + message.guild.id, (err, response) => {
+        con.query("UPDATE IGNORE servers SET prefix = '" + args[1].toLowerCase() + "' WHERE id = " + message.guild.id, async (err, response) => {
           if(err === null) {
             embed.setColor(0xBF66E3)
             .setDescription("Prefix has been changed to **" + args[1] + "**")

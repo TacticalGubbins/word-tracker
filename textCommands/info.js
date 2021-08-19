@@ -35,7 +35,7 @@ module.exports = {
 
     uptime = days + 'd ' + hours + 'hr ' + minutes + 'm ' + seconds + 's';
       //query gets the total tracked words and the rest of the embed has more info about the bot
-      con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+      con.query("SELECT SUM(words) AS words FROM users", async (err, total) => {
         let embed = new Discord.MessageEmbed()
         .setTitle(client.user.tag)
         .setColor(0xBF66E3)

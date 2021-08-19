@@ -9,7 +9,7 @@ module.exports = {
 
     prefix = arguments.prefix
       //this will get the current setting for the server and display it in a message
-      con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , (err, response) => {
+      con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id , async (err, response) => {
         let cooldown;
         let strings;
         //if there is no entry for the server it will just dispaly the default settings
