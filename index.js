@@ -38,7 +38,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.0';
+const version = '3.9.1';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
