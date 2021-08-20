@@ -222,18 +222,16 @@ client.on("message", async (message) => {
   }
 
   //query retrieves the prefix from the server that the message was sent in
-  con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, async (err, prefixResponse) => {
+  con.query('SELECT id, prefix FROM servers WHERE id = ' + message.guild.id, async (err, prefixResponse) => {
 		try {
 			prefix = prefixResponse[0].prefix;
 		}
 		catch(err) {
 			prefix = defaultPrefix;
-			con.query('SELECT id FROM servers WHERE id = ' + message.guild.id, async (err, idResponse) => {
-				if(idResponse[0] === undefined) {
-					con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
-				}
-			});
 
+			if(idResponse[0] === undefined) {
+				con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+			}
 		}
 
 		try{

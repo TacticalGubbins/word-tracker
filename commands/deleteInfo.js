@@ -21,7 +21,6 @@ module.exports = {
         //delete user info
         if (message.content === message.author.username) {
           con.query('DELETE FROM users WHERE id = ' + message.author.id, (err) => {});
-          con.query('DELETE FROM achievements WHERE id = ' + message.author.id);
           let deleteEmbed2 = new Discord.MessageEmbed()
           .setTitle('')
           .setColor()

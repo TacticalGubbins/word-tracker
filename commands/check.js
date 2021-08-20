@@ -46,58 +46,56 @@ module.exports = {
       if(client.users.cache.get(user.toString()) !== undefined) {
         con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, async (err, localwords) => {
           con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, async (err, globalwords) => {
-            con.query("SELECT * from achievements WHERE id = " + message.author.id, async (err, achievements) => {
-              user = client.users.cache.get(user);
-              avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
-              let embed = new Discord.MessageEmbed()
-              .setAuthor(user.username + "#" + user.discriminator, avatarURL)
-              .setColor(0xBF66E3)
+            user = client.users.cache.get(user);
+            avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
+            let embed = new Discord.MessageEmbed()
+            .setAuthor(user.username + "#" + user.discriminator, avatarURL)
+            .setColor(0xBF66E3)
 
-              //checks to see if the user is in the database
-              if(!(globalwords[0].words > 0)){
-                embed.setDescription("That user hasn't sent any countable words!")
-                .setTitle('')
+            //checks to see if the user is in the database
+            if(!(globalwords[0].words > 0)){
+              embed.setDescription("That user hasn't sent any countable words!")
+              .setTitle('')
+            }
+            else {
+              let words;
+
+              if(localwords[0] === undefined)
+              {
+                words = 0;
               }
               else {
-                let words;
+                words = localwords[0].words;
+              }
+              embed.addField("Words Tracked (this server)", words, true)
+              .addField("Words Tracked (all servers)", globalwords[0].words, true)
+              //.addField("​","`Cooldown:` " + parseInt(date) - parseInt(globalwords[0].cooldown))
+              //console.log(globalwords[0].cooldown);
+              //.setTitle("Achievements: " + emoji("760541771632738345"))
 
-                if(localwords[0] === undefined)
-                {
-                  words = 0;
-                }
-                else {
-                  words = localwords[0].words;
-                }
-                embed.addField("Words Tracked (this server)", words, true)
-                .addField("Words Tracked (all servers)", globalwords[0].words, true)
-                //.addField("​","`Cooldown:` " + parseInt(date) - parseInt(globalwords[0].cooldown))
-                //console.log(globalwords[0].cooldown);
-                //.setTitle("Achievements: " + emoji("760541771632738345"))
+            }
 
-              }
+            let ogs = new Set();
+            for(var i = 0; i < data.ogs.length; i++) {
+              ogs.add(data.ogs[i]);
+            }
 
-              let ogs = new Set();
-              for(var i = 0; i < data.ogs.length; i++) {
-                ogs.add(data.ogs[i]);
-              }
-
-              if(ogs.has(user.id)) {
-                embed.setColor(0xFFA417);
-              }
-              //custom colors for pog people
-              if(user.id === '445668261338677248') {
-                embed.setColor(0xFF1CC5);
-              }
-              if(user.id === '448269007800238080') {
-                embed.setColor(0x17FF1B);
-              }
-              if(user.id === '656755471847260170') {
-                embed.setColor(0x17D1FF);
-              }
+            if(ogs.has(user.id)) {
+              embed.setColor(0xFFA417);
+            }
+            //custom colors for pog people
+            if(user.id === '445668261338677248') {
+              embed.setColor(0xFF1CC5);
+            }
+            if(user.id === '448269007800238080') {
+              embed.setColor(0x17FF1B);
+            }
+            if(user.id === '656755471847260170') {
+              embed.setColor(0x17D1FF);
+            }
 
 
-              await message.channel.send(embed)
-            });
+            await message.channel.send(embed)
           });
         });
 

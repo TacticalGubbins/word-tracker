@@ -7,16 +7,17 @@ module.exports = {
 
       //checks to see if the user has suffcient permissions
       if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
+
+        if(args[1] === undefined) {
+          let embed = new Discord.MessageEmbed()
+          .setTitle('')
+          .setColor(0xFF0000)
+          .setDescription('Please include a time (in seconds) after the command!');
+          await message.channel.send(embed);
+          return;
+        }
         //checks to see if there even is a number provided
         if(args[1] <= 1000) {
-          if(args[1] === undefined) {
-            let embed = new Discord.MessageEmbed()
-            .setTitle('')
-            .setColor(0xFF0000)
-            .setDescription('Please include a time (in seconds) after the command!');
-            await message.channel.send(embed);
-            return;
-          }
           //if the user provides none, off, or 0 as an argument it will remove the cooldown
           if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
             con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id);
