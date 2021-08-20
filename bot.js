@@ -163,9 +163,9 @@ dbl.on('error', e => {
 });
 
 
-/*client.on("guildCreate", (guild) => {
-  storeServerName(guild, data);
-});*/
+client.on("guildCreate", (guild) => {
+  
+});
 
 process.on("message", message => {
     if (!message.type) return false;
@@ -175,16 +175,26 @@ process.on("message", message => {
 				shardId = message.data.shardId;
     };
 });
+
+
+let recentMessage = new Set();
+
 //runs everytime a message is sent
 client.on("message", async (message) => {
 
-	//add anti spamming measure
-	antiSpam = ;
-	nextMessageAllowed = Date.now() + 1000;
-	if(nextMessageAllowed > Date.now() && message.author.id) return;
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
+
+	//anti-spamming for consective messages
+	if(recentMessage.has(message.author.id)) return;
+
+	recentMessage.add(message.author.id);
+
+	setTimeout(() => {
+		console.log("this should execute after a second has passed");
+		recentMessage.delete(message.author.id);
+	}, 1000);
 
 	//splits the sentence into an array, splitting at spaces
 	let args = message.content.split(" ");
@@ -232,8 +242,9 @@ client.on("message", async (message) => {
 		catch(err) {
 			prefix = defaultPrefix;
 
-			if(idResponse[0] === undefined) {
-				con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+			if(prefixResponse[0] === undefined) {
+				con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
+				logging.info("Created new server!");
 			}
 		}
 
@@ -257,6 +268,11 @@ client.on("message", async (message) => {
 		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
+
+				if (user[0] === undefined){
+					con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
+					logging.info("Created new user!");
+				}
 				//redefines the number of words variable
         let numWords = 0;
 				//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
@@ -284,7 +300,8 @@ client.on("message", async (message) => {
         }
 				//this for loop goes through all of the words and counts how many times a tracked word has been said
         for(let j in words) {
-					try{
+
+					try {
 						if (user[0].cooldown > Date.now()) {
 							break;
 						}

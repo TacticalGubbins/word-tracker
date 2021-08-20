@@ -87,6 +87,11 @@
         "2":[
           "Removed lots of extraneous code",
           "Removed extra queries and some unused variables"
+        ],
+        "3":[
+          "Added an antispam for counted words and commands to keep the bot running faster",
+          "Fixed a bug where words were not being tracked",
+          
         ]
       }
     }
