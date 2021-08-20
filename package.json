@@ -1,6 +1,6 @@
 {
   "name": "word-tracker",
-  "version": "3.9.2",
+  "version": "3.9.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/TacticalGubbins/n-word-bot.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "TacticalGubbins#0900 and Cyakat#5061",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/TacticalGubbins/n-word-bot/issues"
