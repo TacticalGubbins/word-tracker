@@ -260,8 +260,6 @@ client.on("message", async (message) => {
 					con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
 					logging.info("Created new user!");
 				}
-				console.log(user[0]);
-				console.log(server[0]);
 				//redefines the number of words variable
         let numWords = 0;
 				//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
