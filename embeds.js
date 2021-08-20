@@ -1,0 +1,38 @@
+const Discord = require("discord.js");
+
+module.exports  = {
+  joinEmbed: new Discord.MessageEmbed()
+  .setColor(0xBF66E3)
+  .setThumbnail("https://cdn.discordapp.com/avatars/730199839199199315/3a86a5442372b5450a40a00ce674960e.webp?size=128")
+  .setTitle("Thank you for inviting me!")
+  .setDescription("Here are some things you can do to setup the bot on your server!")
+  .addField("You can use:", "**n!prefix** to change the prefix for this server\n\n**n!triggers** to change what words are tracked\n\n**n!cooldown** to change how long a user will have to wait after sending more than 5 tracked words")
+  .addField("Settings", "Use **n!settings** to see the settings for this server"),
+  helpEmbed: new MessageEmbed()
+  .setTitle('Bot Help')
+  .setColor(0xBF66E3)
+  .setDescription('')
+  .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+  .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
+  .addField('n!' + 'help', 'Gives you this message', true)
+  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+  .addField('Commands', '----')
+  .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
+  // .addField('n!' + 'count', 'Same as **n!check**', true)
+  .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
+  .addField('n!' + 'top', 'Gives info about top-sending user', true)
+  .addField('n!' + 'leaderboard', 'Retrieves the top 10 users in a server', true)
+  .addField('n!' + 'global', 'Retrieves the top 10 sending users world-wide', true)
+  .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+  .addField('n!' + 'info', 'Gives info about the bot', true)
+  .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+  //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+  .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+  // .addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
+  .addField("Server Setup", "----")
+  .addField('n!' + "settings", "View all current server settings", true)
+  .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
+  .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
+  .addField('n!' + 'prefix', '(prefix) Changes the prefix for the server', true)
+  ;
+}
