@@ -305,22 +305,6 @@ catch(err) {
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
 				con.query('SELECT words FROM users WHERE id = ' + message.author.id + ' GROUP BY id', (err3	, totalWords) => {
-					try {
-						totalWords = totalWords[0].words;
-						//will give users achievements depending on how many words they have sent
-						switch(true) {
-							case (totalWords >= 10000):
-								giveAchievements(message.author, data, "10000");
-							case (totalWords >= 1000):
-								giveAchievements(message.author, data, "1000");
-							case (totalWords >= 100):
-								giveAchievements(message.author, data, "100");
-								break;
-							default:
-							break;
-						}
-					}
-					catch(err){}
 
 					//redefines the number of words variable
 	        let nword = 0;
