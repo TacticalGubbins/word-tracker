@@ -282,8 +282,13 @@ client.on("message", async (message) => {
 				//this for loop goes through all of the words and counts how many times a tracked word has been said
         for(let j in words) {
 
-					if (user[0].cooldown > Date.now()) {
-						break;
+					try {
+						if (user[0].cooldown > Date.now()) {
+							break;
+						}
+					}
+					catch(err) {
+						
 					}
 
           curr = words[j];
