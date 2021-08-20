@@ -1,10 +1,10 @@
 {
-  "name": "n-word-bot",
-  "version": "3.6.2",
+  "name": "word-tracker",
+  "version": "3.9.2",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node ."
   },
   "repository": {
     "type": "git",
