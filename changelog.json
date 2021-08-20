@@ -83,6 +83,10 @@
           "Added sharding",
           "Bot is now on a VPS which means its not hosted on my computer and we are gonna see if that makes the bot any faster",
           "Command structure has been redone"
+        ],
+        "2":[
+          "Removed lots of extraneous code",
+          "Removed extra queries and some unused variables"
         ]
       }
     }
