@@ -182,8 +182,7 @@ client.on("message", async (message) => {
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
-
-	console.log(recentMessage.has(message.author.id));
+	
 	//anti-spamming for consective messages
 	if(recentMessage.has(message.author.id)) return;
 
