@@ -247,78 +247,6 @@ client.on("message", async (message) => {
 
     return;
   }
-	// //If a user tries to dm the bot it will turn them away and send what ever the user sent to louie aka TacticalGubbins
-	// //will also return an error if it failed
-  // else if(message.channel.type === 'dm' && (args[1] == undefined)){
-  //   message.channel.send("Shut up retard go talk in a server");
-  //   try {
-  //     client.guilds.cache.get('687077613457375438').member('250408653830619137').send("**Message from " + message.author.username + ":** " + message.content + "");
-  //   }
-  //   catch(err) {
-  //    logging.warn('\nCould not send dm to louie. This should only happen if the testing bot is running \n');
-  //    console.log(err)
-  //   }
-  //   return;
-  // }
-	// //if the sends n!help followed by a command it will reply with additional help. this isn't working properly right now.
-	// else if (message.channel.type === 'dm' && args[1] != undefined){
-	// 	let infoEmbed = new Discord.MessageEmbed()
-	// 	.setTitle('More Info')
-	// 	.setColor(0xBF66E3)
-	// 	.setDescription('')
-	// 	switch (args[1]) {
-	// 		case 'triggers':
-	// 				infoEmbed.addField('n!triggers', 'You can change the tracked words by running this command. The default tracked words are \'bruh, nice, bots, cow\'. This command can only be run by those with the ManageChannels or ManageServer perms.');
-	// 			break;
-	// 		case ('check' || 'count'):
-	// 			infoEmbed.addField('n!check/count', 'This command allows you to see how many words you or someone else has sent. You can see how many words someone else has sent by sending n!check @Cyakat');
-	// 			break;
-	// 		case 'total':
-	// 			infoEmbed.addField('n!total', 'This command will show the total amount of words sent by everyone. This can also be seen in the bot\'s status sometimes and also with n!check @Word Tracker');
-	// 			break;
-	// 		case 'top':
-	// 			infoEmbed.addField('n!top', 'This command will show the top user aka the user who has sent the most tracked words');
-	// 			break;
-	// 		case ('leaderboard' || 'lead'):
-	// 			infoEmbed.addField('n!leaderboard/lead', 'This command will display a leaderboard ranking each user based on how many words were sent in the server. This leaderboard is local and will only show a list containing people in the server the command was used in');
-	// 			break;
-	// 		case ('globalLeaderboard' || 'global'):
-	// 			infoEmbed.addField('n!globalLeaderboard/global', 'This command will display a leaderboard ranking everyone based on how many words they have sent overall');
-	// 			break;
-	// 		case 'delete':
-	// 			infoEmbed.addField('n!delete', 'This command will delete all of your data from every server the bot permanently.');
-	// 			break;
-	// 		case 'info':
-	// 			infoEmbed.addField('n!info', 'This command will show some information about the bot');
-	// 			break;
-	// 		case 'invite':
-	// 			infoEmbed.addField('n!info', 'This command will give an invite code to the support server and also a link to invite the bot to your own server.');
-	// 			break;
-	// 		case 'changelog':
-	// 			infoEmbed.addField('n!changelog', 'This command will show the most recent changes made to the bot or you can specify a version. n!changelog 3.9.0');
-	// 			break;
-	// 		case ('ach' || 'achievements'):
-	// 			infoEmbed.addField('n!ach/achievements', 'This command will dm you your own achievements. If you specify a user, the bot will show their achievements. n!ach @Cyakat');
-	// 			break;
-	// 		case 'settings':
-	// 			infoEmbed.addField('n!settings', 'This command will show the current server\'s settings including the current triggers, cooldown, and prefix. This command can be run by anyone.');
-	// 			break;
-	// 		case 'cooldown':
-	// 			infoEmbed.addField('n!cooldown', 'This command allows you to change the cooldown for the server. The cooldown will activate after 5 or more tracked words were sent. While cooldown is applied, any tracked words sent by a user will not be tracked. This settings can only be changed by those with the ManageServer or ManageChannels perms. n!cooldown 5');
-	// 			break;
-	// 		case ('setPrefix' || 'prefix'):
-	// 			infoEmbed.addField('n!setPrefix/prefix', 'This command allows you to change the prefix for the server. This setting can only be changed by those with ManageServer or ManageChannels perms.');
-	// 			break;
-	// 		case 'help':
-	// 			infoEmbed.addField('n!help', 'This command will dm you the help file giving you all of the commands.');
-	// 			break;
-	// 		default:
-	// 			infoEmbed.setColor(0xFF0000)
-	// 			.setDescription('Command not found');
-	// 	}
-	// 	message.channel.send(infoEmbed);
-	// 	return;
-	// }
 
   //query retrieves the prefix from the server that the message was sent in
   con.query('SELECT prefix FROM servers WHERE id = ' + message.guild.id, async (err, prefixResponse) => {
@@ -362,126 +290,8 @@ catch(err) {
 				let arguments = {version, voteLink, achievements, data, changelog, discordLink, invLink, args, prefix, shardId};
 				await client.commands.get(commandName).execute(message, Discord, client, con, arguments);
 			} catch (error) {
-				logging.error(error);
-				console.error(error);
-				// console.error(error);
-				// await message.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 			}
 		}
-    //this switch statement handels all of the commands and if no commands are said, the bot will count the amount of tracked words in the message. this is handled by the default
-    // switch(true) {
-    //   case (message.content === "🥚"):
-    //     giveAchievements(message.author, data, "egg");
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "bottom")):
-    //     //bottom(message);
-		// 		client.commands.get('bottom').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "global") || message.content.toLowerCase().startsWith(prefix + "globalleaderboard") || message.content.toLowerCase().startsWith(prefix + "globallead")):
-    //     //global(message);
-		// 		client.commands.get('global').execute(message, args, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "settings")):
-    //     //settings(message);
-		// 		client.commands.get('settings').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "info") || message.content.toLowerCase().startsWith(prefix + "stats")):
-    //     //info(message);
-		// 		client.commands.get('info').execute(message, version, voteLink, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "cooldown")):
-    //     //cooldownFunction(message, args);
-		// 		client.commands.get('cooldown').execute(message, args, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "triggers")):
-    //     //triggers(message);
-		// 		client.commands.get('triggers').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith("invitenow")):
-    //     //invitenow(message);
-		// 		client.commands.get('invitenow').execute(message, Discord, client, con);
-		// 		giveAchievements(message.author, data, "inviteNow");
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "check") || message.content.toLowerCase().startsWith(prefix + "count")):
-    //     //check(message, args);
-		// 		client.commands.get('check').execute(message, args, Discord, client, con, data);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "total")):
-    //     //total(message);
-		// 		client.commands.get('total').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "invite")):
-    //     //invite(message);
-		// 		client.commands.get('invite').execute(message, discordLink, invLink, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "archive")):
-    //     //archive(message);
-		// 		client.commands.get('archive').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "top")):
-    //     //top(message);
-		// 		client.commands.get('top').execute(message, Discord, client, con, data);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + 'leaderboard') || message.content.toLowerCase().startsWith(prefix + 'lead')):
-    //     //leaderboard(message);
-		// 		client.commands.get('leaderboard').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + 'deleteinfo') || message.content.toLowerCase().startsWith(prefix + 'delete')):
-    //     //deleteInfo(message);
-		// 		client.commands.get('deleteInfo').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + 'userinfo')):
-    //     //userinfo(message);
-		// 		client.commands.get('userinfo').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "help")):
-    //     //help(message, prefix);
-		// 		client.commands.get('help').execute(message, prefix, discordLink, invLink, args, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "changelog")):
-    //     //changelogFunction(message, args);
-		// 		let achievement = false;
-		// 		achievement = client.commands.get('changelog').execute(message, args, version, changelog, Discord, client, con);
-		// 		if(achievement) {
-		// 			giveAchievements(message.author, data, "changelog");
-		// 		}
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "setprefix") || message.content.toLowerCase().startsWith(prefix + "prefix")):
-    //     //prefixFunction(message, prefix, args);
-		// 		client.commands.get('prefix').execute(message, prefix, args, Discord, client, con);
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "setpplength") || message.content.toLowerCase().startsWith(prefix + "setpp") || message.content.toLowerCase().startsWith(prefix + "pp")):
-    //     //pp(message, data, args);
-		// 		client.commands.get('pp').execute(message, data, args, Discord, client, con);
-		// 		giveAchievements(message.author, data, "pp");
-		//
-    //     break;
-    //   case (message.content.toLowerCase().startsWith(prefix + "achievements") || message.content.toLowerCase().startsWith(prefix + "achievement") || message.content.toLowerCase().startsWith(prefix + "ach")):
-    //     //achievementsCheck(message, data, args);
-		// 		client.commands.get('achievementsCheck').execute(message, data, args, achievements, Discord, client, con);
-    //     return;
-    //     break;
-    //   case (message.guild.id == 694263395884728412 && message.channel.id == 694265200454402108 && message.content == fs.readFileSync('PASSWORD.txt')):
-    //     //checkVerify(message);
-		// 		client.commands.get('checkVerify').execute(message, Discord, client, con);
-    //     break;
-    //   case (message.guild.id == 694263395884728412 && message.channel.id != 694265200454402108 && message.content.toLowerCase().startsWith("getverify")):
-    //     message.channel.send("Current verify message: **" + fs.readFileSync('PASSWORD.txt').toString() + "**");
-    //     return;
-    //     break;
-		// 	case (message.content.toLowerCase().startsWith(prefix + "vote")):
-		// 		client.commands.get('vote').execute(message, voteLink, Discord, client, con);
-		// 		return;
-		// 		break;
-		// 	case (message.content.toLowerCase().startsWith(prefix + "rank")):
-		// 		client.commands.get('rank').execute(message, data, args, Discord, client, con);
-		// 		break;
-		// 	case (message.content.toLowerCase().startsWith(prefix + "ping")):
-		// 		client.commands.get('ping').execute(message, client);
-    //   default:
-		//
-    //     break;
-    // }
 		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
     let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
@@ -609,55 +419,12 @@ catch(err) {
 });
 
 //writes the data in memory to data.json so it can be saved across restarts
-function write (data) {
+function write(data) {
 
   //Save file
   fs.writeFile('data.json', JSON.stringify(data, null, 2), (err) => {
     if (err) throw err;
   });
 }
-
-
-//generate a new password for louie personal server
-function newPASSWORD() {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   var length = 23;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-
-   result = result.toString();
-
-   fs.writeFile('PASSWORD.txt' , result , (err) => {
-     if (err) throw err;
-   });
-
-   //console.log(`New PASSWORD Generated: ` + result + `nn`);
-   return result;
-}
-
-//gets the "ogs" from data.json
-function getOGS(data) {
-  let ogs = new Set();
-  for(var i = 0; i < data.ogs.length; i++) {
-    ogs.add(data.ogs[i]);
-  }
-  return ogs;
-}
-
-//timer for debugging
-function startTimer() {
-  let timer = Date.now();
-  return timer;
-}
-
-//same for this one
-function stopTimer(timer) {
-  let timer2 = Date.now();
-  logging.debug((timer2 - timer)/1000);
-}
-
 
 client.login(config.token);
