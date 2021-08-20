@@ -229,8 +229,9 @@ client.on("message", async (message) => {
 		catch(err) {
 			prefix = defaultPrefix;
 
-			if(idResponse[0] === undefined) {
-				con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+			if(prefixResponse[0] === undefined) {
+				con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
+				logging.info("Created new server!");
 			}
 		}
 
@@ -254,6 +255,13 @@ client.on("message", async (message) => {
 		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
+
+				if (user[0] === undefined){
+					con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
+					logging.info("Created new user!");
+				}
+				console.log(user[0]);
+				console.log(server[0]);
 				//redefines the number of words variable
         let numWords = 0;
 				//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
@@ -287,9 +295,7 @@ client.on("message", async (message) => {
 							break;
 						}
 					}
-					catch(err) {
-						
-					}
+					catch(err) {}
 
           curr = words[j];
 
