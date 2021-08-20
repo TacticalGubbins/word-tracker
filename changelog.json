@@ -91,7 +91,9 @@
         "3":[
           "Added an antispam for counted words and commands to keep the bot running faster",
           "Fixed a bug where words were not being tracked",
-          
+          "Added a message that is sent when the bot joins a server giving info on how to setup the bot",
+          "Fixed a bug where dming the bot a message other than n!help or help would cause an error",
+          "Added a seperate embeds file to store all of the big embeds that don't have changing text"
         ]
       }
     }
