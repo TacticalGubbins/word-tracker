@@ -198,8 +198,35 @@ client.on("message", async (message) => {
 	args = args.filter(item => !!item);
   //ignore messages sent in dms
   if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help")) && args[1] === undefined) {
+		const helpEmbed = new MessageEmbed()
+	  .setTitle('Bot Help')
+	  .setColor(0xBF66E3)
+	  .setDescription('')
+	  .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+	  .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
+	  .addField('n!' + 'help', 'Gives you this message', true)
+	  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+	  .addField('Commands', '----')
+	  .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
+	  // .addField('n!' + 'count', 'Same as **n!check**', true)
+	  .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
+	  .addField('n!' + 'top', 'Gives info about top-sending user', true)
+	  .addField('n!' + 'leaderboard', 'Retrieves the top 10 users in a server', true)
+	  .addField('n!' + 'global', 'Retrieves the top 10 sending users world-wide', true)
+	  .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+	  .addField('n!' + 'info', 'Gives info about the bot', true)
+	  .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+	  //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+	  .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+	  // .addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
+	  .addField("Server Setup", "----")
+	  .addField('n!' + "settings", "View all current server settings", true)
+	  .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
+	  .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
+	  .addField('n!' + 'prefix', '(prefix) Changes the prefix for the server', true)
+	  ;
 
-    await message.channel.send(allEmbeds.helpEmbed)
+		await message.channel.send(helpEmbed);
 
     return;
   }
