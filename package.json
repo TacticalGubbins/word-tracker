@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TacticalGubbins/n-word-bot.git"
+    "url": "git+https://github.com/TacticalGubbins/word-tracker.git"
   },
   "keywords": [],
   "author": "TacticalGubbins#0900 and Cyakat#5061",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TacticalGubbins/n-word-bot/issues"
+    "url": "https://github.com/TacticalGubbins/word-tracker/issues"
   },
-  "homepage": "https://github.com/TacticalGubbins/n-word-bot#readme",
+  "homepage": "https://github.com/TacticalGubbins/word-tracker#readme",
   "dependencies": {
     "colors": "^1.4.0",
     "dblapi.js": "^2.4.1",
