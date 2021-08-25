@@ -96,7 +96,7 @@
           "Added a seperate embeds file to store all of the big embeds that don't have changing text"
         ],
         "4":[
-          "Fixed the global leaderboard. All users should now be visible on it. It was an issue with sharding and shards having incomplete caches""
+          "Fixed the global leaderboard. All users should now be visible on it. It was an issue with sharding and shards having incomplete caches"
         ]
       }
     }
