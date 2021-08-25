@@ -141,12 +141,12 @@ client.on('ready', async () => {
 				// console.log(`m[${key}] = ${value}`);
 
 				//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
-				server = client.guilds.cache.get(key);
+				server = await client.guilds.cache.get(key);
 				serverMembers = await server.members.fetch();
 
 				//puts guild members in to the user cache as users and not as GuildMembers
 				serverMembers.each(async (serverMember) => {
-					client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
+					await client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
 				});
 
 			});
@@ -156,7 +156,7 @@ client.on('ready', async () => {
 			results.forEach((users) => {
 				users.forEach((user) => {
 					//combines the existing cache with the new caches from the shards
-					client.users.cache.set(user.id, new Discord.User(client, user));
+					await client.users.cache.set(user.id, new Discord.User(client, user));
 				});
 			});
 			logging.info("Done!");
@@ -374,12 +374,12 @@ async function refreshLocalUserCache() {
 		// console.log(`m[${key}] = ${value}`);
 
 		//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
-		server = client.guilds.cache.get(key);
+		server = await client.guilds.cache.get(key);
 		serverMembers = await server.members.fetch();
 
 		//puts guild members in to the user cache as users and not as GuildMembers
 		serverMembers.each(async (serverMember) => {
-			client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
+			await client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
 		});
 	});
 	logging.info("Done!");
