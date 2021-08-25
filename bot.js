@@ -182,8 +182,6 @@ let recentMessage = new Set();
 //runs everytime a message is sent
 client.on("message", async (message) => {
 
-	console.log(client.users.cache);
-
   //ignore messages sent by bots
   if(message.author.bot ) return;
 
