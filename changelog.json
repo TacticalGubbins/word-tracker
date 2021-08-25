@@ -94,6 +94,9 @@
           "Added a message that is sent when the bot joins a server giving info on how to setup the bot",
           "Fixed a bug where dming the bot a message other than n!help or help would cause an error",
           "Added a seperate embeds file to store all of the big embeds that don't have changing text"
+        ],
+        "4":[
+          "Fixed the global leaderboard. All users should now be visible on it. It was an issue with sharding and shards having incomplete caches"
         ]
       }
     }
