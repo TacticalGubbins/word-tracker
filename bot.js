@@ -176,7 +176,7 @@ client.on('ready', async () => {
 				});
 			});
 			logging.info("Done!");
-		}, 3600000);
+		}, 60000);
 });
 
 
