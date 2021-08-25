@@ -131,9 +131,9 @@ client.on('ready', async () => {
 
     }, 10000);
 
-		setTimeout(async () => {
-			refreshLocalUserCache()
-		}, 60000);
+		// setTimeout(() => {
+		// 	refreshLocalUserCache()
+		// }, 60000);
 
 		setInterval(async () => {
 			//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one. This repeats every hour
@@ -162,7 +162,7 @@ client.on('ready', async () => {
 				});
 			});
 			logging.info("Done!");
-		}, 1800000);
+		}, 30000);
 });
 
 client.on("guildCreate", async (guild) => {
@@ -377,7 +377,7 @@ async function refreshLocalUserCache() {
 
 		//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
 		server = await client.guilds.cache.get(key);
-		serverMembers = await server.members.fetch();
+		serverMembers = await server.members.fetch().catch("is this the error?");
 
 		//puts guild members in to the user cache as users and not as GuildMembers
 		serverMembers.each(async (serverMember) => {
