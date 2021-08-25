@@ -147,34 +147,36 @@ client.on('ready', async () => {
 
     }, 10000);
 
-allServers = new Discord.Collection();
+		refreshUserCache();
 
-	let server;
-		//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one.
-		logging.info("Inititializing the user cache! This may take some time!");
-		client.guilds.cache.each(async (value, key, map) => {
-			console.log(`m[${key}] = ${value}`);
+		setInterval(async () => {
+			//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one. This repeats every hour
+			logging.info("Inititializing the user cache! This may take some time!");
+			let server;
+			client.guilds.cache.each(async (value, key, map) => {
+				// console.log(`m[${key}] = ${value}`);
 
-			//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
-			server = client.guilds.cache.get(key);
-			serverMembers = await server.members.fetch();
+				//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
+				server = client.guilds.cache.get(key);
+				serverMembers = await server.members.fetch();
 
-			//puts guild members in to the user cache as users and not as GuildMembers
-			serverMembers.each(async (serverMember) => {
-				client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
-			});
+				//puts guild members in to the user cache as users and not as GuildMembers
+				serverMembers.each(async (serverMember) => {
+					client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
+				});
 
-			//gets the user cache from the remaining shards
-			let results = await client.shard.fetchClientValues('users.cache');
+				//gets the user cache from the remaining shards
+				let results = await client.shard.fetchClientValues('users.cache');
 
-			results.forEach((users) => {
-				users.forEach((user) => {
-					//combines the existing cache with the new caches from the shards
-					client.users.cache.set(user.id, new Discord.User(client, user));
+				results.forEach((users) => {
+					users.forEach((user) => {
+						//combines the existing cache with the new caches from the shards
+						client.users.cache.set(user.id, new Discord.User(client, user));
+					});
 				});
 			});
-		});
-		logging.info("Done!");
+			logging.info("Done!");
+		}, 3600000);
 });
 
 
@@ -389,6 +391,35 @@ async function write(data) {
   await fs.writeFile('data.json', JSON.stringify(data, null, 2), (err) => {
     if (err) throw err;
   });
+}
+
+async function refreshUserCache() {
+	//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one. This repeats every hour
+	logging.info("Inititializing the user cache! This may take some time!");
+	let server;
+	client.guilds.cache.each(async (value, key, map) => {
+		// console.log(`m[${key}] = ${value}`);
+
+		//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
+		server = client.guilds.cache.get(key);
+		serverMembers = await server.members.fetch();
+
+		//puts guild members in to the user cache as users and not as GuildMembers
+		serverMembers.each(async (serverMember) => {
+			client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
+		});
+
+		//gets the user cache from the remaining shards
+		let results = await client.shard.fetchClientValues('users.cache');
+
+		results.forEach((users) => {
+			users.forEach((user) => {
+				//combines the existing cache with the new caches from the shards
+				client.users.cache.set(user.id, new Discord.User(client, user));
+			});
+		});
+	});
+	logging.info("Done!");
 }
 
 client.login(config.token);
