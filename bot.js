@@ -147,6 +147,20 @@ client.on('ready', () => {
 
     }, 10000);
 
+allServers = new Discord.Collection();
+
+	let server;
+		//add all the guilds that the server is in to the cache so the leaderboard can work better
+		logging.info("Inititializing the user cache! This may take some time!");
+		client.guilds.cache.each((value, key, map) => {
+			console.log(`m[${key}] = ${value}`);
+
+			server = client.guilds.cache.get(key);
+
+			client.users.cache.set(server.members.fetch());
+
+		});
+		console.log("Done!");
 });
 
 
@@ -162,6 +176,7 @@ dbl.on('error', e => {
 
 client.on("guildCreate", async (guild) => {
   await guild.systemChannel.send(joinEmbed);
+	client.users.cache.set(guild.members.fetch());
 });
 
 process.on("message", message => {
@@ -173,16 +188,13 @@ process.on("message", message => {
     };
 });
 
-
 let recentMessage = new Set();
 
 //runs everytime a message is sent
 client.on("message", async (message) => {
-
-
   //ignore messages sent by bots
   if(message.author.bot ) return;
-	
+
 	//anti-spamming for consective messages
 	if(recentMessage.has(message.author.id)) return;
 
