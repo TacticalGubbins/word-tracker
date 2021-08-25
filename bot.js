@@ -156,7 +156,7 @@ client.on('ready', async () => {
 			results.forEach((users) => {
 				users.forEach((user) => {
 					//combines the existing cache with the new caches from the shards
-					await client.users.cache.set(user.id, new Discord.User(client, user));
+					client.users.cache.set(user.id, new Discord.User(client, user));
 				});
 			});
 			logging.info("Done!");
