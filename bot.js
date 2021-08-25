@@ -41,7 +41,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.3';
+const version = '3.9.4';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -104,7 +104,7 @@ const logging = {
 //***************************
 
 //runs with the bot starts up
-client.on('ready', () => {
+client.on('ready', async () => {
   console.log("BOT ONLINE");
 
 	//states version upon startup in the bot's status
@@ -125,7 +125,7 @@ client.on('ready', () => {
 
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
-  setInterval(() => {
+  setInterval( async () => {
       if(stat === 0) {
         client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
         stat = 1;
@@ -150,17 +150,31 @@ client.on('ready', () => {
 allServers = new Discord.Collection();
 
 	let server;
-		//add all the guilds that the server is in to the cache so the leaderboard can work better
+		//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one.
 		logging.info("Inititializing the user cache! This may take some time!");
-		client.guilds.cache.each((value, key, map) => {
+		client.guilds.cache.each(async (value, key, map) => {
 			console.log(`m[${key}] = ${value}`);
 
+			//This bit gets the guild members from every guild that the shard is in and puts them into the user cache
 			server = client.guilds.cache.get(key);
+			serverMembers = await server.members.fetch();
 
-			client.users.cache.set(server.members.fetch());
+			//puts guild members in to the user cache as users and not as GuildMembers
+			serverMembers.each(async (serverMember) => {
+				client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
+			});
 
+			//gets the user cache from the remaining shards
+			let results = await client.shard.fetchClientValues('users.cache');
+
+			results.forEach((users) => {
+				users.forEach((user) => {
+					//combines the existing cache with the new caches from the shards
+					client.users.cache.set(user.id, new Discord.User(client, user));
+				});
+			});
 		});
-		console.log("Done!");
+		logging.info("Done!");
 });
 
 
@@ -176,7 +190,7 @@ dbl.on('error', e => {
 
 client.on("guildCreate", async (guild) => {
   await guild.systemChannel.send(joinEmbed);
-	client.users.cache.set(guild.members.fetch());
+	//add something to update all of the shards' caches
 });
 
 process.on("message", message => {
@@ -192,6 +206,7 @@ let recentMessage = new Set();
 
 //runs everytime a message is sent
 client.on("message", async (message) => {
+
   //ignore messages sent by bots
   if(message.author.bot ) return;
 
