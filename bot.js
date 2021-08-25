@@ -29,10 +29,6 @@ const allEmbeds = require("./embeds.js");
 
 const joinEmbed = allEmbeds.joinEmbed;
 
-//DBLapi initialization
-const DBL = require("dblapi.js");
-const dbl = new DBL(config.topToken, client);
-
 //invite code for inviting the bot to your discord server. Stored in a variable for more readable code
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 //server invite code for joining the bot's support server. Stored in a varible for the same reason as the last one.
@@ -111,18 +107,6 @@ client.on('ready', async () => {
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
-	//will try to upload the bot's server count to Discord Bot List every 1800 seconds
-  setInterval(() => {
-        try {
-          dbl.postStats(client.guilds.size);
-        }
-        catch(err) {
-          logging.warn("Something's wrong with dblapi? \n");
-          console.log(err);
-          console.log("\n");
-        }
-    }, 1800000);
-
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
   setInterval( async () => {
@@ -147,6 +131,8 @@ client.on('ready', async () => {
 
     }, 10000);
 
+		refreshLocalUserCache()
+
 		setInterval(async () => {
 			//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one. This repeats every hour
 			logging.info("Inititializing the user cache! This may take some time!");
@@ -163,30 +149,19 @@ client.on('ready', async () => {
 					client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
 				});
 
-				//gets the user cache from the remaining shards
-				let results = await client.shard.fetchClientValues('users.cache');
+			});
+			//gets the user cache from the remaining shards
+			let results = await client.shard.fetchClientValues('users.cache');
 
-				results.forEach((users) => {
-					users.forEach((user) => {
-						//combines the existing cache with the new caches from the shards
-						client.users.cache.set(user.id, new Discord.User(client, user));
-					});
+			results.forEach((users) => {
+				users.forEach((user) => {
+					//combines the existing cache with the new caches from the shards
+					client.users.cache.set(user.id, new Discord.User(client, user));
 				});
 			});
 			logging.info("Done!");
-		}, 60000);
+		}, 20000);
 });
-
-
-//if the bot successfully uploads the server count it will log it in the console. and display an error if it failed
-dbl.on('posted', () => {
-  logging.info('Server count posted!')
-});
-
-dbl.on('error', e => {
-  logging.warn(`Lets go dbl api is sucking again`);
-});
-
 
 client.on("guildCreate", async (guild) => {
   await guild.systemChannel.send(joinEmbed);
@@ -206,6 +181,8 @@ let recentMessage = new Set();
 
 //runs everytime a message is sent
 client.on("message", async (message) => {
+
+	console.log(client.users.cache);
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
@@ -391,7 +368,7 @@ async function write(data) {
   });
 }
 
-async function refreshUserCache() {
+async function refreshLocalUserCache() {
 	//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one. This repeats every hour
 	logging.info("Inititializing the user cache! This may take some time!");
 	let server;
@@ -405,16 +382,6 @@ async function refreshUserCache() {
 		//puts guild members in to the user cache as users and not as GuildMembers
 		serverMembers.each(async (serverMember) => {
 			client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
-		});
-
-		//gets the user cache from the remaining shards
-		let results = await client.shard.fetchClientValues('users.cache');
-
-		results.forEach((users) => {
-			users.forEach((user) => {
-				//combines the existing cache with the new caches from the shards
-				client.users.cache.set(user.id, new Discord.User(client, user));
-			});
 		});
 	});
 	logging.info("Done!");
