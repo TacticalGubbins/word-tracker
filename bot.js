@@ -162,7 +162,7 @@ client.on('ready', async () => {
 				});
 			});
 			logging.info("Done!");
-		}, 30000);
+		}, 1800000);
 });
 
 client.on("guildCreate", async (guild) => {
