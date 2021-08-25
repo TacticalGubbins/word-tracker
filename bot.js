@@ -147,8 +147,6 @@ client.on('ready', async () => {
 
     }, 10000);
 
-		refreshUserCache();
-
 		setInterval(async () => {
 			//This segment starts by caching all of the users in its current servers. Then it will get the user caches from all of the other shards and combine them into one. This repeats every hour
 			logging.info("Inititializing the user cache! This may take some time!");
