@@ -165,6 +165,17 @@ client.on('ready', async () => {
 		// 	});
 		// 	logging.info("Done!");
 		// }, 1800000);
+		setInterval(async () => {
+			//gets the user cache from the other shards
+			let results = await client.shard.fetchClientValues('users.cache');
+
+			results.forEach((users) => {
+				users.forEach((user) => {
+					// combines the existing cache with the new caches from the shards
+					client.users.cache.set(user.id, new Discord.User(client, user));
+				});
+			});
+		}, 60000);
 });
 
 client.on("guildCreate", async (guild) => {
@@ -188,7 +199,6 @@ let guildsInCache = new Set();
 client.on("message", async (message) => {
 
 	addGuildMembersToUserCache(message.guild, guildsInCache);
-	combineShardCaches();
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
@@ -406,19 +416,6 @@ async function addGuildMembersToUserCache(guild, guildsInCache) {
 		guildsInCache.add(guild.id);
 	}
 
-}
-
-async function combineShardCaches() {
-	//gets the user cache from the other shards
-		let results = await client.shard.fetchClientValues('users.cache');
-
-		results.forEach((users) => {
-			users.forEach((user) => {
-				// combines the existing cache with the new caches from the shards
-				client.users.cache.set(user.id, new Discord.User(client, user));
-			});
-		});
-		// logging.info("Done!");
 }
 
 client.login(config.token);
