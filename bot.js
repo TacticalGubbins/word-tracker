@@ -100,7 +100,7 @@ const logging = {
 //***************************
 
 //runs with the bot starts up
-client.on('ready', async () => {
+client.on('ready', () => {
   console.log("BOT ONLINE");
 
 	//states version upon startup in the bot's status
@@ -109,7 +109,7 @@ client.on('ready', async () => {
 
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
-  setInterval( async () => {
+  setInterval(() => {
 		if(shardId === 0) {
       if(stat === 0) {
         client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
