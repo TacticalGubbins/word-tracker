@@ -110,26 +110,24 @@ client.on('ready', () => {
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
   setInterval(() => {
-		if(shardId === 0) {
-      if(stat === 0) {
-        client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
-        stat = 1;
+    if(stat === 0) {
+      client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
+      stat = 1;
+    }
+    else if(stat === 1) {
+      con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+        client.user.setActivity(`${total[0].words} words`, {type : 'WATCHING'});
+      });
+      stat = Math.floor(Math.random() * Math.floor(20));
+      if(stat === 1 || stat > 2) {
+        stat = 0;
       }
-      else if(stat === 1) {
-        con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
-          client.user.setActivity(`${total[0].words} words`, {type : 'WATCHING'});
-        });
-        stat = Math.floor(Math.random() * Math.floor(20));
-        if(stat === 1 || stat > 2) {
-          stat = 0;
-        }
-      }
-      else if(stat === 2) {
-          client.user.setActivity(`with my ${data.ppLength} pp`, {type : 'PLAYING'});
-          stat = 0;
-      }
-      write(data);
-		}
+    }
+    else if(stat === 2) {
+        client.user.setActivity(`with my ${data.ppLength} pp`, {type : 'PLAYING'});
+        stat = 0;
+    }
+    write(data);
 
   }, 10000);
 
