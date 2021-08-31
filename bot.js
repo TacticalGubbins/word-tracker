@@ -167,7 +167,7 @@ client.on('ready', () => {
 		// }, 1800000);
 		setInterval(async () => {
 			//gets the user cache from the other shards
-			let results = await client.shard.fetchClientValues('users.cache').catch(err);
+			let results = await client.shard.fetchClientValues('users.cache');
 
 			results.forEach((users) => {
 				users.forEach((user) => {
@@ -388,7 +388,7 @@ async function addGuildMembersToUserCache(guild, guildsInCache) {
 	let serverMembers;
 
 	if(!guildsInCache.has(guild.id)){
-		serverMembers = await guild.members.fetch().catch(err);
+		serverMembers = await guild.members.fetch();
 
 		serverMembers.each(async (serverMember) => {
 			await client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
