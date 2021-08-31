@@ -96,7 +96,7 @@
           "Added a seperate embeds file to store all of the big embeds that don't have changing text"
         ],
         "4":[
-          "Fixed the global leaderboard. All users should now be visible on it. It was an issue with sharding and shards having incomplete caches"
+          "Leaderboard is as fixed as it can get rn 😔 People who have not sent messages recently will not show up on the leaderboard. I thought I had a way of doing this but it takes to much cpu and memory. I will try to figure out a better way at some point though"
         ]
       }
     }
