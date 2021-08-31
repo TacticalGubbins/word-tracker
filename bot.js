@@ -100,7 +100,7 @@ const logging = {
 //***************************
 
 //runs with the bot starts up
-client.on('ready', async () => {
+client.on('ready', () => {
   console.log("BOT ONLINE");
 
 	//states version upon startup in the bot's status
@@ -109,7 +109,7 @@ client.on('ready', async () => {
 
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
-  setInterval( async () => {
+  setInterval(() => {
 		if(shardId === 0) {
       if(stat === 0) {
         client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
@@ -167,7 +167,7 @@ client.on('ready', async () => {
 		// }, 1800000);
 		setInterval(async () => {
 			//gets the user cache from the other shards
-			let results = await client.shard.fetchClientValues('users.cache').catch(err);
+			let results = await client.shard.fetchClientValues('users.cache');
 
 			results.forEach((users) => {
 				users.forEach((user) => {
@@ -388,7 +388,7 @@ async function addGuildMembersToUserCache(guild, guildsInCache) {
 	let serverMembers;
 
 	if(!guildsInCache.has(guild.id)){
-		serverMembers = await guild.members.fetch().catch(err);
+		serverMembers = await guild.members.fetch();
 
 		serverMembers.each(async (serverMember) => {
 			await client.users.cache.set(serverMember.user.id, new Discord.User(client, serverMember.user));
