@@ -29,10 +29,6 @@ const allEmbeds = require("./embeds.js");
 
 const joinEmbed = allEmbeds.joinEmbed;
 
-//DBLapi initialization
-const DBL = require("dblapi.js");
-const dbl = new DBL(config.topToken, client);
-
 //invite code for inviting the bot to your discord server. Stored in a variable for more readable code
 const invLink = 'https://discordapp.com/oauth2/authorize?client_id=730199839199199315&scope=bot&permissions=392257';
 //server invite code for joining the bot's support server. Stored in a varible for the same reason as the last one.
@@ -41,7 +37,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.3';
+const version = '3.9.4';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -111,57 +107,46 @@ client.on('ready', () => {
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
 
-	//will try to upload the bot's server count to Discord Bot List every 1800 seconds
-  setInterval(() => {
-        try {
-          dbl.postStats(client.guilds.size);
-        }
-        catch(err) {
-          logging.warn("Something's wrong with dblapi? \n");
-          console.log(err);
-          console.log("\n");
-        }
-    }, 1800000);
-
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
   setInterval(() => {
-      if(stat === 0) {
-        client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
-        stat = 1;
+    if(stat === 0) {
+      client.user.setActivity(`n!help for help`, {type : 'PLAYING'});
+      stat = 1;
+    }
+    else if(stat === 1) {
+      con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
+        client.user.setActivity(`${total[0].words} words`, {type : 'WATCHING'});
+      });
+      stat = Math.floor(Math.random() * Math.floor(20));
+      if(stat === 1 || stat > 2) {
+        stat = 0;
       }
-      else if(stat === 1) {
-        con.query("SELECT SUM(words) AS words FROM users", (err, total) => {
-          client.user.setActivity(`${total[0].words} words`, {type : 'WATCHING'});
-        });
-        stat = Math.floor(Math.random() * Math.floor(20));
-        if(stat === 1 || stat > 2) {
-          stat = 0;
-        }
-      }
-      else if(stat === 2) {
-          client.user.setActivity(`with my ${data.ppLength} pp`, {type : 'PLAYING'});
-          stat = 0;
-      }
-      write(data);
+    }
+    else if(stat === 2) {
+        client.user.setActivity(`with my ${data.ppLength} pp`, {type : 'PLAYING'});
+        stat = 0;
+    }
+    write(data);
 
-    }, 10000);
+  }, 10000);
 
+		setInterval(async () => {
+			//gets the user cache from the other shards
+			let results = await client.shard.fetchClientValues('users.cache');
+
+			results.forEach((users) => {
+				users.forEach((user) => {
+					// combines the existing cache with the new caches from the shards
+					client.users.cache.set(user.id, new Discord.User(client, user));
+				});
+			});
+		}, 60000);
 });
-
-
-//if the bot successfully uploads the server count it will log it in the console. and display an error if it failed
-dbl.on('posted', () => {
-  logging.info('Server count posted!')
-});
-
-dbl.on('error', e => {
-  logging.warn(`Lets go dbl api is sucking again`);
-});
-
 
 client.on("guildCreate", async (guild) => {
   await guild.systemChannel.send(joinEmbed);
+	//add something to update all of the shards' caches
 });
 
 process.on("message", message => {
@@ -173,16 +158,14 @@ process.on("message", message => {
     };
 });
 
-
 let recentMessage = new Set();
 
 //runs everytime a message is sent
 client.on("message", async (message) => {
 
-
   //ignore messages sent by bots
   if(message.author.bot ) return;
-	
+
 	//anti-spamming for consective messages
 	if(recentMessage.has(message.author.id)) return;
 

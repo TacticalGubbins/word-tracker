@@ -94,6 +94,9 @@
           "Added a message that is sent when the bot joins a server giving info on how to setup the bot",
           "Fixed a bug where dming the bot a message other than n!help or help would cause an error",
           "Added a seperate embeds file to store all of the big embeds that don't have changing text"
+        ],
+        "4":[
+          "Leaderboard is as fixed as it can get rn 😔 People who have not sent messages recently will not show up on the leaderboard. I thought I had a way of doing this but it takes to much cpu and memory. I will try to figure out a better way at some point though"
         ]
       }
     }
