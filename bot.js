@@ -256,6 +256,11 @@ client.on("message", async (message) => {
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
       con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
 
+				if (user[0] === undefined){
+					con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
+					logging.info("Created new user!");
+				}
+
 				if (user[0].cooldown > Date.now()) {
 					return;
 				}
