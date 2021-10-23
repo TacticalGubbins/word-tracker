@@ -12,7 +12,7 @@ try {
   });
 }
 catch {
-  console.log("no token present");
+  console.log("no top.gg token present");
 }
 manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
 
