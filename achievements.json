@@ -3,41 +3,69 @@
     "title": "template",
     "description": "Change me",
     "hidden": false,
-    "image": "https://tikomc.tk/resources/template.png"
+    "image": "https://tikomc.tk/resources/template.png",
+    "notification": false
   },
   "roots": {
     "title": "Back to the roots",
     "description": "DM the bot the n-word",
     "hidden": true,
-    "image": "https://tikomc.tk/resources/nwordpfp128.png"
+    "image": "https://tikomc.tk/resources/nwordpfp128.png",
+    "notification": true
   },
   "pp": {
     "title": "PP",
     "description": "Discover the setPpLength command",
     "hidden": true,
-    "image": "https://tikomc.tk/resources/pp.png"
+    "image": "https://tikomc.tk/resources/pp.png",
+    "notification": true
   },
   "changelog": {
     "title": "Stupid idiot",
     "description": "Get the special changelog error",
-    "hidden": true
+    "hidden": true,
+    "notification": true
   },
   "inviteNow": {
     "title": "Fuck You Seb",
     "description": "Get the special invite link",
     "hidden": true,
-    "image": "https://tikomc.tk/resources/truck.png"
+    "image": "https://tikomc.tk/resources/truck.png",
+    "notification": true
   },
   "joinServer": {
     "title": "A Supportive Boi",
     "description": "Join the support server",
     "hidden": false,
-    "image": "https://tikomc.tk/resources/botpfp.png"
+    "image": "https://tikomc.tk/resources/botpfp.png",
+    "notification": true
   },
   "egg": {
     "title": "Egge",
     "description": "What? You egg?!",
     "hidden": true,
-    "image": "https://tikomc.tk/resources/512%20egge.png"
+    "image": "https://tikomc.tk/resources/512%20egge.png",
+    "notification": false
+  },
+  "100": {
+    "title": "100",
+    "description": "Send 100 words",
+    "hidden": false,
+    "image": "https://tikomc.tk/resources/template.png",
+    "notification": false
+  },
+  "1000": {
+    "title": "1000",
+    "description": "Send 1000 words",
+    "hidden": false,
+    "image": "https://tikomc.tk/resources/template.png",
+    "notification": false
+  },
+  "10000": {
+    "title": "10000",
+    "description": "Send 10000 words",
+    "hidden": false,
+    "image": "https://tikomc.tk/resources/template.png",
+    "notification": false
   }
 }

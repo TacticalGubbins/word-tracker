@@ -58,6 +58,45 @@
           "Removed the server names from the global leaderboard",
           "Fixed bottom user",
           "Removed blacklist"
+        ],
+        "1":[
+          "Fixed bug where the bot would not add a server to the database when it joined (At least I think I did)",
+          "Fixed the leaderboards not showing the top ten properly if people had left the server",
+          "Fixed the global leaderboard not showing people correctly (God I should have done this earlier)",
+          "You can now check yours and others achievements with n!ach instead of the garbage that used to be n!achievements cuz that was god awful to type out everytime",
+          "Made n!check work better and it will also display your total tracked words too"
+        ]
+      },
+      "9": {
+        "0":[
+          "Fixed a bug that would cause n!check to not work with arguments",
+          "You now only have to have the manage channels or the manage server permissions to change server settings",
+          "Giving the global command a argument, for example 2, will now show places 11 through 20",
+          "Bot will no longer crash upon setting a bad prefix",
+          "Fixed a but where if you used n!check in a server where you had not said anywords but had said words elsewhere it would say that you have sent no words",
+          "Added new extra help! If you run n!help (command), the bot will give you extra info on that specific command",
+          "When calling the global command, a little message will pop up saying that the bot is loading",
+          "Fixed a bug that would cause the first word said to be tracked and put into the database imediately",
+          "Fixed a bug where deleting your data and then sending a bunch of tracked words would cause the bot to add multiple entries to the database cause a sort of multiplication when sending more tracked words"
+        ],
+        "1":[
+          "Added sharding",
+          "Bot is now on a VPS which means its not hosted on my computer and we are gonna see if that makes the bot any faster",
+          "Command structure has been redone"
+        ],
+        "2":[
+          "Removed lots of extraneous code",
+          "Removed extra queries and some unused variables"
+        ],
+        "3":[
+          "Added an antispam for counted words and commands to keep the bot running faster",
+          "Fixed a bug where words were not being tracked",
+          "Added a message that is sent when the bot joins a server giving info on how to setup the bot",
+          "Fixed a bug where dming the bot a message other than n!help or help would cause an error",
+          "Added a seperate embeds file to store all of the big embeds that don't have changing text"
+        ],
+        "4":[
+          "Leaderboard is as fixed as it can get rn 😔 People who have not sent messages recently will not show up on the leaderboard. I thought I had a way of doing this but it takes to much cpu and memory. I will try to figure out a better way at some point though"
         ]
       }
     }

@@ -1,25 +1,28 @@
 {
-  "name": "n-word-bot",
-  "version": "3.6.2",
-  "description": "",
+  "name": "word-tracker",
+  "version": "3.9.4",
+  "description": "This bot is meant to track the words that a server owner specifies.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TacticalGubbins/n-word-bot.git"
+    "url": "git+https://github.com/TacticalGubbins/word-tracker.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "TacticalGubbins#0900 and Cyakat#5061",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TacticalGubbins/n-word-bot/issues"
+    "url": "https://github.com/TacticalGubbins/word-tracker/issues"
   },
-  "homepage": "https://github.com/TacticalGubbins/n-word-bot#readme",
+  "homepage": "https://github.com/TacticalGubbins/word-tracker#readme",
   "dependencies": {
     "colors": "^1.4.0",
-    "discord.js": "^12.2.0",
-    "mysql": "^2.18.1"
+    "dblapi.js": "^2.4.1",
+    "discord.js": "^12.5.3",
+    "math": "^0.0.3",
+    "mysql": "^2.18.1",
+    "topgg-autoposter": "^2.0.0"
   }
 }
