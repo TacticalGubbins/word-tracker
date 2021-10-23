@@ -11,9 +11,6 @@ const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
 
-//command line interface
-const { exec } = require("child_process");
-
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -40,7 +37,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.5';
+const version = '3.9.4';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -246,11 +243,9 @@ client.on("message", async (message) => {
 			} catch (error) {}
 			return;
 		}
-
 		//this whole chunk counts the words sent in the message and ups the counter of the user in the database
     let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
     words = words.filter(item => !!item);
-
 
 		//this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
     con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
@@ -260,10 +255,13 @@ client.on("message", async (message) => {
 					con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
 					logging.info("Created new user!");
 				}
+				//redefines the number of words variable
+        let numWords = 0;
+				//creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
+        let trackedWords = new Set();
+				//creates word args which is a string that eventually gets put into trackedWords
+        let wordArgs;
 
-				if (user[0].cooldown > Date.now()) {
-					return;
-				}
 				//tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
         try {
           wordArgs = server[0].strings.split(/[s ,]/);
@@ -275,60 +273,66 @@ client.on("message", async (message) => {
 					}
 					catch(err){};
         }
+				//filters out empty strings in the array
+        wordArgs = wordArgs.filter(item => !!item);
 
-				let numWords
+				//puts the strings in the wordArgs variable into the trackedWords set for speed
+        for(let i of wordArgs) {
+          trackedWords.add(i);
+        }
+				//this for loop goes through all of the words and counts how many times a tracked word has been said
+        for(let j in words) {
 
-				//this is a child process that runs a python script and gets the output to store in the database
-				//the python script does the message processing and word counting that the bot prefiously did on its own.
-				//hopefully this python script will execute on a different thread and allow the bot to still respond even after recieving a barage of messages
-				exec("bash ./exec.sh wordCount.py " + "\"" + words + "\" " + "\"" + server[0].strings + "\"" , (error, stdout, stderr) => {
-		      if (error) {
-		          console.log(`error: ${error.message}`);
-		          return;
-		      }
-		      if (stderr) {
-		          console.log(`stderr: ${stderr}`);
-		          return;
-		      }
-					//takes the output from the commandline and stores it in an appropriate variable
-					numWords = parseInt(stdout);
-
-					//this query will add a user to the database if they do not exist already
-					if (user[0] === undefined){
-						con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
-						logging.info("Created new user!");
+					try {
+						if (user[0].cooldown > Date.now()) {
+							break;
+						}
 					}
-					//this if statement checks to see if a tracked word has been sent at all. If it has it obtain the cooldown time set in the server
-	        if(numWords > 0) {
-	          let cooldownTime
-						//if the server does not have a cooldown time i.e. the server is not in the database it will try to create an entry
-	          try {
-	            cooldownTime = server[0].cooldown;
-	          }
-	          catch(err)
-	          {
-	            cooldownTime = defaultCooldownTime;
-	            try {
-								con.query('INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', '+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
-							}
-							catch(err){};
-	          }
-	          checkIfShouldWrite = false;
+					catch(err) {}
 
-						//if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
-						//if the users exists in the database it will add the number of words sent in the message to the users current amount
-						if(user[0] === undefined) {
-							con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
-						}
-						else {
-	          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
-						}
-						//if the user has sent more than five words, add the cooldown time in seconds to the current epoch time and store it in the database
-	          if(numWords >= 5) {
-	            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+          curr = words[j];
+
+					try {
+
+	          if(trackedWords.has(curr.toLowerCase())) {
+
+							checkIfShouldWrite = true;
+
+							numWords++;
 	          }
-	        }
-				});
+					}
+					catch(err) {
+					}
+        }
+				//this if statement checks to see if a tracked word has been sent at all. If it has it will run this code
+        if(checkIfShouldWrite) {
+          let cooldownTime
+					//if the server does not have a cooldown time i.e. the server is not in the database it will try to create an entry
+          try {
+            cooldownTime = server[0].cooldown;
+          }
+          catch(err)
+          {
+            cooldownTime = defaultCooldownTime;
+            try {
+							con.query('INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (' + message.guild.id + ', '+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+						}
+						catch(err){};
+          }
+          checkIfShouldWrite = false;
+					//if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
+					//if the users exists in the database it will add the number of words sent in the message to the users current amount
+					if(user[0] === undefined) {
+						con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+					}
+					else {
+          	con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+					}
+					//if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
+          if(numWords >= 5) {
+            con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id);
+          }
+        }
       });
     });
   });
