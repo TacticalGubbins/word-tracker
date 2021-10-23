@@ -40,7 +40,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.4';
+const version = '3.9.5';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
@@ -276,7 +276,7 @@ client.on("message", async (message) => {
 				//this is a child process that runs a python script and gets the output to store in the database
 				//the python script does the message processing and word counting that the bot prefiously did on its own.
 				//hopefully this python script will execute on a different thread and allow the bot to still respond even after recieving a barage of messages
-				exec("exec.bat python test.bat " + "\"" + words + "\" " + "\"" + server[0].strings + "\"" , (error, stdout, stderr) => {
+				exec("bash ./exec.sh wordCount.py " + "\"" + words + "\" " + "\"" + server[0].strings + "\"" , (error, stdout, stderr) => {
 		      if (error) {
 		          console.log(`error: ${error.message}`);
 		          return;
