@@ -15,7 +15,7 @@ const mysql = require('mysql');
 const Worker = require('worker_threads');
 const {StaticPool} = require("node-worker-threads-pool");
 const pool = new StaticPool({
-	size: 4,
+	size: 8,
 	task: './worker.js'
 });
 
@@ -45,7 +45,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.4';
+const version = '3.9.5';
 
 //version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
 const botID = '687077283965567006';
