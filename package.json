@@ -23,6 +23,7 @@
     "discord.js": "^12.5.3",
     "math": "^0.0.3",
     "mysql": "^2.18.1",
+    "node-worker-threads-pool": "^1.5.1",
     "topgg-autoposter": "^2.0.0"
   }
 }
