@@ -11,13 +11,9 @@ const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
 
-//Create worker pool for message analyzing
-const Worker = require('worker_threads');
-const {StaticPool} = require("node-worker-threads-pool");
-const pool = new StaticPool({
-	size: 8,
-	task: './worker.js'
-});
+//Create worker for message analyzing
+const {Worker} = require('worker_threads');
+const worker = new Worker("./worker.js");
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
@@ -259,9 +255,9 @@ client.on("message", async (message) => {
 			"author": message.author.id,
 			"guild": message.guild.id
 		};
-		pool.exec(channelMessage).then(result => {
-			console.log("message analyzed?");
-		});
+		worker.postMessage(channelMessage)
+		console.log("message analyzed?");
+
   });
 });
 
