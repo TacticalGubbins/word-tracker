@@ -157,6 +157,8 @@ client.on("guildCreate", async (guild) => {
 	//add something to update all of the shards' caches
 });
 
+let queue;
+
 process.on("message", message => {
     if (!message.type) return false;
 
@@ -257,11 +259,25 @@ client.on("message", async (message) => {
 			"author": message.author.id,
 			"guild": message.guild.id
 		};
+
+		queueLenth = queue.length();
+		queue[queueLength] = channelMessage;
+
 		pool.exec(channelMessage).then(result => {
 			console.log("message analyzed?");
 		});
   });
 });
+
+async function sendQueuedMessageToWorker() {
+	if (queue.length() === 0) {
+		return;
+	}
+	currentMessage = queue.shift()
+	pool.exec(currentMessage).then(result => {
+		console.log("working?");
+	});
+}
 
 //writes the data in memory to data.json so it can be saved across restarts
 async function write(data) {
