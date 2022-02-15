@@ -99,7 +99,8 @@
           "Leaderboard is as fixed as it can get rn 😔 People who have not sent messages recently will not show up on the leaderboard. I thought I had a way of doing this but it takes to much cpu and memory. I will try to figure out a better way at some point though"
         ],
         "5":[
-          "I believe I have fixed the response time issue. The bot now processes messages on a seperate thread which should leave cpu for responding to commands"
+          "I believe I have fixed the response time issue. The bot now processes messages on a seperate thread which should leave cpu for responding to commands",
+          "And it actually does it this time hopefully. I haven't run it on the main bot yet"
         ]
       }
     }

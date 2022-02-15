@@ -1,6 +1,7 @@
 const {parentPort} = require("worker_threads");
 const mysql = require('mysql');
 const config = require("../config.json");
+const {logging} = require("./custom objects/logging")
 
 const con = mysql.createConnection({
   host: '127.0.0.1',
@@ -10,13 +11,22 @@ const con = mysql.createConnection({
   supportBigNumbers: true
 });
 
+//bot will attempt to connect to the database with the provided information
+con.connect(function (err) {
+  if(err) {
+    return logging.error('error: ' + err.message);
+  }
+    logging.info('Connected to the database');
+});
 
+//will execute the main function when the worker recieves message
 parentPort.on("message", message => {
   main(message)
 });
 
 
 function main(message) {
+  logging.debug("running!");
   //initializing the variable that flags if the user sent and trackable words
   var checkIfShouldWrite = false;
 

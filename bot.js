@@ -10,10 +10,14 @@ const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
+const {logging} = require('./custom objects/logging')
 
 //Create worker for message analyzing
-const {Worker} = require('worker_threads');
-const worker = new Worker("./worker.js");
+const {StaticPool} = require("node-worker-threads-pool");
+const pool = new StaticPool({
+  size: 8,
+  task: "./worker.js"
+});
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
@@ -81,35 +85,21 @@ const con = mysql.createConnection({
 //bot will attempt to connect to the database with the provided information
 con.connect(function (err) {
   if(err) {
-    return console.log('error: ' + err.message);
+    return logging.error('error: ' + err.message);
   }
-    console.log('Connected to the database');
+    logging.info('Connected to the database');
 });
 
 //OBJECTS************************
-const logging = {
-  info: function(text) {
-    console.log('INFO'.bgGreen.black + ' ' + text);
-  },
-  warn: function(text) {
-    console.log('WARN'.bgYellow.black + ' ' + text);
-  },
-  error: function(text) {
-    console.log('ERROR'.bgRed.black + ' ' + text);
-  },
-  debug: function(text) {
-    console.log('DEBUG'.bgBlue + ' ' + text);
-  }
-}
 //***************************
 
 //runs with the bot starts up
 client.on('ready', () => {
-  console.log("BOT ONLINE");
+  logging.info("BOT ONLINE");
 
 	//states version upon startup in the bot's status
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
-  .then(presence => console.log(`Activity set to ${presence.activities[0].name}`));
+  .then(presence => logging.info(`Activity set to ${presence.activities[0].name}`));
 
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
@@ -159,7 +149,7 @@ process.on("message", message => {
     if (!message.type) return false;
 
     if (message.type == "shardId") {
-        console.log(`The shard id is: ${message.data.shardId}`);
+        logging.info(`The shard id is: ${message.data.shardId}`);
 				shardId = message.data.shardId;
     };
 });
@@ -168,6 +158,7 @@ let recentMessage = new Set();
 
 //runs everytime a message is sent
 client.on("message", async (message) => {
+  logging.debug("message recieved");
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
@@ -249,16 +240,13 @@ client.on("message", async (message) => {
 			} catch (error) {}
 			return;
 		}
-
-		let channelMessage = {
-			"content": message.content,
-			"author": message.author.id,
-			"guild": message.guild.id
-		};
-		worker.postMessage(channelMessage)
-		console.log("message analyzed?");
-
   });
+  let channelMessage = {
+    "content": message.content,
+    "author": message.author.id,
+    "guild": message.guild.id
+  };
+  pool.exec(channelMessage).then(result => {});
 });
 
 //writes the data in memory to data.json so it can be saved across restarts
