@@ -266,15 +266,22 @@ client.on("message", async (message) => {
         }
         catch(err){};
       }
+      try {
+        cooldown = user[0].cooldown;
+      }
+      catch(err) {
+        cooldown = 0
+      }
 
       if (user[0] === undefined){
         con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author +', ' + message.guild + ', 0, 0)');
         logging.info("Created new user!");
+
       }
 
       let channelMessage = {
         "wordArgs": wordArgs,
-        "cooldown": user[0].cooldown,
+        "cooldown": cooldown,
         "content": message.content
       }
 
@@ -304,7 +311,6 @@ client.on("message", async (message) => {
 
 async function piscinaTask(channelMessage) {
   const numWords = await piscina.runTask(channelMessage);
-  console.log(numWords);
   return numWords;
 }
 
