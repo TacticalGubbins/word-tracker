@@ -271,7 +271,7 @@ client.on("message", async (message) => {
       }
       catch(err) {
         cooldown = 30;
-        con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+        con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (\"" + message.guild + "\", \""+ defaultPrefix +"\", \""+ defaultCooldownTime +"\", \""+ defaultStrings +"\")");
       }
 
       if (user[0] === undefined){
