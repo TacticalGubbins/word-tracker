@@ -270,8 +270,7 @@ client.on("message", async (message) => {
         cooldown = user[0].cooldown;
       }
       catch(err) {
-        cooldown = 30;
-        con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (\"" + message.guild + "\", \""+ defaultPrefix +"\", \""+ defaultCooldownTime +"\", \""+ defaultStrings +"\")");
+        cooldown = 0
       }
 
       if (user[0] === undefined){
@@ -312,7 +311,6 @@ client.on("message", async (message) => {
 
 async function piscinaTask(channelMessage) {
   const numWords = await piscina.runTask(channelMessage);
-  console.log(numWords);
   return numWords;
 }
 

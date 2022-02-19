@@ -3,7 +3,7 @@ module.exports = {
   name: "logging",
   description: "basic logging object that will change which logs are displayed according to a level",
   logging: {
-    level: 1,
+    level: 3,
     info: function(text) {
       if (this.level >= 3) {
         console.log('INFO'.bgGreen.black + ' ' + text);
