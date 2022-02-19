@@ -266,15 +266,23 @@ client.on("message", async (message) => {
         }
         catch(err){};
       }
+      try {
+        cooldown = user[0].cooldown;
+      }
+      catch(err) {
+        cooldown = 30;
+        con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+      }
 
       if (user[0] === undefined){
         con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author +', ' + message.guild + ', 0, 0)');
         logging.info("Created new user!");
+
       }
 
       let channelMessage = {
         "wordArgs": wordArgs,
-        "cooldown": user[0].cooldown,
+        "cooldown": cooldown,
         "content": message.content
       }
 
