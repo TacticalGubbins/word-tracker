@@ -10,13 +10,18 @@ const fs = require('fs');
 const colors = require('colors');
 const math = require('math');
 const mysql = require('mysql');
-const {logging} = require('./custom objects/logging')
+const {logging} = require('./custom objects/logging');
+const Piscina = require('piscina');
 
 //Create worker for message analyzing
 const {StaticPool} = require("node-worker-threads-pool");
 const pool = new StaticPool({
   size: 8,
   task: "./worker.js"
+});
+//Create piscina worker pool
+const piscina = new Piscina({
+  filename: 'worker.js'
 });
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
@@ -246,12 +251,65 @@ client.on("message", async (message) => {
     "author": message.author.id,
     "guild": message.guild.id
   };
-  pool.exec(channelMessage).then(result => {});
+  //pass message content and the strings to the worker and the worker should spit out a number *fingers crossed
+  //this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
+  con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
+    con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
+      //tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
+      try {
+        wordArgs = server[0].strings.split(/[s ,]/);
+      }
+      catch(err) {
+        wordArgs = defaultStrings;
+        try {
+          con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+        }
+        catch(err){};
+      }
+
+      if (user[0] === undefined){
+        con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author +', ' + message.guild + ', 0, 0)');
+        logging.info("Created new user!");
+      }
+
+      let channelMessage = {
+        "wordArgs": wordArgs,
+        "cooldown": user[0].cooldown,
+        "content": message.content
+      }
+
+      //this function no longer works when in the sql query just move it outside i guess??? best to try it first
+      numWords = piscinaTask(channelMessage).then(numWords => {
+
+        //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
+        //if the users exists in the database it will add the number of words sent in the message to the users current amount
+        if(user[0] === undefined) {
+          con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+        }
+        else {
+          con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+        }
+        //if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
+        if(numWords >= 5) {
+          con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+        }
+      });
+
+    });
+  });
+
+
+  /*pool.exec(channelMessage).then(result => {});*/
 });
+
+async function piscinaTask(channelMessage) {
+  const numWords = await piscina.runTask(channelMessage);
+  console.log(numWords);
+  return numWords;
+}
 
 //writes the data in memory to data.json so it can be saved across restarts
 async function write(data) {
-
   //Save file
   await fs.writeFile('data.json', JSON.stringify(data, null, 2), (err) => {
     if (err) throw err;
