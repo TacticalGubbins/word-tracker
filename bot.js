@@ -50,9 +50,9 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.5';
+const version = '3.11.0';
 
-//version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
+//version number: 1st = very large changes; 2nd = minor changes; 3rd = bug fixes and patches;
 const botID = '687077283965567006';
 //default settings variables for when a server is created in the database
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
