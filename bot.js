@@ -262,7 +262,7 @@ client.on("message", async (message) => {
       catch(err) {
         wordArgs = defaultStrings;
         try {
-          con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild + ", "+ defaultPrefix +", "+ defaultCooldownTime +", "+ defaultStrings +")");
+          con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
         }
         catch(err){};
       }
@@ -274,7 +274,7 @@ client.on("message", async (message) => {
       }
 
       if (user[0] === undefined){
-        con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author +', ' + message.guild + ', 0, 0)');
+        con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
         logging.info("Created new user!");
 
       }
