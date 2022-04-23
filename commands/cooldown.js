@@ -4,16 +4,17 @@ module.exports = {
   async execute(message, Discord, client, con, arguments) {
 
     args = arguments.args;
+    console.log(args[1]);
 
       //checks to see if the user has suffcient permissions
-      if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
+      if(message.member.permission.has(Discord.Permissions.FLAGS.ADMINISTATOR) || message.member.hasPermission(32)) {
 
         if(args[1] === undefined) {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('Please include a time (in seconds) after the command!');
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
           return;
         }
         //checks to see if there even is a number provided
@@ -25,8 +26,8 @@ module.exports = {
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
-            .setFooter('Requested by ' + message.author.tag);
-            await message.channel.send(embed);
+            .setFooter({text: 'Requested by ' + message.author.tag});
+            await message.channel.send({embeds: [embed]});
             return;
           }
           //if the argument is not a number it will tell them to provide a number next time
@@ -35,7 +36,7 @@ module.exports = {
             .setTitle('')
             .setColor(0xFF0000)
             .setDescription('Please include a time (in seconds) after the command!');
-            await message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
             return;
           }
           //if the user provides a correct number it will update the database with that number
@@ -46,8 +47,8 @@ module.exports = {
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('Changed cooldown time to **__' + args[1] + '__** seconds\n\n*active cooldowns will not be cleared*')
-            .setFooter('Requested by ' + message.author.tag);
-            await message.channel.send(embed);
+            .setFooter({text: 'Requested by ' + message.author.tag});
+            await message.channel.send({embeds: [embed]});
             return;
           }
           //if the user sets a number above 1000 it will stop them from doing so
@@ -56,7 +57,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('The max cooldown time is 1000!')
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
           return;
         }
         //if the user doesn't have suffcient permissions it will inform them so
@@ -65,7 +66,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
         return;
       }
 

@@ -28,8 +28,8 @@ module.exports = {
         .addField('Prefix', prefix, true)
         .addField('Cooldown Time', + cooldown + " seconds", true)
         .addField('Trigger Words', strings)
-        .setFooter('Requested by ' + message.author.tag);
-        await message.channel.send(embed);
+        .setFooter({text: 'Requested by ' + message.author.tag});
+        await message.channel.send({embeds: [embed]});
 
       });
 

@@ -12,7 +12,7 @@ module.exports = {
       .addField("**Cancel**", 'to cancel')
       .setFooter('Requested by ' + message.author.tag)
       ;
-      const m = await message.channel.send(deleteEmbed);
+      const m = await message.channel.send({embeds: [deleteEmbed]});
 
       //create a message collector that checks for cancel or username
       let collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 10000 });
@@ -27,7 +27,7 @@ module.exports = {
           .setColor(0xFF0000)
           .setDescription('Your data has been deleted, sorry to see you go :<')
           ;
-          await m.edit(deleteEmbed2);
+          await m.edit({embeds: [deleteEmbed2]});
           collector.stop();
 
           //cancel the collector, do not delete
@@ -38,7 +38,7 @@ module.exports = {
           .setColor(0x00FF00)
           .setDescription('Glad to see you made the right choice :)')
           ;
-          await m.edit(saveEmbed);
+          await m.edit({embeds: [saveEmbed]});
           collector.stop();
 
           //stop multiple instances from running
@@ -53,7 +53,7 @@ module.exports = {
           .setColor(0xFF0000)
           .setDescription('Not an input')
           ;
-          await message.channel.send(wrongEmbed);
+          await message.channel.send({embeds: [wrongEmbed]});
         }
       });
       return;

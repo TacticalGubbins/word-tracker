@@ -1,3 +1,5 @@
+const logging = require("../custom objects/logging");
+
 module.exports = {
   name: 'check',
   description: 'checks the amount of words the specified user sent',
@@ -18,7 +20,7 @@ module.exports = {
         .setColor(0xFF0000)
         .setDescription('You must include an @!');
         //message.channel.send("You must include an @!")
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed]});
 
         return;*/
         user = message.author.id;
@@ -36,7 +38,7 @@ module.exports = {
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
           .setFooter('Requested by ' + message.author.tag);
           //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
         });
 
         return;
@@ -49,7 +51,7 @@ module.exports = {
             user = client.users.cache.get(user);
             avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
             let embed = new Discord.MessageEmbed()
-            .setAuthor(user.username + "#" + user.discriminator, avatarURL)
+            .setAuthor({name: user.username + "#" + user.discriminator, iconURL: avatarURL})
             .setColor(0xBF66E3)
 
             //checks to see if the user is in the database
@@ -67,8 +69,8 @@ module.exports = {
               else {
                 words = localwords[0].words;
               }
-              embed.addField("Words Tracked (this server)", words, true)
-              .addField("Words Tracked (all servers)", globalwords[0].words, true)
+              embed.addField("Words Tracked (this server)", words.toString(), true)
+              .addField("Words Tracked (all servers)", globalwords[0].words.toString(), true)
               //.addField("​","`Cooldown:` " + parseInt(date) - parseInt(globalwords[0].cooldown))
               //console.log(globalwords[0].cooldown);
               //.setTitle("Achievements: " + emoji("760541771632738345"))
@@ -95,7 +97,7 @@ module.exports = {
             }
 
 
-            await message.channel.send(embed)
+            await message.channel.send({embeds: [embed]})
           });
         });
 
@@ -107,7 +109,7 @@ module.exports = {
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
         //message.channel.send("That's not a person!")
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
 
       }
       return;

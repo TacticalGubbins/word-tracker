@@ -26,7 +26,7 @@ module.exports = {
         for(var i = 0; i < changes.length; i++) {
           embed.addField(i+1, changes[i]);
         }
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
       }
       //this little bit is for an achievement just a bit of fun that we had
       catch(err) {
@@ -35,9 +35,9 @@ module.exports = {
           .setTitle("jesus christ your dumn")
           .setColor(0xFF7777)
           .setDescription("stupid idiot")
-          .setFooter("try " + prefix + "changelog 3.6.4");
+          .setFooter({text: "try " + prefix + "changelog 3.6.4"});
 
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
 
           achievement = true;
           //giveAchievements(message.author, data, "changelog");
@@ -48,9 +48,9 @@ module.exports = {
           .setColor(0xFF0000)
           //.addField('You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A)', '​')
           .setDescription("You can view past, present, and future changes at our [Trello board](https://trello.com/b/zzbbKL9A) \n\n**The version specified could not be found. The oldest changelog is for 3.6.4**")
-          .setFooter("try " + prefix + "changelog 3.6.4");
+          .setFooter({text: "try " + prefix + "changelog 3.6.4"});
 
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
         }
       }
       return achievement;

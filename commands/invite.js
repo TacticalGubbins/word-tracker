@@ -10,10 +10,10 @@ module.exports = {
     .setTitle('')
     .setColor(0xBF66E3)
     .setDescription("[[Click here to invite me]](" + invLink + ")" + "\n[[Click here to join the bot's server]](" + discordLink + ")")
-    .setFooter('Requested by ' + message.author.tag)
+    .setFooter({text: 'Requested by ' + message.author.tag})
     ;
 
-    await message.channel.send(inviteEmbed);
+    await message.channel.send({embeds: [inviteEmbed]});
     return;
   }
 };

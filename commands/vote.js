@@ -10,6 +10,6 @@ module.exports = {
     .setColor(0xBF66E3)
     .addField('Vote for the bot', 'You can vote for the bot [here](' + voteLink + ')');
 
-    await message.channel.send(embed);
+    await message.channel.send({embeds: [embed]});
   }
 };

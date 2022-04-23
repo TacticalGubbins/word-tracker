@@ -1,9 +1,9 @@
 //hmmmmm
 
 //Discord.js Library initialization
-const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
+const {MessageAttachment, MessageEmbed, MessageCollector, Intents} = require('discord.js');
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
 
 //extra libraries
 const fs = require('fs');
@@ -104,7 +104,7 @@ client.on('ready', () => {
 
 	//states version upon startup in the bot's status
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
-  .then(presence => logging.info(`Activity set to ${presence.activities[0].name}`));
+  //.then(presence => logging.info(`Activity set to ${presence.activities[0].name}`));
 
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
@@ -162,7 +162,7 @@ process.on("message", message => {
 let recentMessage = new Set();
 
 //runs everytime a message is sent
-client.on("message", async (message) => {
+client.on("messageCreate", async (message) => {
   logging.debug("message recieved");
 
   //ignore messages sent by bots
@@ -210,7 +210,7 @@ client.on("message", async (message) => {
 	  .addField('n!' + 'prefix', '(prefix) Changes the prefix for the server', true)
 	  ;
 
-		await message.channel.send(helpEmbed);
+		await message.channel.send({embeds: [helpEmbed]});
 
     return;
   }

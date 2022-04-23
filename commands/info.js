@@ -54,8 +54,8 @@ module.exports = {
           .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
           .addField('Vote for the bot', 'Vote for the bot [here](' + voteLink + ')', true)
           .addField('Authors', '`TacticalGubbins#0900`\n`Cyakat#5061`', true)
-          .setFooter('Requested by ' + message.author.tag);
-          await message.channel.send(embed);
+          .setFooter({text: 'Requested by ' + message.author.tag});
+          await message.channel.send({embeds: [embed]});
           //stopTimer(timer);
         });
     	})

@@ -9,11 +9,11 @@ module.exports = {
     .setColor(0xBF66E3)
     .setTitle('Global Leaderboard')
     .setDescription('Loading leaderboard')
-    .setFooter('Requested by ' + message.author.tag);
+    .setFooter({text: 'Requested by ' + message.author.tag});
 
       con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", async (err, response) => {
 
-        const m = await message.channel.send(embed);
+        const m = await message.channel.send({embeds: [embed]});
 
         //getTop(message, response, embed);
 
@@ -63,7 +63,7 @@ module.exports = {
 
           }
           embed.setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
-          m.edit(embed);
+          m.edit({embeds: [embed]});
 
       });
       //getGlobalTop(message);

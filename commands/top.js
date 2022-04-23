@@ -12,7 +12,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription('Top User')
-          .setFooter('Requested by ' + message.author.tag)
+          .setFooter({ text: 'Requested by ' + message.author.tag})
           .setThumbnail('https://cdn.discordapp.com/avatars/' + rows[i].id + '/' + client.users.cache.get(rows[i].id).avatar + '.png')
           .addField(client.users.cache.get(rows[i].id).username, '__**' + rows[i].words + '**__ sent');
 
@@ -35,7 +35,7 @@ module.exports = {
             embed.setColor(0x17D1FF);
           }
 
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
           break;
         }
         catch(err) {

@@ -8,7 +8,7 @@ module.exports = {
       .setColor(0xBF66E3)
       .setTitle(message.guild.name + ' Leaderboard')
       .setDescription("This is the server's local leaderboard")
-      .setFooter('Requested by ' + message.author.tag);
+      .setFooter({text: 'Requested by ' + message.author.tag});
 
       //getTop(message, response, embed);
 
@@ -45,7 +45,7 @@ module.exports = {
           catch(err) {}
 
         }
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
 
     });
     return;
