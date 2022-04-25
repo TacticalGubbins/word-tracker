@@ -23,6 +23,8 @@ module.exports = {
         //once the collector has recieved a interaction it will parse it and create a string of the tracked words that will be stored in the database
         let collector = new Discord.MessageCollector(interaction.channel, m => m.author.id === interaction.user.id, { time: 20000 });
         collector.on('collect', async interaction => {
+          console.log(interaction)
+          if (interaction.author.id === client.user.id) return;
           if(interaction.content === "CANCEL") {
             let embed = new Discord.MessageEmbed()
             .setTitle('')

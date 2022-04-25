@@ -6,11 +6,12 @@ module.exports = {
   .setDescription('Shows the current latency'),
   name: 'ping',
   description: 'shows the achievements of the specified person',
-  async execute(message, Discord, client, con) {
-    const m = await message.channel.send('Ping?');
-    m.edit(
-      `Pong! Latency is ${m.createdTimestamp - message.createdTimestamp
+  async execute(interaction, Discord, client, con) {
+    await interaction.reply('Ping?');
+    interaction.editReply(
+      `Pong! Latency is ${interaction.createdTimestamp - Date.now()
       }ms. API Latency is ${Math.round(client.ws.ping)} ms`,
     );
+    return;
   }
 };

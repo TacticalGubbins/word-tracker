@@ -18,7 +18,7 @@ module.exports = {
 
       let user = interaction.user.id;
       try {
-        let specifiedUser = interaction.option.getUser('specified-user');
+        let specifiedUser = interaction.options.getUser('specified-user');
         user = specifiedUser.id;
       }
       catch (err) {}

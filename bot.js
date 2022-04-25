@@ -208,6 +208,7 @@ client.on("interactionCreate", async (interaction) => {
 //runs everytime a message is sent
 client.on("messageCreate", async (message) => {
   logging.debug("message recieved");
+  console.log(message.content)
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
@@ -331,6 +332,7 @@ client.on("messageCreate", async (message) => {
 
       //this function no longer works when in the sql query just move it outside i guess??? best to try it first
       numWords = piscinaTask(channelMessage).then(numWords => {
+        console.log(numWords);
 
         //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
         //if the users exists in the database it will add the number of words sent in the message to the users current amount
