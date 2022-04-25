@@ -1,53 +1,59 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 module.exports = {
+  data: new SlashCommandBuilder()
+  .setName('cooldown')
+  .setDescription('Allows the Administrator to set up the cooldown time for a server')
+  .addNumberOption(option => option.setName('cooldown-time').setDescription('Please specify a cooldown time for the server').setRequired(true)),
   name: 'cooldown',
   description: 'Allows the Administrators set up the cooldown time for the server',
-  async execute(message, Discord, client, con, arguments) {
+  async execute(interaction, Discord, client, con, arguments) {
 
-    args = arguments.args;
+    cooldownTime = interaction.options.getNumber('cooldown-time')
 
       //checks to see if the user has suffcient permissions
-      if(message.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || message.member.permissions.Discord.FLAGS.MANAGE_MESSAGES) {
+      if(interaction.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || interaction.member.permissions.Discord.FLAGS.MANAGE_MESSAGES) {
 
-        if(args[1] === undefined) {
+        if(cooldownTime === undefined) {
           let embed = new Discord.MessageEmbed()
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('Please include a time (in seconds) after the command!');
-          await message.channel.send({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
           return;
         }
         //checks to see if there even is a number provided
-        if(args[1] <= 1000) {
+        if(cooldownTime <= 1000) {
           //if the user provides none, off, or 0 as an argument it will remove the cooldown
-          if(args[1].toLowerCase() === 'none' || args[1].toLowerCase() === 'off' || parseInt(args[1]) === 0) {
-            con.query("UPDATE servers SET cooldown = 0 WHERE id = " + message.guild.id);
+          if(cooldownTime === 0) {
+            con.query("UPDATE servers SET cooldown = 0 WHERE id = " + interaction.guild.id);
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
             .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
-            .setFooter({text: 'Requested by ' + message.author.tag});
-            await message.channel.send({embeds: [embed]});
+            .setFooter({text: 'Requested by ' + interaction.user.tag});
+            await interaction.reply({embeds: [embed]});
             return;
           }
           //if the argument is not a number it will tell them to provide a number next time
-          if(isNaN(args[1])) {
+/*          if(isNaN(cooldownTime)) {
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xFF0000)
             .setDescription('Please include a time (in seconds) after the command!');
-            await message.channel.send({embeds: [embed]});
+            await interaction.reply({embeds: [embed]});
             return;
-          }
+          }*/
           //if the user provides a correct number it will update the database with that number
-          if(!isNaN(args[1])) {
-            con.query("UPDATE servers SET cooldown = " + args[1] + " WHERE id = " + message.guild.id);
-            //data.servers[server].cooldown = parseInt(args[1]);
+          else if(cooldownTime > 0 && cooldownTime < 1000) {
+            con.query("UPDATE servers SET cooldown = " + cooldownTime + " WHERE id = " + interaction.guild.id);
+            //data.servers[server].cooldown = parseInt(cooldownTime);
             let embed = new Discord.MessageEmbed()
             .setTitle('')
             .setColor(0xBF66E3)
-            .setDescription('Changed cooldown time to **__' + args[1] + '__** seconds\n\n*active cooldowns will not be cleared*')
-            .setFooter({text: 'Requested by ' + message.author.tag});
-            await message.channel.send({embeds: [embed]});
+            .setDescription('Changed cooldown time to **__' + cooldownTime + '__** seconds\n\n*active cooldowns will not be cleared*')
+            .setFooter({text: 'Requested by ' + interaction.user.tag});
+            await interaction.reply({embeds: [embed]});
             return;
           }
           //if the user sets a number above 1000 it will stop them from doing so
@@ -56,7 +62,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xFF0000)
           .setDescription('The max cooldown time is 1000!')
-          await message.channel.send({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
           return;
         }
         //if the user doesn't have suffcient permissions it will inform them so
@@ -65,7 +71,7 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
-        await message.channel.send({embeds: [embed]});
+        await interaction.reply({embeds: [embed]});
         return;
       }
 

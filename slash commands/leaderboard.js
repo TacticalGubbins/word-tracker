@@ -1,16 +1,21 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 module.exports = {
+  data: new SlashCommandBuilder()
+  .setName('lead')
+  .setDescription('Gets the local leaderboard'),
   name: 'leaderboard',
   description: 'gets leaderboard stuffs',
-  async execute(message, Discord, client, con) {
+  async execute(interaction, Discord, client, con) {
     //quieres stuff
-    con.query("SELECT * FROM users WHERE server_id =  '" + message.guild.id + "' ORDER BY words DESC", async (err, response) => {
+    con.query("SELECT * FROM users WHERE server_id =  '" + interaction.guild.id + "' ORDER BY words DESC", async (err, response) => {
       let embed = new Discord.MessageEmbed()
       .setColor(0xBF66E3)
-      .setTitle(message.guild.name + ' Leaderboard')
+      .setTitle(interaction.guild.name + ' Leaderboard')
       .setDescription("This is the server's local leaderboard")
-      .setFooter({text: 'Requested by ' + message.author.tag});
+      .setFooter({text: 'Requested by ' + interaction.user.tag});
 
-      //getTop(message, response, embed);
+      //getTop(interaction, response, embed);
 
 
         let inTop = false;
@@ -25,8 +30,8 @@ module.exports = {
 
             o++;
             //add user positions, max of 10, from json object
-            if(user.id === message.author.id) {
-              embed.addField('#' + (pos) + ' `' + message.author.username + '`', response[i].words);
+            if(user.id === interaction.user.id) {
+              embed.addField('#' + (pos) + ' `' + interaction.user.username + '`', response[i].words);
               inTop = true;
             } else {
               if(o < 11) {
@@ -34,8 +39,8 @@ module.exports = {
               }
             }
 
-            if(inTop === false && user.id === message.author.id) {
-              embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words, true);
+            if(inTop === false && user.id === interaction.user.id) {
+              embed.addField('#' + (i+1) + ' `' + interaction.user.username + '`', response[i].words, true);
               break;
             } else if(inTop === true && pos === 10) {
               break;
@@ -45,7 +50,7 @@ module.exports = {
           catch(err) {}
 
         }
-        await message.channel.send({embeds: [embed]});
+        await interaction.reply({embeds: [embed]});
 
     });
     return;

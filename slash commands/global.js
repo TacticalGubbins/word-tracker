@@ -1,27 +1,31 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 module.exports = {
+  data: new SlashCommandBuilder()
+  .setName('global')
+  .setDescription('Gets the global leaderboard'),
   name: 'global',
   description: 'gets the global leaderboard',
-  async execute(message, Discord, client, con, arguments) {
+  async execute(interaction, Discord, client, con, arguments) {
 
-    args = arguments.args;
 
     let embed = new Discord.MessageEmbed()
     .setColor(0xBF66E3)
     .setTitle('Global Leaderboard')
     .setDescription('Loading leaderboard')
-    .setFooter({text: 'Requested by ' + message.author.tag});
+    .setFooter({text: 'Requested by ' + interaction.user.tag});
 
       con.query("SELECT id, SUM(words) AS 'words' FROM users GROUP BY id ORDER BY words DESC;", async (err, response) => {
 
-        const m = await message.channel.send({embeds: [embed]});
+        const m = await interaction.reply({embeds: [embed]});
 
-        //getTop(message, response, embed);
+        //getTop(interaction, response, embed);
 
 
           let inTop = false;
           let pos = 1;
           let o = 0;
-          let set = args[1];
+          let set = 1;
           if(set === undefined) {
             set = 0;
           }
@@ -40,8 +44,8 @@ module.exports = {
               filler = user.username
               o++;
               //add user positions, max of 10, from json object
-              if(user.id === message.author.id) {
-                embed.addField('#' + (o) + ' `' + message.author.username + '`', response[i].words);
+              if(user.id === interaction.user.id) {
+                embed.addField('#' + (o) + ' `' + interaction.user.username + '`', response[i].words);
                 inTop = true;
               } else {
                 if(o < 11+set & o > 0+set) {
@@ -49,8 +53,8 @@ module.exports = {
                 }
               }
 
-              if(inTop === false && user.id === message.author.id) {
-                embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words, true);
+              if(inTop === false && user.id === interaction.user.id) {
+                embed.addField('#' + (i+1) + ' `' + interaction.user.username + '`', response[i].words, true);
                 break;
               } else if(pos === 10+setpos) {
                 break;
@@ -62,11 +66,11 @@ module.exports = {
             }
 
           }
-          embed.setDescription('The top-sending users world-wide\nThis uses a collection of all messages these users have sent')
-          m.edit({embeds: [embed]});
+          embed.setDescription('The top-sending users world-wide\nThis uses a collection of all interactions these users have sent')
+          interaction.editReply({embeds: [embed]});
 
       });
-      //getGlobalTop(message);
+      //getGlobalTop(interaction);
       return;
 
   }

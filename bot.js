@@ -1,9 +1,9 @@
 //hmmmmm
 
 //Discord.js Library initialization
-const {MessageAttachment, MessageEmbed, MessageCollector} = require('discord.js');
+const {MessageAttachment, MessageEmbed, MessageCollector, Intents} = require('discord.js');
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
 
 //extra libraries
 const fs = require('fs');
@@ -12,17 +12,18 @@ const math = require('math');
 const mysql = require('mysql');
 const {logging} = require('./custom objects/logging');
 const Piscina = require('piscina');
-
-//Create worker for message analyzing
-const {StaticPool} = require("node-worker-threads-pool");
-const pool = new StaticPool({
-  size: 8,
-  task: "./worker.js"
-});
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 //Create piscina worker pool
 const piscina = new Piscina({
   filename: 'worker.js'
 });
+
+const botID = '687077283965567006';
+
+//config.json has the bot's key and the key for DBLapi as well as the database password and user
+const config = require("../config.json");
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
@@ -32,8 +33,39 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-//config.json has the bot's key and the key for DBLapi
-const config = require("../config.json");
+slashCommands = new Discord.Collection();
+slashCommandFiles = fs.readdirSync('./slash commands').filter(file => file.endsWith('.js'));
+for (const file of slashCommandFiles) {
+	const slashCommand = require(`./slash commands/${file}`);
+	slashCommands.set(slashCommand.data.name, slashCommand);
+}
+
+slashCommandsList = [];
+slashCommandListFiles = fs.readdirSync('./slash commands').filter(file => file.endsWith('.js'));
+for (const file of slashCommandListFiles) {
+  const slashCommandList = require(`./slash commands/${file}`);
+  slashCommandsList.push(slashCommandList.data.toJSON());
+}
+
+const rest = new REST({ version: '9'}).setToken(config.token);
+
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.');
+
+    await rest.put(
+      Routes.applicationCommands("664652964962631680"),
+      {body: slashCommandsList},
+    );
+
+    console.log('Successfully reloaded application (/) commands.');
+  }
+  catch (error) {
+    console.error(error);
+  }
+})();
+
+
 //changelog.json stores the changes made in a json format for easy of use with the n!changelog command
 const changelog = require("./changelog.json");
 //achievements.json stores the achievements and their properties as json objects
@@ -50,10 +82,8 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.9.5';
-
-//version number: 1st = very large changes; 2nd = new features; 3rd = bug fixes and other small changes;
-const botID = '687077283965567006';
+const version = '3.11.0';
+//version number: 1st = very large changes; 2nd = minor changes; 3rd = bug fixes and patches;
 //default settings variables for when a server is created in the database
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
 const defaultCooldownTime = 30;
@@ -104,7 +134,7 @@ client.on('ready', () => {
 
 	//states version upon startup in the bot's status
   client.user.setActivity(`v${version}`, {type : 'STREAMING'})
-  .then(presence => logging.info(`Activity set to ${presence.activities[0].name}`));
+  //.then(presence => logging.info(`Activity set to ${presence.activities[0].name}`));
 
 	//alternates displaying n!help for help and the total amount of words tracked ever in the bot's status
 	//it will also sometimes display the "ppLength" variable. I know this is immature but its funny. gotta have some fun with the code you know?
@@ -129,7 +159,7 @@ client.on('ready', () => {
       }
       write(data);
 		}
-
+Discord.Permissions.FLAGS.MANAGE_GUILD
   }, 10000);
 
 		setInterval(async () => {
@@ -161,9 +191,24 @@ process.on("message", message => {
 
 let recentMessage = new Set();
 
+client.on("interactionCreate", async (interaction) => {
+  logging.debug("started interaction");
+
+  commandName = interaction.commandName;
+
+  //this little bit is what makes the buttons work in the slash commands
+  //it will ignore anything that doesn't have a / command tied to its name
+  if (!slashCommands.has(commandName)) return;
+
+  let arguments = {version, voteLink, data, changelog, discordLink, invLink, shardId};
+  await slashCommands.get(commandName).execute(interaction, Discord, client, con, arguments);
+
+});
+
 //runs everytime a message is sent
-client.on("message", async (message) => {
+client.on("messageCreate", async (message) => {
   logging.debug("message recieved");
+  console.log(message.content)
 
   //ignore messages sent by bots
   if(message.author.bot ) return;
@@ -186,7 +231,7 @@ client.on("message", async (message) => {
 	  .setTitle('Bot Help')
 	  .setColor(0xBF66E3)
 	  .setDescription('')
-	  .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+	  .setFooter({text:'For private server:\n\ngetverify: retrieves current verify code'})
 	  .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
 	  .addField('n!' + 'help', 'Gives you this message', true)
 	  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
@@ -210,7 +255,7 @@ client.on("message", async (message) => {
 	  .addField('n!' + 'prefix', '(prefix) Changes the prefix for the server', true)
 	  ;
 
-		await message.channel.send(helpEmbed);
+		await message.channel.send({embeds: [helpEmbed]});
 
     return;
   }
@@ -287,6 +332,7 @@ client.on("message", async (message) => {
 
       //this function no longer works when in the sql query just move it outside i guess??? best to try it first
       numWords = piscinaTask(channelMessage).then(numWords => {
+        console.log(numWords);
 
         //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
         //if the users exists in the database it will add the number of words sent in the message to the users current amount

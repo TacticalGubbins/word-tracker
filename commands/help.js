@@ -15,14 +15,14 @@ module.exports = {
       .setColor(0xBF66E3)
       .setDescription("Check your dms :>")
       ;
-      await message.channel.send(dmEmbed);
+      await message.channel.send({embeds: [dmEmbed]});
 
       //let help = fs.readFileSync('help.txt')
       let helpEmbed = new Discord.MessageEmbed()
       .setTitle('All Commands')
       .setColor(0xBF66E3)
       .setDescription('')
-      .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+      .setFooter({text: 'For private server:\n\ngetverify: retrieves current verify code'})
       .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
       .addField(prefix + 'help', 'Gives you this message', true)
       .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
@@ -45,9 +45,9 @@ module.exports = {
       .addField(prefix + 'prefix', '(prefix) Changes the prefix for the server', true)
       ;
       //message.author.send(`${help}`);
-      await message.author.send(helpEmbed);
+      await message.author.send({embeds: [helpEmbed]});
       return;
     }
-      await message.channel.send(infoEmbed);
+      await message.channel.send({embeds: [infoEmbed]});
     }
   };

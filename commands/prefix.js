@@ -6,13 +6,13 @@ module.exports = {
     prefix = arguments.prefix;
     args = arguments.args;
 
-    if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
+    if(message.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || message.member.permissions.Discord.FLAGS.MANAGE_MESSAGES) {
       if(args[1] === undefined) {
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('Please include a prefix after the command!');
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
         return;
       }
       if(args[1].length <= 5) {
@@ -28,14 +28,14 @@ module.exports = {
             embed.setColor(0xFF0000)
             .setDescription("Unable to set prefix. Try using a different character.")
           }
-          await message.channel.send(embed);
+          await message.channel.send({embeds: [embed]});
         });
       } else {
         let embed = new Discord.MessageEmbed()
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription('Please make the prefix less than 5 characters!');
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
         return;
       }
     } else {
@@ -43,7 +43,7 @@ module.exports = {
       .setTitle('')
       .setColor(0xFF0000)
       .setDescription('You must be an Administrator to use this command!');
-      await message.channel.send(embed);
+      await message.channel.send({embeds: [embed]});
       return;
     }
     return;

@@ -1,7 +1,12 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 module.exports = {
+  data: new SlashCommandBuilder()
+  .setName('top')
+  .setDescription('Gets the top sending user'),
   name: 'top',
   description: 'gets top sending user',
-  async execute(message, Discord, client, con, arguments) {
+  async execute(interaction, Discord, client, con, arguments) {
 
     data = arguments.data;
 
@@ -12,7 +17,7 @@ module.exports = {
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription('Top User')
-          .setFooter({ text: 'Requested by ' + message.author.tag})
+          .setFooter({ text: 'Requested by ' + interaction.user.tag})
           .setThumbnail('https://cdn.discordapp.com/avatars/' + rows[i].id + '/' + client.users.cache.get(rows[i].id).avatar + '.png')
           .addField(client.users.cache.get(rows[i].id).username, '__**' + rows[i].words + '**__ sent');
 
@@ -35,11 +40,10 @@ module.exports = {
             embed.setColor(0x17D1FF);
           }
 
-          await message.channel.send({embeds: [embed]});
+          await interaction.reply({embeds: [embed]});
           break;
         }
         catch(err) {
-
         }
       }
 
