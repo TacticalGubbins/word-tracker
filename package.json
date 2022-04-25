@@ -1,6 +1,6 @@
 {
   "name": "word-tracker",
-  "version": "3.9.5",
+  "version": "3.11.0",
   "description": "This bot is meant to track the words that a server owner specifies.",
   "main": "index.js",
   "scripts": {
@@ -18,9 +18,12 @@
   },
   "homepage": "https://github.com/TacticalGubbins/word-tracker#readme",
   "dependencies": {
+    "@discordjs/builders": "^0.13.0",
+    "@discordjs/rest": "^0.4.1",
     "colors": "^1.4.0",
     "dblapi.js": "^2.4.1",
-    "discord.js": "^12.5.3",
+    "discord-api-types": "^0.31.2",
+    "discord.js": "^13.6.0",
     "math": "^0.0.3",
     "mysql": "^2.18.1",
     "node-worker-threads-pool": "^1.5.1",

@@ -6,7 +6,7 @@ module.exports = {
     prefix = arguments.prefix;
     args = arguments.args;
 
-    if(message.member.hasPermission(16) || message.member.hasPermission(32)) {
+    if(message.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || message.member.permissions.Discord.FLAGS.MANAGE_MESSAGES) {
       if(args[1] === undefined) {
         let embed = new Discord.MessageEmbed()
         .setTitle('')

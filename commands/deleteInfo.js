@@ -10,7 +10,7 @@ module.exports = {
       .setDescription('Are you sure all of your data on this server? *this is non-recoverable*\n\n Type:')
       .addField('**' + message.author.username + '** (your username)', 'to delete your data')
       .addField("**Cancel**", 'to cancel')
-      .setFooter('Requested by ' + message.author.tag)
+      .setFooter({text: 'Requested by ' + message.author.tag})
       ;
       const m = await message.channel.send({embeds: [deleteEmbed]});
 

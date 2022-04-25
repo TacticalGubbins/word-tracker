@@ -12,17 +12,18 @@ const math = require('math');
 const mysql = require('mysql');
 const {logging} = require('./custom objects/logging');
 const Piscina = require('piscina');
-
-//Create worker for message analyzing
-const {StaticPool} = require("node-worker-threads-pool");
-const pool = new StaticPool({
-  size: 8,
-  task: "./worker.js"
-});
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 //Create piscina worker pool
 const piscina = new Piscina({
   filename: 'worker.js'
 });
+
+const botID = '687077283965567006';
+
+//config.json has the bot's key and the key for DBLapi as well as the database password and user
+const config = require("../config.json");
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
@@ -32,8 +33,39 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-//config.json has the bot's key and the key for DBLapi
-const config = require("../config.json");
+slashCommands = new Discord.Collection();
+slashCommandFiles = fs.readdirSync('./slash commands').filter(file => file.endsWith('.js'));
+for (const file of slashCommandFiles) {
+	const slashCommand = require(`./slash commands/${file}`);
+	slashCommands.set(slashCommand.data.name, slashCommand);
+}
+
+slashCommandsList = [];
+slashCommandListFiles = fs.readdirSync('./slash commands').filter(file => file.endsWith('.js'));
+for (const file of slashCommandListFiles) {
+  const slashCommandList = require(`./slash commands/${file}`);
+  slashCommandsList.push(slashCommandList.data.toJSON());
+}
+
+const rest = new REST({ version: '9'}).setToken(config.token);
+
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.');
+
+    await rest.put(
+      Routes.applicationCommands("664652964962631680"),
+      {body: slashCommandsList},
+    );
+
+    console.log('Successfully reloaded application (/) commands.');
+  }
+  catch (error) {
+    console.error(error);
+  }
+})();
+
+
 //changelog.json stores the changes made in a json format for easy of use with the n!changelog command
 const changelog = require("./changelog.json");
 //achievements.json stores the achievements and their properties as json objects
@@ -51,9 +83,7 @@ const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
 const version = '3.11.0';
-
 //version number: 1st = very large changes; 2nd = minor changes; 3rd = bug fixes and patches;
-const botID = '687077283965567006';
 //default settings variables for when a server is created in the database
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
 const defaultCooldownTime = 30;
@@ -129,7 +159,7 @@ client.on('ready', () => {
       }
       write(data);
 		}
-
+Discord.Permissions.FLAGS.MANAGE_GUILD
   }, 10000);
 
 		setInterval(async () => {
@@ -161,6 +191,20 @@ process.on("message", message => {
 
 let recentMessage = new Set();
 
+client.on("interactionCreate", async (interaction) => {
+  logging.debug("started interaction");
+
+  commandName = interaction.commandName;
+
+  //this little bit is what makes the buttons work in the slash commands
+  //it will ignore anything that doesn't have a / command tied to its name
+  if (!slashCommands.has(commandName)) return;
+
+  let arguments = {version, voteLink, data, changelog, discordLink, invLink, shardId};
+  await slashCommands.get(commandName).execute(interaction, Discord, client, con, arguments);
+
+});
+
 //runs everytime a message is sent
 client.on("messageCreate", async (message) => {
   logging.debug("message recieved");
@@ -186,7 +230,7 @@ client.on("messageCreate", async (message) => {
 	  .setTitle('Bot Help')
 	  .setColor(0xBF66E3)
 	  .setDescription('')
-	  .setFooter('For private server:\n\ngetverify: retrieves current verify code')
+	  .setFooter({text:'For private server:\n\ngetverify: retrieves current verify code'})
 	  .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
 	  .addField('n!' + 'help', 'Gives you this message', true)
 	  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)

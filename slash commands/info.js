@@ -1,7 +1,12 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 module.exports = {
+  data: new SlashCommandBuilder()
+  .setName('info')
+  .setDescription('Gets the info of the bot'),
   name: 'info',
   description: 'gets the info of the bot',
-  async execute(message, Discord, client, con, arguments) {
+  async execute(interaction, Discord, client, con, arguments) {
 
     voteLink = arguments.voteLink;
     version = arguments.version;
@@ -54,8 +59,8 @@ module.exports = {
           .addField('Library', '[discord.js](' + 'https://discord.js.org/#/' + ')', true)
           .addField('Vote for the bot', 'Vote for the bot [here](' + voteLink + ')', true)
           .addField('Authors', '`TacticalGubbins#0900`\n`Cyakat#5061`', true)
-          .setFooter({text: 'Requested by ' + message.author.tag});
-          await message.channel.send({embeds: [embed]});
+          .setFooter({text: 'Requested by ' + interaction.user.tag});
+          await interaction.reply({embeds: [embed]});
           //stopTimer(timer);
         });
     	})

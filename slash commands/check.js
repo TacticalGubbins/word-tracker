@@ -1,9 +1,14 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const logging = require("../custom objects/logging");
 
 module.exports = {
+  data: new SlashCommandBuilder()
+  .setName('check')
+  .setDescription('Checks the amount of words you have sent')
+  .addUserOption(option => option.setName('specified-user').setDescription('You may specify a user to see how many words they have sent')),
   name: 'check',
   description: 'checks the amount of words the specified user sent',
-  async execute(message, Discord, client, con, arguments) {
+  async execute(interaction, Discord, client, con, arguments) {
 
     args = arguments.args;
     data = arguments.data;
@@ -11,24 +16,14 @@ module.exports = {
     date = new Date();
     date = Date.now();
 
-      let user;
+      let user = interaction.user.id;
+      try {
+        let specifiedUser = interaction.option.getUser('specified-user');
+        user = specifiedUser.id;
+      }
+      catch (err) {}
 
       //check to see if the value inputted is a user
-      if(args[1] === undefined) {
-        /*let embed = new Discord.MessageEmbed()
-        .setTitle('')
-        .setColor(0xFF0000)
-        .setDescription('You must include an @!');
-        //message.channel.send("You must include an @!")
-        message.channel.send({embeds: [embed]});
-
-        return;*/
-        user = message.author.id;
-      } else {
-        user = args[1].replace(/D/g,'');
-        user = user.replace("<@!","");
-        user = user.replace(">","");
-      }
 
       if(user == client.user.id) {
         con.query('SELECT SUM(words) AS words FROM users', async (err, total) => {
@@ -36,9 +31,9 @@ module.exports = {
           .setTitle('')
           .setColor(0xBF66E3)
           .setDescription("Bruhg I've counted **__" + total[0].words + "__** words")
-          .setFooter({text: 'Requested by ' + message.author.tag});
-          //message.channel.send("Bruhg I've sent the n-word **__" + totalN + "__** times");
-          await message.channel.send({embeds: [embed]});
+          .setFooter({text: 'Requested by ' + interaction.user.tag});
+          //interaction.reply("Bruhg I've sent the n-word **__" + totalN + "__** times");
+          await interaction.reply({embeds: [embed]});
         });
 
         return;
@@ -46,7 +41,7 @@ module.exports = {
 
       //if(args[1].slice(0,1) == '0' || args[1].slice(0,1) == '1' || args[1].slice(0,1) == '2' || args[1].slice(0,1) == '3' || args[1].slice(0,1) == '4' || args[1].slice(0,1) == '5' || args[1].slice(0,1) == '6' || args[1].slice(0,1) == '7' || args[1].slice(0,1) == '8' || args[1].slice(0,1) == '9') {
       if(client.users.cache.get(user.toString()) !== undefined) {
-        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + message.guild.id, async (err, localwords) => {
+        con.query('SELECT words FROM users WHERE id = ' + user + ' AND server_id = ' + interaction.guild.id, async (err, localwords) => {
           con.query("SELECT SUM(words) AS words FROM users WHERE id = " + user, async (err, globalwords) => {
             user = client.users.cache.get(user);
             avatarURL = 'https://cdn.discordapp.com/avatars/'+ user.id +'/'+ user.avatar +'.png?size=128'
@@ -97,7 +92,7 @@ module.exports = {
             }
 
 
-            await message.channel.send({embeds: [embed]})
+            await interaction.reply({embeds: [embed]})
           });
         });
 
@@ -108,8 +103,8 @@ module.exports = {
         .setTitle('')
         .setColor(0xFF0000)
         .setDescription("That's not a person!");
-        //message.channel.send("That's not a person!")
-        await message.channel.send({embeds: [embed]});
+        //interaction.reply("That's not a person!")
+        await interaction.reply({embeds: [embed]});
 
       }
       return;
