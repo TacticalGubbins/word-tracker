@@ -31,11 +31,11 @@ module.exports = {
             o++;
             //add user positions, max of 10, from json object
             if(user.id === interaction.user.id) {
-              embed.addField('#' + (pos) + ' `' + interaction.user.username + '`', response[i].words);
+              embed.addField('#' + (pos) + ' `' + interaction.user.username + '`', response[i].words.toString());
               inTop = true;
             } else {
               if(o < 11) {
-                embed.addField('#' + (pos) + ' ' + user.username, response[i].words);
+                embed.addField('#' + (pos) + ' ' + user.username, response[i].words.toString());
               }
             }
 

@@ -26,11 +26,11 @@ module.exports = {
             o++;
             //add user positions, max of 10, from json object
             if(user.id === message.author.id) {
-              embed.addField('#' + (pos) + ' `' + message.author.username + '`', response[i].words);
+              embed.addField('#' + (pos) + ' `' + message.author.username + '`', response[i].words.toString());
               inTop = true;
             } else {
               if(o < 11) {
-                embed.addField('#' + (pos) + ' ' + user.username, response[i].words);
+                embed.addField('#' + (pos) + ' ' + user.username, response[i].words.toString());
               }
             }
 

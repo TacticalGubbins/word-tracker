@@ -25,7 +25,7 @@ module.exports = {
           let inTop = false;
           let pos = 1;
           let o = 0;
-          let set = 1;
+          let set = 0;
           if(set === undefined) {
             set = 0;
           }
@@ -45,7 +45,7 @@ module.exports = {
               o++;
               //add user positions, max of 10, from json object
               if(user.id === interaction.user.id) {
-                embed.addField('#' + (o) + ' `' + interaction.user.username + '`', response[i].words);
+                embed.addField('#' + (o) + ' `' + interaction.user.username + '`', response[i].words.toString());
                 inTop = true;
               } else {
                 if(o < 11+set & o > 0+set) {
@@ -54,7 +54,7 @@ module.exports = {
               }
 
               if(inTop === false && user.id === interaction.user.id) {
-                embed.addField('#' + (i+1) + ' `' + interaction.user.username + '`', response[i].words, true);
+                embed.addField('#' + (i+1) + ' `' + interaction.user.username + '`', response[i].words.toString, true);
                 break;
               } else if(pos === 10+setpos) {
                 break;
