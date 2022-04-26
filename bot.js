@@ -82,7 +82,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.11.0';
+const version = '3.11.1';
 //version number: 1st = very large changes; 2nd = minor changes; 3rd = bug fixes and patches;
 //default settings variables for when a server is created in the database
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
@@ -176,7 +176,7 @@ Discord.Permissions.FLAGS.MANAGE_GUILD
 });
 
 client.on("guildCreate", async (guild) => {
-  await guild.systemChannel.send(joinEmbed);
+  await guild.systemChannel.send({embeds: [joinEmbed]});
 	//add something to update all of the shards' caches
 });
 

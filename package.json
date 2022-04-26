@@ -1,6 +1,6 @@
 {
   "name": "word-tracker",
-  "version": "3.11.0",
+  "version": "3.11.1",
   "description": "This bot is meant to track the words that a server owner specifies.",
   "main": "index.js",
   "scripts": {
