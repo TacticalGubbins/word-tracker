@@ -50,7 +50,7 @@ module.exports = {
               }
 
               if(inTop === false && user.id === message.author.id) {
-                embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words, true);
+                embed.addField('#' + (i+1) + ' `' + message.author.username + '`', response[i].words.toString(), true);
                 break;
               } else if(pos === 10+setpos) {
                 break;

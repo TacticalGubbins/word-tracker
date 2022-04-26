@@ -49,12 +49,12 @@ module.exports = {
                 inTop = true;
               } else {
                 if(o < 11+set & o > 0+set) {
-                  embed.addField('#' + (o) + ' ' + user.username, response[i].words);
+                  embed.addField('#' + (o) + ' ' + user.username, response[i].words.toString());
                 }
               }
 
               if(inTop === false && user.id === interaction.user.id) {
-                embed.addField('#' + (i+1) + ' `' + interaction.user.username + '`', response[i].words.toString, true);
+                embed.addField('#' + (i+1) + ' `' + interaction.user.username + '`', response[i].words.toString(), true);
                 break;
               } else if(pos === 10+setpos) {
                 break;
