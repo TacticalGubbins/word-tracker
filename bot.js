@@ -24,6 +24,8 @@ const botID = '664652964962631680';
 
 //config.json has the bot's key and the key for DBLapi as well as the database password and user
 const config = require("../config.json");
+const botId = config.wordBotId;
+const token = config.wordToken;
 
 //Command handler. This goes through the command folder and stores the commands in json objects which can be called later
 client.commands = new Discord.Collection();
@@ -47,7 +49,7 @@ for (const file of slashCommandListFiles) {
   slashCommandsList.push(slashCommandList.data.toJSON());
 }
 
-const rest = new REST({ version: '9'}).setToken(config.token);
+const rest = new REST({ version: '9'}).setToken(token);
 
 (async () => {
   try {
@@ -366,4 +368,4 @@ async function write(data) {
   });
 }
 
-client.login(config.token);
+client.login(token);
