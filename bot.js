@@ -20,8 +20,6 @@ const piscina = new Piscina({
   filename: 'worker.js'
 });
 
-const botID = '664652964962631680';
-
 //config.json has the bot's key and the key for DBLapi as well as the database password and user
 const config = require("../config.json");
 const botId = config.wordBotId;
@@ -56,7 +54,7 @@ const rest = new REST({ version: '9'}).setToken(token);
     console.log('Started refreshing application (/) commands.');
 
     await rest.put(
-      Routes.applicationCommands(botID),
+      Routes.applicationCommands(botId)
       {body: slashCommandsList},
     );
 
