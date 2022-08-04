@@ -10,7 +10,7 @@ module.exports = {
   async execute(interaction, Discord, client, con) {
 
       //the if statement checks if the user has the manage server or manage channels permissions
-      if(interaction.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || interaction.member.permissions.Discord.FLAGS.MANAGE_MESSAGES) {
+      if(interaction.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || interaction.member.permissions.has(Discord.FLAGS.MANAGE_MESSAGES)) {
         let embed = new Discord.MessageEmbed()
         .setTitle('Trigger Setup')
         .setColor(0xBF66E3)
