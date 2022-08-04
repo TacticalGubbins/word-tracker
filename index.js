@@ -1,7 +1,7 @@
 const { ShardingManager } = require('discord.js');
 const config = require('../config.json');
 
-const manager = new ShardingManager('./bot.js', {token: config.token, totalShards: 'auto'});
+const manager = new ShardingManager('./bot.js', {token: config.wordToken, totalShards: 'auto'});
 
 const topggAutoposter = require('topgg-autoposter');
 

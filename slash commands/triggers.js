@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const {logging} = require("../custom objects/logging");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,7 +24,7 @@ module.exports = {
         //once the collector has recieved a interaction it will parse it and create a string of the tracked words that will be stored in the database
         let collector = new Discord.MessageCollector(interaction.channel, m => m.author.id === interaction.user.id, { time: 20000 });
         collector.on('collect', async interaction => {
-          console.log(interaction)
+          logging.debug(interaction)
           if (interaction.author.id === client.user.id) return;
           if(interaction.content === "CANCEL") {
             let embed = new Discord.MessageEmbed()
@@ -34,11 +35,23 @@ module.exports = {
             collector.stop();
 
           } else {
-            let strings = interaction.content.toLowerCase().split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+            //removes any backslashes so that sql injection will not be possible
+            let content = interaction.content.replaceAll('\\', '');
+            //escapes the ' " and ` characters so that they don't mess up the sql
+            content = content.replaceAll('\'', '\\\'');
+            content = content.replaceAll('`', '\\\`');
+            content = content.replaceAll('"', '\\\"');
+            
+            
+            logging.debug(content);
+
+            let strings = content.toLowerCase().split(" ");
+            logging.debug(strings);
             strings = strings.filter(item => !!item);
             strings = strings.filter((item, index) => strings.indexOf(item) === index);
             strings = strings.join(', ');
             //data.servers[server].strings = strings;
+            logging.debug("UPDATE servers SET strings = '" + strings + "' WHERE id = " + interaction.guild.id);
             con.query("UPDATE servers SET strings = '" + strings + "' WHERE id = " + interaction.guild.id);
 
             let embed = new Discord.MessageEmbed()

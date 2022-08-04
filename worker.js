@@ -9,7 +9,10 @@ const {logging} = require("./custom objects/logging")
 logging.debug("running!");
 
 //this whole chunk counts the words sent in the message and ups the counter of the user in the database
-let words = message.content.split(/[s ? ! @ < > , . ; : ' " ` ~ * ^ & # % $ - ( ) + | ]/);
+let words = message.content.split(" ");
+logging.debug(message.content);
+logging.debug(words);
+logging.debug(wordArgs);
 words = words.filter(item => !!item);
 
     //creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
