@@ -52,7 +52,7 @@ module.exports = {
       let deleteEmbed = new Discord.MessageEmbed()
       .setTitle('Data Deletion')
       .setColor(0xBF66E3)
-      .setDescription('Are you sure all of your data ever? *this is non-recoverable*')
+      .setDescription('Are you sure all of your data ever? *this is non-recoverable* \n Deleting all of your data means that the bot will not have you on the opt-out list anymore and will begin tracking you again if you do not opt out immediately')
       .setFooter({text:'Requested by ' + interaction.user.tag})
       ;
       interaction.reply({embeds: [deleteEmbed], components: [row]});
@@ -75,6 +75,7 @@ module.exports = {
 
               con.query('DELETE FROM users WHERE id = ' + interaction.user.id, (err) => {});
               con.query('DELETE FROM achievements WHERE id = ' + interaction.user.id);
+              con.query('DELETE FROM opt WHERE id = ' + interaction.user.id, (err) => {})
               let deleteEmbed2 = new Discord.MessageEmbed()
               .setTitle('')
               .setColor()

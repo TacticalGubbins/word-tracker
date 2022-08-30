@@ -4,21 +4,12 @@ module.exports = {
   data: new SlashCommandBuilder()
   .setName('help')
   .setDescription('Sends the Help message'),
-  name: 'help',
-  description: 'dms the user the help file',
   async execute(interaction, Discord, client, con, arguments) {
 
-    prefix = arguments.prefix;
+    prefix = "/"
     discordLink = arguments.discordLink;
     invLink = arguments.invLink;
     args = arguments.args;
-
-    let dmEmbed = new Discord.MessageEmbed()
-    .setTitle('')
-    .setColor(0xBF66E3)
-    .setDescription("Check your dms :>")
-    ;
-    await interaction.reply({embeds: [dmEmbed]});
 
     //let help = fs.readFileSync('help.txt')
     let helpEmbed = new Discord.MessageEmbed()
@@ -40,15 +31,17 @@ module.exports = {
     .addField(prefix + 'invite', 'Gives you [this link](' + invLink + ')', true)
     //.addField(prefix + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
     .addField(prefix + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+    .addField('/opt-out', 'Allows you to opt out of message scanning', true)
+    .addField('/opt-in', 'Allows you to opt back into message scanning', true)
+    .addField('/privacy-policy', 'Denotes our privacy policy', true)
     // .addField(prefix + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
     .addField("Server Setup", "----")
     .addField(prefix + "settings", "View all current server settings", true)
     .addField(prefix + 'triggers', 'Starts setup in order to change countable words', true)
     .addField(prefix + 'cooldown', 'Change the server cooldown for counted words', true)
-    .addField(prefix + 'prefix', '(prefix) Changes the prefix for the server', true)
     ;
     //interaction.user.send(`${help}`);
-    await interaction.user.send({embeds: [helpEmbed]});
+    await interaction.reply({embeds: [helpEmbed], ephemeral: true});
     return;
   }
 }

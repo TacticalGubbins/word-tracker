@@ -102,6 +102,15 @@
           "I believe I have fixed the response time issue. The bot now processes messages on a seperate thread which should leave cpu for responding to commands",
           "And it actually does it this time hopefully. I haven't run it on the main bot yet"
         ]
+      },
+      "11": {
+        "1": [
+          "Prety sure this update added slash commands"
+        ],
+        "2": [
+          "Prefix commands are now gone and its all slash commands now",
+          "Added two new commands, /opt-out and /opt-in that allow you to change whether or not you want your messages to be scanned"
+        ]
       }
     }
   }

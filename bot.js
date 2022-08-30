@@ -54,7 +54,7 @@ const rest = new REST({ version: '9'}).setToken(token);
     console.log('Started refreshing application (/) commands.');
 
     await rest.put(
-      Routes.applicationCommands(botId)
+      Routes.applicationCommands(botId),
       {body: slashCommandsList},
     );
 
@@ -82,7 +82,7 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.11.1';
+const version = '3.11.2';
 //version number: 1st = very large changes; 2nd = minor changes; 3rd = bug fixes and patches;
 //default settings variables for when a server is created in the database
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
@@ -159,7 +159,7 @@ client.on('ready', () => {
       }
       write(data);
 		}
-Discord.Permissions.FLAGS.MANAGE_GUILD
+    Discord.Permissions.FLAGS.MANAGE_GUILD
   }, 10000);
 
 		setInterval(async () => {
@@ -169,6 +169,8 @@ Discord.Permissions.FLAGS.MANAGE_GUILD
 			results.forEach((users) => {
 				users.forEach((user) => {
 					// combines the existing cache with the new caches from the shards
+          // I actually have no idea how much ram this takes
+          //could be catastrophic if the bot ever gets popular enough
 					client.users.cache.set(user.id, new Discord.User(client, user));
 				});
 			});
@@ -223,132 +225,147 @@ client.on("messageCreate", async (message) => {
 
 	//splits the sentence into an array, splitting at spaces
 	let args = message.content.split(" ");
-	args = args.filter(item => !!item);
-  //ignore messages sent in dms
-  if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help")) && args[1] === undefined) {
-		const helpEmbed = new MessageEmbed()
-	  .setTitle('Bot Help')
-	  .setColor(0xBF66E3)
-	  .setDescription('')
-	  .setFooter({text:'For private server:\n\ngetverify: retrieves current verify code'})
-	  .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
-	  .addField('n!' + 'help', 'Gives you this message', true)
-	  .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
-	  .addField('Commands', '----')
-	  .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
-	  // .addField('n!' + 'count', 'Same as **n!check**', true)
-	  .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
-	  .addField('n!' + 'top', 'Gives info about top-sending user', true)
-	  .addField('n!' + 'leaderboard', 'Retrieves the top 10 users in a server', true)
-	  .addField('n!' + 'global', 'Retrieves the top 10 sending users world-wide', true)
-	  .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
-	  .addField('n!' + 'info', 'Gives info about the bot', true)
-	  .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
-	  //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
-	  .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
-	  // .addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
-	  .addField("Server Setup", "----")
-	  .addField('n!' + "settings", "View all current server settings", true)
-	  .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
-	  .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
-	  .addField('n!' + 'prefix', '(prefix) Changes the prefix for the server', true)
-	  ;
+  con.query('SELECT * FROM opt WHERE id = ' + message.author.id, async (err, optOutResponse) => {
+    if (optOutResponse[0] === undefined ) {
+      args = args.filter(item => !!item);
+      //ignore messages sent in dms
+      if(message.channel.type === 'dm' && (message.content.toLowerCase().startsWith("n!help") || message.content.toLowerCase().startsWith("help")) && args[1] === undefined) {
+        const helpEmbed = new MessageEmbed()
+        .setTitle('Bot Help')
+        .setColor(0xBF66E3)
+        .setDescription('')
+        .setFooter({text:'For private server:\n\ngetverify: retrieves current verify code'})
+        .addField('Donations','If you like the bot and would like to donate you can here: https://www.patreon.com/Cyakat')
+        .addField('n!' + 'help', 'Gives you this message', true)
+        .addField('Support Server', 'You can join the support server [here](' + discordLink + ')', true)
+        .addField('Commands', '----')
+        .addField('n!' + 'check', 'Checks the # of words sent by a user', true)
+        // .addField('n!' + 'count', 'Same as **n!check**', true)
+        .addField('n!' + 'total', 'Retrieves the total amount of words recorded', true)
+        .addField('n!' + 'top', 'Gives info about top-sending user', true)
+        .addField('n!' + 'leaderboard', 'Retrieves the top 10 users in a server', true)
+        .addField('n!' + 'global', 'Retrieves the top 10 sending users world-wide', true)
+        .addField('n!' + 'delete', '**Permanently** deletes all data regarding words counted in a server', true)
+        .addField('n!' + 'info', 'Gives info about the bot', true)
+        .addField('n!' + 'invite', 'Gives you [this link](' + invLink + ')', true)
+        //.addField('n!' + 'transferData', '(transfer) Transfer your data from the original N-Word (Only works in __one__ server, this is non-reversible)', true)
+        .addField('n!' + 'changelog', 'Shows the changelog for the specified version and if no version is specified the lastest changelog will be shown', true)
+        // .addField('n!' + 'achievements', '(ach) Shows which achievements you or the specified person have earned. The bot will DM you if you check yourself', true)
+        .addField("Server Setup", "----")
+        .addField('n!' + "settings", "View all current server settings", true)
+        .addField('n!' + 'triggers', 'Starts setup in order to change countable words', true)
+        .addField('n!' + 'cooldown', 'Change the server cooldown for counted words', true)
+        .addField('n!' + 'prefix', '(prefix) Changes the prefix for the server', true)
+        ;
 
-		await message.channel.send({embeds: [helpEmbed]});
+        await message.channel.send({embeds: [helpEmbed]});
 
-    return;
-  }
-	else if(message.channel.type === 'dm') {
-		return;
-	}
-
-  //query retrieves the prefix from the server that the message was sent in
-  con.query('SELECT id, prefix FROM servers WHERE id = ' + message.guild.id, async (err, prefixResponse) => {
-		try {
-			prefix = prefixResponse[0].prefix;
-		}
-		catch(err) {
-			prefix = defaultPrefix;
-
-			if(prefixResponse[0] === undefined) {
-				con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
-				logging.info("Created new server!");
-			}
-		}
-
-		try{
-			var commandName = args[0].replace(prefix,'');
-		}
-		catch (err) {}
-
-		if(message.content.startsWith(prefix))
-		{
-			try {
-				let arguments = {version, voteLink, data, changelog, discordLink, invLink, args, prefix, shardId};
-				await client.commands.get(commandName).execute(message, Discord, client, con, arguments);
-			} catch (error) {}
-			return;
-		}
-  });
-  let channelMessage = {
-    "content": message.content,
-    "author": message.author.id,
-    "guild": message.guild.id
-  };
-  //pass message content and the strings to the worker and the worker should spit out a number *fingers crossed
-  //this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
-  con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
-    con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
-      //tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
-      try {
-        wordArgs = server[0].strings.split(",");
+        return;
       }
-      catch(err) {
-        wordArgs = defaultStrings;
+      else if(message.channel.type === 'dm') {
+        return;
+      }
+
+      //query retrieves the prefix from the server that the message was sent in
+      con.query('SELECT id, prefix FROM servers WHERE id = ' + message.guild.id, async (err, prefixResponse) => {
         try {
-          con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
+          prefix = prefixResponse[0].prefix;
         }
-        catch(err){};
-      }
-      try {
-        cooldown = user[0].cooldown;
-      }
-      catch(err) {
-        cooldown = 0
-      }
+        catch(err) {
+          prefix = defaultPrefix;
 
-      if (user[0] === undefined){
-        con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
-        logging.info("Created new user!");
-
-      }
-
-      let channelMessage = {
-        "wordArgs": wordArgs,
-        "cooldown": cooldown,
-        "content": message.content
-      }
-
-      //this function no longer works when in the sql query just move it outside i guess??? best to try it first
-      numWords = piscinaTask(channelMessage).then(numWords => {
-
-        //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
-        //if the users exists in the database it will add the number of words sent in the message to the users current amount
-        if(user[0] === undefined) {
-          con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+          if(prefixResponse[0] === undefined) {
+            con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
+            logging.info("Created new server!");
+          }
         }
-        else {
-          con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+
+        try{
+          var commandName = args[0].replace(prefix,'');
         }
-        //if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
-        if(numWords >= 5) {
-          con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+        catch (err) {}
+
+        if(message.content.startsWith(prefix))
+        {
+          try {
+            if (message.author.id != 250408653830619137) {
+              let noPrefixCommandsEmbed = new MessageEmbed()
+                .setTitle('Slash Commands')
+                .setDescription('Apologies but prefix commands will not be supported after August 31st 2022 due to them being superceded by slash commands. \n If you have not enabled slash commands you can do that by using the invite link on the bot\'s profile')
+                .setColor(0xBF66E3);
+              message.channel.send({embeds: [noPrefixCommandsEmbed]});
+
+            } else {
+              let arguments = {version, voteLink, data, changelog, discordLink, invLink, args, prefix, shardId};
+              await client.commands.get(commandName).execute(message, Discord, client, con, arguments);
+            }
+            
+          } catch (error) {}
+          return;
         }
       });
+      let channelMessage = {
+        "content": message.content,
+        "author": message.author.id,
+        "guild": message.guild.id
+      };
+      //pass message content and the strings to the worker and the worker should spit out a number *fingers crossed
+      //this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
+      con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
+        con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
+          //tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
+          try {
+            wordArgs = server[0].strings.split(",");
+          }
+          catch(err) {
+            wordArgs = defaultStrings;
+            try {
+              con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
+            }
+            catch(err){};
+          }
+          try {
+            cooldown = user[0].cooldown;
+          }
+          catch(err) {
+            cooldown = 0
+          }
 
-    });
+          if (user[0] === undefined){
+            con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
+            logging.info("Created new user!");
+
+          }
+
+          let channelMessage = {
+            "wordArgs": wordArgs,
+            "cooldown": cooldown,
+            "content": message.content
+          }
+
+          //this function no longer works when in the sql query just move it outside i guess??? best to try it first
+          numWords = piscinaTask(channelMessage).then(numWords => {
+
+            //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
+            //if the users exists in the database it will add the number of words sent in the message to the users current amount
+            if(user[0] === undefined) {
+              con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+            }
+            else {
+              con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+            }
+            //if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
+            if(numWords >= 5) {
+              con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+            }
+          });
+
+        });
+      });
+
+    }
   });
-
+	
 
   /*pool.exec(channelMessage).then(result => {});*/
 });
