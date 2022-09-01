@@ -293,7 +293,7 @@ client.on("messageCreate", async (message) => {
                 .setTitle('Slash Commands')
                 .setDescription('Apologies but prefix commands will not be supported after August 31st 2022 due to them being superceded by slash commands. \n If you have not enabled slash commands you can do that by using the invite link on the bot\'s profile')
                 .setColor(0xBF66E3);
-              message.channel.send({embeds: [noPrefixCommandsEmbed]});
+              message.channel.send({embeds: [noPrefixCommandsEmbed], ephemeral: true});
 
             } else {
               let arguments = {version, voteLink, data, changelog, discordLink, invLink, args, prefix, shardId};
