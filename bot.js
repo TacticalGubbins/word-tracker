@@ -82,15 +82,34 @@ const discordLink = 'https://discord.gg/Z6rYnpy';
 const voteLink = 'https://top.gg/bot/730199839199199315/vote';
 
 //Stores the version number for the changelog function and info function
-const version = '3.11.2';
+const version = '3.11.3';
 //version number: 1st = very large changes; 2nd = minor changes; 3rd = bug fixes and patches;
 //default settings variables for when a server is created in the database
 const defaultStrings = ["bruh", "nice", "bots", "cow"];
 const defaultCooldownTime = 30;
 const defaultPrefix = 'n!';
 
+var data;
 //data.json stores the "ogs" and the current pp length
-var data = require("./data.json");
+fs.access('./data.json', fs.constants.R_OK | fs.constants.W_OK, (err) => {
+  if (err) {
+    logging.warn("Data file does not exist! Loading from backup...")
+    data = require("./backupData.json")
+  }
+
+  data = require("./data.json");
+
+  try {
+    logging.info(data.ppLength + " is the current ppLength")
+    logging.info("No issues with the data file")
+  }
+  catch {
+    logging.warn("Data file existed but was empty!")
+    data = require("./backupData.json")
+  }
+});
+
+
 
 //variables relating to users-------------------------------------
 
@@ -107,6 +126,12 @@ var numWords = 0;
 var d = new Date();
 //stores the shard id as a global variable
 var shardId;
+//a set storing the ids of users and is used for rate limiting
+var recentMessage = new Set();
+//Used for dynamic programming so database queries can be made less often
+var guildCache = new Map();
+//A cache for the opted out users
+var optOutCache = new Map();
 
 //stores the databases connection information
 const con = mysql.createConnection({
@@ -162,23 +187,25 @@ client.on('ready', () => {
     Discord.Permissions.FLAGS.MANAGE_GUILD
   }, 10000);
 
-		setInterval(async () => {
-			//gets the user cache from the other shards
-			let results = await client.shard.fetchClientValues('users.cache');
+  setInterval(async () => {
+    //gets the user cache from the other shards
+    let results = await client.shard.fetchClientValues('users.cache');
 
-			results.forEach((users) => {
-				users.forEach((user) => {
-					// combines the existing cache with the new caches from the shards
-          // I actually have no idea how much ram this takes
-          //could be catastrophic if the bot ever gets popular enough
-					client.users.cache.set(user.id, new Discord.User(client, user));
-				});
-			});
-		}, 60000);
-});
+    results.forEach((users) => {
+      users.forEach((user) => {
+        // combines the existing cache with the new caches from the shards
+        // I actually have no idea how much ram this takes
+        //could be catastrophic if the bot ever gets popular enough
+        client.users.cache.set(user.id, new Discord.User(client, user));
+      });
+    });
+  }, 60000);
+  });
 
 client.on("guildCreate", async (guild) => {
-  await guild.systemChannel.send({embeds: [joinEmbed]});
+  if (guild.me.permissionsIn(guild.systemChannel).has("SEND_MESSAGES")) {
+    await guild.systemChannel.send({embeds: [joinEmbed]});
+  }
 	//add something to update all of the shards' caches
 });
 
@@ -191,8 +218,6 @@ process.on("message", message => {
     };
 });
 
-let recentMessage = new Set();
-
 client.on("interactionCreate", async (interaction) => {
   logging.debug("started interaction");
 
@@ -203,7 +228,12 @@ client.on("interactionCreate", async (interaction) => {
   if (!slashCommands.has(commandName)) return;
 
   let arguments = {version, voteLink, data, changelog, discordLink, invLink, shardId};
-  await slashCommands.get(commandName).execute(interaction, Discord, client, con, arguments);
+  commandCompleted = await slashCommands.get(commandName).execute(interaction, Discord, client, con, arguments);
+
+  //triggers and cooldown both change the database so the cache will need to be updated again with the new information
+  if ((commandName === 'triggers' || commandName === 'cooldown') && commandCompleted) {
+    guildCache.delete(interaction.guildId);
+  }
 
 });
 
@@ -214,7 +244,7 @@ client.on("messageCreate", async (message) => {
   //ignore messages sent by bots
   if(message.author.bot ) return;
 
-	//anti-spamming for consective messages
+	//Next three lines are for rate limiting
 	if(recentMessage.has(message.author.id)) return;
 
 	recentMessage.add(message.author.id);
@@ -304,63 +334,63 @@ client.on("messageCreate", async (message) => {
           return;
         }
       });
-      let channelMessage = {
-        "content": message.content,
-        "author": message.author.id,
-        "guild": message.guild.id
+let channelMessage = {
+      "content": message.content,
+      "author": message.author.id,
+      "guild": message.guild.id
       };
       //pass message content and the strings to the worker and the worker should spit out a number *fingers crossed
       //this set of queries gets all of the appropriate user and server information necessary for tracking the words of the user
-      con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
+          con.query('SELECT cooldown, strings FROM servers WHERE id = ' + message.guild.id, (err, server) => {
         con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
-          //tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
-          try {
-            wordArgs = server[0].strings.split(",");
-          }
-          catch(err) {
+    //tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
+    try {
+      wordArgs = server[0].strings.split(",");
+    }
+    catch(err) {
             wordArgs = defaultStrings;
-            try {
-              con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
-            }
-            catch(err){};
-          }
-          try {
-            cooldown = user[0].cooldown;
-          }
-          catch(err) {
-            cooldown = 0
-          }
+      try {
+                con.query("INSERT IGNORE INTO servers (id, prefix, cooldown, strings) VALUE (" + message.guild.id + ", '"+ defaultPrefix +"', "+ defaultCooldownTime +", '"+ defaultStrings +"')");
+              }
+      catch(err){};
+    }
+    try {
+      cooldown = user[0].cooldown;
+    }
+    catch(err) {
+      cooldown = 0
+    }
 
-          if (user[0] === undefined){
-            con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
-            logging.info("Created new user!");
+    if (user[0] === undefined){
+      con.query('INSERT IGNORE INTO users (id, server_id, cooldown, words) value (' + message.author.id +', ' + message.guild.id + ', 0, 0)');
+      logging.info("Created new user!");
 
-          }
+    }
 
-          let channelMessage = {
-            "wordArgs": wordArgs,
-            "cooldown": cooldown,
-            "content": message.content
-          }
+    let channelMessage = {
+      "wordArgs": wordArgs,
+      "cooldown": cooldown,
+      "content": message.content
+    }
 
-          //this function no longer works when in the sql query just move it outside i guess??? best to try it first
-          numWords = piscinaTask(channelMessage).then(numWords => {
+    //this function no longer works when in the sql query just move it outside i guess??? best to try it first
+    piscinaTask(channelMessage).then(numWords => {
+      
+      //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
+      //if the users exists in the database it will add the number of words sent in the message to the users current amount
+      if(user[0] === undefined) {
+        con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+      }
+      else {
+        con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+      }
+      //if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
+      if(numWords >= 5) {
+        con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
+      }
+    });
 
-            //if this is the first time a user has a sent a tracked word in that server it will create a new entry in the users database.
-            //if the users exists in the database it will add the number of words sent in the message to the users current amount
-            if(user[0] === undefined) {
-              con.query('UPDATE users SET words = ' + (0 + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
-            }
-            else {
-              con.query('UPDATE users SET words = ' + (parseInt(user[0].words) + numWords) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
-            }
-            //if the user has sent more than five words, multiply the number of tracked words they have sent by the cooldown time and then add that to the epoch time and store it in the users entry in the database for that server
-            if(numWords >= 5) {
-              con.query('UPDATE users SET cooldown = ' + (Date.now() + ((server[0].cooldown) * 1000)) + ' WHERE id = ' + message.author + ' AND server_id = ' + message.guild);
-            }
-          });
-
-        });
+});
       });
 
     }
