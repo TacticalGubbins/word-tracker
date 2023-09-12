@@ -110,6 +110,10 @@
         "2": [
           "Prefix commands are now gone and its all slash commands now",
           "Added two new commands, /opt-out and /opt-in that allow you to change whether or not you want your messages to be scanned"
+        ],
+        "3": [
+          "Commands reguarding user data may be faster",
+          "The data file randomly deleting itself will no longer cause the bot to crash repeatedly"
         ]
       }
     }

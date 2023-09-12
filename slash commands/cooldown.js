@@ -20,7 +20,7 @@ module.exports = {
           .setColor(0xFF0000)
           .setDescription('Please include a time (in seconds) after the command!');
           await interaction.reply({embeds: [embed]});
-          return;
+          return false;
         }
         //checks to see if there even is a number provided
         if(cooldownTime <= 1000) {
@@ -33,7 +33,7 @@ module.exports = {
             .setDescription('**Removed cooldown time!**\n\n*active cooldowns will not be cleared*')
             .setFooter({text: 'Requested by ' + interaction.user.tag});
             await interaction.reply({embeds: [embed]});
-            return;
+            return true;
           }
           //if the argument is not a number it will tell them to provide a number next time
 /*          if(isNaN(cooldownTime)) {
@@ -54,7 +54,7 @@ module.exports = {
             .setDescription('Changed cooldown time to **__' + cooldownTime + '__** seconds\n\n*active cooldowns will not be cleared*')
             .setFooter({text: 'Requested by ' + interaction.user.tag});
             await interaction.reply({embeds: [embed]});
-            return;
+            return true;
           }
           //if the user sets a number above 1000 it will stop them from doing so
         } else {
@@ -63,7 +63,7 @@ module.exports = {
           .setColor(0xFF0000)
           .setDescription('The max cooldown time is 1000!')
           await interaction.reply({embeds: [embed]});
-          return;
+          return false;
         }
         //if the user doesn't have suffcient permissions it will inform them so
       } else {
@@ -72,7 +72,7 @@ module.exports = {
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
         await interaction.reply({embeds: [embed]});
-        return;
+        return false;
       }
 
   }

@@ -33,6 +33,7 @@ module.exports = {
             .setDescription('Trigger Setup Canceled');
             await interaction.reply({embeds: [embed]});
             collector.stop();
+            return false;
 
           } else {
             //removes any backslashes so that sql injection will not be possible
@@ -61,6 +62,7 @@ module.exports = {
             await interaction.reply({embeds: [embed]});
 
             collector.stop();
+            return true;
           }
         });
       } else {
@@ -69,7 +71,7 @@ module.exports = {
         .setColor(0xFF0000)
         .setDescription('You must be an Administrator to use this command!');
         await interaction.reply({embeds: [embed]});
-        return;
+        return false;
       }
 
   }
