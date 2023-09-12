@@ -203,7 +203,9 @@ client.on('ready', () => {
   });
 
 client.on("guildCreate", async (guild) => {
-  await guild.systemChannel.send({embeds: [joinEmbed]});
+  if (guild.me.permissionsIn(guild.systemChannel).has("SEND_MESSAGES")) {
+    await guild.systemChannel.send({embeds: [joinEmbed]});
+  }
 	//add something to update all of the shards' caches
 });
 
