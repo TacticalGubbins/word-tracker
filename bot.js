@@ -97,9 +97,8 @@ fs.access('./data.json', fs.constants.R_OK | fs.constants.W_OK, (err) => {
     data = require("./backupData.json")
   }
 
-  data = require("./data.json");
-
   try {
+    data = require("./data.json")
     logging.info(data.ppLength + " is the current ppLength")
     logging.info("No issues with the data file")
   }
@@ -202,9 +201,9 @@ client.on('ready', () => {
   }, 60000);
   });
 
-client.on("guildCreate", async (guild) => {
+client.on("guildCreate", (guild) => {
   if (guild.me.permissionsIn(guild.systemChannel).has("SEND_MESSAGES")) {
-    await guild.systemChannel.send({embeds: [joinEmbed]});
+    guild.systemChannel.send({embeds: [joinEmbed]});
   }
 	//add something to update all of the shards' caches
 });
