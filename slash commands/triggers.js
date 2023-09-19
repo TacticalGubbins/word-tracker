@@ -14,7 +14,7 @@ module.exports = {
         let embed = new Discord.MessageEmbed()
         .setTitle('Trigger Setup')
         .setColor(0xBF66E3)
-        .setDescription('Please type out any words you would like to be counted. Seperate each word by a space. All punctuation will be ignored')
+        .setDescription('Please type out any words you would like to be counted. Seperate each word by a ***space*** or ***newline***. Punctuation will not be ignored.')
         .addField('Example', 'bots nice!', true)
         .addField('Cancel', 'Type "CANCEL" to cancel', true)
         .setFooter({text: 'Requested by ' + interaction.user.tag});
@@ -42,12 +42,12 @@ module.exports = {
             content = content.replaceAll('\'', '\\\'');
             content = content.replaceAll('`', '\\\`');
             content = content.replaceAll('"', '\\\"');
+            content = content.replaceAll("\n", " ");
             
             
             logging.debug(content);
 
             let strings = content.toLowerCase().split(" ");
-            logging.debug(strings);
             strings = strings.filter(item => !!item);
             strings = strings.filter((item, index) => strings.indexOf(item) === index);
             strings = strings.join(', ');
