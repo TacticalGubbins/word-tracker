@@ -27,7 +27,6 @@ words = words.filter(item => !!item);
       trackedWords.add(i);
     }
 
-    console.log(words);
     //this for loop goes through all of the words and counts how many times a tracked word has been said
     for(let j in words) {
 
@@ -39,6 +38,7 @@ words = words.filter(item => !!item);
       catch(err) {}
 
       curr = words[j];
+      console.log(curr);
 
       try {
 
