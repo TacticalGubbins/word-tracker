@@ -369,8 +369,7 @@ let channelMessage = {
     let channelMessage = {
       "wordArgs": wordArgs,
       "cooldown": cooldown,
-      "content": message.content,
-      "serverId": message.guildId
+      "content": message.content
     }
 
     //this function no longer works when in the sql query just move it outside i guess??? best to try it first

@@ -15,7 +15,6 @@ logging.debug(words);
 logging.debug(wordArgs);
 words = words.filter(item => !!item);
 
-    console.log(wordArgs);
     //creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
     let trackedWords = new Set();
     //filters out empty strings in the array
