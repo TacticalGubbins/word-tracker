@@ -27,7 +27,6 @@ words = words.filter(item => !!item);
     for(let i of wordArgs) {
       trackedWords.add(i);
     }
-    console.log(trackedWords)
 
     //this for loop goes through all of the words and counts how many times a tracked word has been said
     for(let j in words) {
@@ -40,14 +39,10 @@ words = words.filter(item => !!item);
       catch(err) {}
 
       curr = words[j];
-      if (message.serverId === 637740070648021000) {
-        console.log(curr);
-      }
 
       try {
 
         if(trackedWords.has(curr.toLowerCase())) {
-          console.log("found word: " + curr);
           numWords++;
         }
       }
