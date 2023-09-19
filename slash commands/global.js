@@ -48,7 +48,7 @@ module.exports = {
                 embed.addField('#' + (o) + ' `' + interaction.user.username + '`', response[i].words.toString());
                 inTop = true;
               } else {
-                if(o < 11+set & o > 0+set) {
+                if(o < 11+set && o > 0+set) {
                   embed.addField('#' + (o) + ' ' + user.username, response[i].words.toString());
                 }
               }
@@ -66,7 +66,7 @@ module.exports = {
             }
 
           }
-          embed.setDescription('The top-sending users world-wide\nThis uses a collection of all interactions these users have sent')
+          embed.setDescription('The top-sending users world-wide\nThis uses a collection of all tracked-words these users have sent')
           interaction.editReply({embeds: [embed]});
 
       });

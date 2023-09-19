@@ -8,6 +8,9 @@ module.exports = {
   description: 'displays the current settings for the server',
   async execute(interaction, Discord, client, con) {
 
+    //TODO: The bot crashed because it tried to send a very long list. The bot now truncates the list but does not send the full thing
+    // perhaps a command could be used to get the full list in raw text if requested by the user. COuld be an argument
+
       con.query('SELECT cooldown, strings, prefix FROM servers WHERE id = ' + interaction.guild.id , async (err, response) => {
         let cooldown;
         let strings;
