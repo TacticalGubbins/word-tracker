@@ -41,7 +41,6 @@ words = words.filter(item => !!item);
       try {
 
         if(trackedWords.has(curr.toLowerCase())) {
-          // console.log("found a word: " + curr);
           numWords++;
         }
       }

@@ -48,7 +48,6 @@ module.exports = {
             logging.debug(content);
 
             let strings = content.toLowerCase().split(" ");
-            console.log(strings);
             strings = strings.filter(item => !!item);
             strings = strings.filter((item, index) => strings.indexOf(item) === index);
             strings = strings.join(', ');

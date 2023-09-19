@@ -7,8 +7,6 @@ module.exports = {
   name: 'leaderboard',
   description: 'gets leaderboard stuffs',
   async execute(interaction, Discord, client, con) {
-    //TODO: Leaderboard seems to be acting strange accouding to magnum in the support server. They said is not accurate
-    // May not actually be a leaderboard thing and more of a processing speed and database thing
 
     //quieres stuff
     con.query("SELECT * FROM users WHERE server_id =  '" + interaction.guild.id + "' ORDER BY words DESC", async (err, response) => {
