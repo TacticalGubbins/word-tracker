@@ -23,8 +23,11 @@ module.exports = {
           prefix = 'n!';
         }
 
+        if (strings.length > 700){
+          strings = strings.substring(0, 700) + "...";
+        }
 
-        if(strings === undefined || strings === "") {
+        if (strings === undefined || strings === "") {
           strings = 'bruh, nice, bots, cow';
         }
         //console.log(strings);
@@ -36,7 +39,7 @@ module.exports = {
         .addField('Prefix', prefix + " is the prefix \n**but slash commands are strongly encouraged**", true)
         .addField('Cooldown Time', + cooldown + " seconds", true)
         .addField('Trigger Words', strings)
-        .addField('Slash Commands', 'If do not have slash commands enabled on this server then use the invite link in the bot\'s profile to allow them')
+        .addField('Slash Commands', 'If you do not have slash commands enabled on this server then use the invite link in the bot\'s profile to allow them')
         .setFooter({text: 'Requested by ' + interaction.user.tag});
         await interaction.reply({embeds: [embed]});
 
