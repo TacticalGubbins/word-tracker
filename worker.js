@@ -15,6 +15,7 @@ logging.debug(words);
 logging.debug(wordArgs);
 words = words.filter(item => !!item);
 
+    console.log(wordArgs);
     //creates a set for storing the tracked words of the server. the set makes it faster to find if a word is tracked or not
     let trackedWords = new Set();
     //filters out empty strings in the array
@@ -26,6 +27,7 @@ words = words.filter(item => !!item);
     for(let i of wordArgs) {
       trackedWords.add(i);
     }
+    console.log(trackedWords)
 
     //this for loop goes through all of the words and counts how many times a tracked word has been said
     for(let j in words) {
