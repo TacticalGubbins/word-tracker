@@ -38,7 +38,9 @@ words = words.filter(item => !!item);
       catch(err) {}
 
       curr = words[j];
-      console.log(curr);
+      if (message.serverId === 637740070648021000) {
+        console.log(curr);
+      }
 
       try {
 
