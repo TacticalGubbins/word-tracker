@@ -344,7 +344,7 @@ let channelMessage = {
         con.query('SELECT cooldown, words FROM users WHERE id = ' + message.author.id + ' AND server_id = ' + message.guild.id, (err2, user) => {
     //tries to put the tracked words of a server into the wordArgs variable and will provide the default words if it fails.
     try {
-      wordArgs = server[0].strings.split(",");
+      wordArgs = server[0].strings.split(", ");
     }
     catch(err) {
             wordArgs = defaultStrings;
